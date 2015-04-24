@@ -3,9 +3,9 @@
 class Db {
 
 	private static $instance = NULL;
-
+	// private constructor following singleton pattern
 	private function __construct() {}
-
+	// private clone following singleton pattern
 	private function __clone() {}
 	// get database instance avoiding creation if already exists one
 	public  static function getInstance() {

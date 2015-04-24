@@ -18,15 +18,20 @@ function call($controller, $action) {
 			require_once('models/collection.php');
 			$controller = new CollectionController();
 		break;
+		case 'queue':
+			require_once('models/queue.php');
+			$controller = new QueueController();
+		break;
 	}
 	$controller->{$action}();
 }
-
+// array containing all action for every controller
 $controllers = array(
 	'pages' => ['home', 'error'],
 	'songs' => ['index', 'show'],
-	'playlist' => ['index'],
-	'collection' => ['index']
+	'playlist' => ['index'],  // need add song action
+	'collection' => ['index'], // need add song action
+	'queue' => ['index'] // need add song action
 );
 
 if(array_key_exists($controller, $controllers)) {

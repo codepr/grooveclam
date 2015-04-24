@@ -10,6 +10,7 @@
 		<a href='?controller=songs&action=index'>Songs</a>
 		<a href='?controller=collection&action=index&id=1'>Collection</a>
 		<a href='?controller=playlist&action=index&id=1'>Playlist</a>
+		<a href='?controller=queue&action=index&id=1'>Queue</a>
 	</header>
 	<?php require_once('routes.php') ?>
 	<footer>
