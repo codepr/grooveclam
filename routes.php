@@ -10,6 +10,10 @@ function call($controller, $action) {
 			require_once('models/song.php');
 			$controller = new SongsController();
 		break;
+		case 'albums':
+			require_once('models/album.php');
+			$controller = new AlbumController();
+		break;
 		case 'playlist':
 			require_once('models/playlist.php');
 			$controller = new PlayListController();
@@ -29,6 +33,7 @@ function call($controller, $action) {
 $controllers = array(
 	'pages' => ['home', 'error'],
 	'songs' => ['index', 'show'],
+	'albums' => ['index', 'show'],
 	'playlist' => ['index'],  // need add song action
 	'collection' => ['index'], // need add song action
 	'queue' => ['index'] // need add song action
