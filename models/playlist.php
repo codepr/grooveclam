@@ -18,30 +18,29 @@ class Playlist {
 	public function songs() {
 		return $this->songs;
 	}
-
+	// list all playlists, for administrator users
 	public static function all() {
 		$list = [];
 		$db = Db::getInstance();
-		$req = $db->query('SELECT s.* FROM Song s INNER JOIN PlaylistSong p ON(s.IdSong = p.IdSong)');
+		$req = $db->query('SELECT * FROM PlaylistSong');
 
-		foreach($req->fetchAll() as $song) {
-			// $list[] = new Playlist($song['IdSong'], $song['Title'], $song['Genre'], $song['Duration']);
+		foreach($req->fetchAll() as $playlist) {
+			$list[] = new Playlist($playlist['IdPlaylist'], $playlist['Name'], []);
 		}
 
 		return $list;
 	}
-
+	// find a single playlist and all songs contained
 	public static function find($id) {
+		$songlist = [];
+		$song;
 		$db = Db::getInstance();
 		$id = intval($id);
 		$req = $db->prepare('SELECT pl.IdPlaylist, pl.Name, s.*, a.Author FROM Song s INNER JOIN PlaylistSong p ON(s.IdSong = p.IdSong) INNER JOIN Playlist pl ON(pl.IdPlaylist = p.IdPlaylist) INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum) WHERE pl.IdPlaylist = :id');
 		$req->execute(array('id' => $id));
-		$songlist = [];
-		$song;
 		foreach($req->fetchAll() as $song) {
 			$songlist[] = new Song($song['IdSong'], $song['Title'], $song['Genre'], $song['Duration'], $song['Author']);
 		}
-
 		return new Playlist($song['IdPlaylist'], $song['Name'], $songlist);
 	}
 }

@@ -1,0 +1,16 @@
+nav {
+	float: left;
+	width: 15%;
+}
+nav ul {
+	list-style: none;
+	display: block;
+}
+main {
+	width: 85%;
+	float: left;
+}
+footer {
+	position: fixed;
+	bottom: 0;
+}
