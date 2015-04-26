@@ -1,5 +1,5 @@
-<h3><?php echo $album->title(); ?></h3>
-<p><?php echo $album->author(); ?></p>
+<h3><?php echo $album->title(); ?> - <?php echo $album->author(); ?></h3>
+<p><?php echo $album->info(); ?></p>
 <?php if(is_array($album->live())) { echo "<p>Live at: " . $album->live()['Location']; } ?>
 <table class="table">
 <thead>

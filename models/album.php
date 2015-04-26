@@ -4,13 +4,15 @@ class Album {
 	private $id;
 	private $title;
 	private $author;
+	private $info;
 	private $live;
 	private $songs;
 
-	public function __construct($id, $title, $author, $live, $songs) {
+	public function __construct($id, $title, $author, $info, $live, $songs) {
 		$this->id = $id;
 		$this->title = $title;
 		$this->author = $author;
+		$this->info = $info;
 		$this->live = $live;
 		$this->songs = $songs;
 	}
@@ -25,6 +27,10 @@ class Album {
 
 	public function author() {
 		return $this->author;
+	}
+
+	public function info() {
+		return $this->info;
 	}
 
 	public function live() {
@@ -49,7 +55,7 @@ class Album {
 			} else {
 				$live = false;
 			}
-			$list[] = new Album($album['IdAlbum'], $album['Title'], $album['Author'], $live, []);
+			$list[] = new Album($album['IdAlbum'], $album['Title'], $album['Author'], $album['Info'], $live, []);
 		}
 		return $list;
 	}
@@ -60,7 +66,7 @@ class Album {
 		$songs = [];
 		$id = intval($id);
 		$db = Db::getInstance();
-		$req = $db->prepare('SELECT a.IdAlbum, a.Live, a.Location, a.Title as AlbumTitle, a.Author, s.* FROM Album a INNER JOIN Song s ON(a.IdAlbum = s.IdAlbum) WHERE a.IdAlbum = :id');
+		$req = $db->prepare('SELECT a.IdAlbum, a.Live, a.Location, a.Info, a.Title as AlbumTitle, a.Author, s.* FROM Album a INNER JOIN Song s ON(a.IdAlbum = s.IdAlbum) WHERE a.IdAlbum = :id');
 		$req->execute(array('id' => $id));
 		foreach($req->fetchAll() as $song) {
 			$songs[] = new Song($song['IdSong'], $song['Title'],$song['Genre'], $song['Duration'], $song['Author']);
@@ -73,7 +79,7 @@ class Album {
 		} else {
 			$live = false;
 		}
-		return new Album($song['IdAlbum'], $song['AlbumTitle'], $song['Author'], $live, $songs);
+		return new Album($song['IdAlbum'], $song['AlbumTitle'], $song['Author'], $song['Info'], $live, $songs);
 	}
 }
 ?>
