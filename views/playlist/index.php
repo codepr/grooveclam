@@ -1,4 +1,19 @@
 <h3><?php echo $playlist->name(); ?></h3>
+<table class="table">
+<thead>
+	<tr>
+		<th>Title</th>
+		<th>Genre</th>
+		<th>Duration (min)</th>
+	</tr>
+</thead>
+<tbody>
 <?php foreach($playlist->songs() as $song) { ?>
-<p><a href='?controller=songs&action=show&id=<?php echo $song->id(); ?>'><?php echo $song->title(); ?></a> - <?php echo $song->genre(); ?> - <?php echo $song->duration(); ?> min</p>
+	<tr>
+		<td><a href='?controller=songs&action=show&id=<?php echo $song->id(); ?>'><?php echo $song->title(); ?></a></td>
+		<td><?php echo $song->genre(); ?></td>
+		<td><?php echo $song->duration(); ?></td>
+	</tr>
 <?php } ?>
+</tbody>
+</table>
