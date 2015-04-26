@@ -3,7 +3,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 CREATE TABLE IF NOT EXISTS `Album` (
 	`IdAlbum` INT(11) NOT NULL AUTO_INCREMENT,
 	`Title` VARCHAR(140) NOT NULL,
-	`Author` VARCHAR(40) NOT NULL,
+	`Author` VARCHAR(140) NOT NULL,
 	`Year` DATE NOT NULL,
 	`Live` BOOLEAN NOT NULL,
 	`Location` VARCHAR(40) DEFAULT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `Album` (
 CREATE TABLE IF NOT EXISTS `Song` (
 	`IdSong` INT(11) NOT NULL AUTO_INCREMENT,
 	`IdAlbum` INT(11) NOT NULL,
-	`Title` VARCHAR(40) NOT NULL,
+	`Title` VARCHAR(140) NOT NULL,
 	`Genre` VARCHAR(40) NOT NULL,
 	`Duration` FLOAT,
 	`IdImage` INT(11) NOT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `Follow` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 -- Table Subscription
 CREATE TABLE IF NOT EXISTS `Subscription` (
-	`IdUser` INT(40) NOT NULL,
+	`IdUser` INT(10) NOT NULL,
 	`Type` ENUM('Free', 'Premium') NOT NULL,
 	PRIMARY KEY(`IdUser`),
 	FOREIGN KEY(`IdUser`) REFERENCES User(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -110,9 +110,9 @@ VALUES('Andrea', 'Baldan', 'a.g.baldan@gmail.com', 0, 'codep', 'ciao'), ('Federi
 INSERT INTO Subscription(`IdUser`, `Type`) VALUES(1, 'Free'), (2, 'Free');
 -- Insert into Album
 INSERT INTO Album(`Title`, `Author`, `Year`, `Live`, `Location`)
-VALUES('Inception Suite', 'Hans Zimmer', '2010-07-13', 0, NULL), ('The Good, the Bad and the Ugly: Original Motion Picture Soundtrack', 'Ennio Morricone', '1966-12-29', 0, NULL);
+VALUES('Inception Suite', 'Hans Zimmer', '2010-07-13', 0, NULL), ('The Good, the Bad and the Ugly: Original Motion Picture Soundtrack', 'Ennio Morricone', '1966-12-29', 0, NULL), ('Hollywood in Vienna 2014', 'Randy Newman - David Newman', '2014-09-23', 1, 'Vienna'), ('Fragile', 'Nine Inch Nails', '1999-09-21', 0, NULL), ('American IV: The Man Comes Around', 'Johnny Cash', '2002-06-19', 0, NULL);
 -- Insert into Song
-INSERT INTO Song(`IdAlbum`, `Title`, `Genre`, `Duration`, `IdImage`) VALUES(1, 'Mind Heist', 'Orchestra', 3.23, 1), (1, 'Dream is collapsing', 'Orchestra', 4.41, 1), (1, 'Time', 'Orchestra', 3.35, 1),(2, 'Il Triello', 'Orchestra', 7.14, 2);
+INSERT INTO Song(`IdAlbum`, `Title`, `Genre`, `Duration`, `IdImage`) VALUES(1, 'Mind Heist', 'Orchestra', 3.23, 1), (1, 'Dream is collapsing', 'Orchestra', 4.41, 1), (1, 'Time', 'Orchestra', 3.35, 1),(1, 'Half Remembered Dream', 'Orchestra', 1.11, 1),(1, 'We Built Our Own World', 'Orchestra', 1.55, 1), (1, 'Radical Notion', 'Orchestra', 3.42, 1),(1, 'Paradox', 'Orchestra', 3.25, 1),(2, 'Il Tramonto', 'Orchestra', 1.12, 2),(2, 'L\'estasi dell\'oro', 'Orchestra', 3.22, 2),(2, 'Morte di un soldato', 'Orchestra', 3.05, 2),(2, 'Il Triello', 'Orchestra', 7.14, 2),(3, 'The Simpsons', 'Orchestra', 2.52, 3),(3, 'The war of the Roses', 'Orchestra', 4.32, 3),(4, 'Somewhat Damaged', 'Industrial Metal', 4.31, 4),(4, 'The Day The Whole World Went Away', 'Industrial Metal', 4.33, 4),(4, 'We\'re In This Together', 'Industrial Metal', 7.16, 4),(4, 'Just Like You Imagined', 'Industrial Metal', 3.49, 4),(4, 'The Great Below', 'Industrial Metal', 5.17, 4);
 -- Insert into Cover
 INSERT INTO Cover(`IdImage`, `IdAlbum`, `Path`) VALUES(1, 1, 'img/covers/inception.jpg'), (2, 2, 'img/covers/morricone.jpg)');
 -- Insert into Collection

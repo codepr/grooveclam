@@ -28,5 +28,5 @@ header h1 {
 footer { position: fixed; bottom: 0; }
 .table { width:80%; border-collapse: collapse; margin-top: 1em; }
 .table th { border-bottom: 1px solid #777; text-align: left; padding: .5em; font-size: .9em; color: rgb(15, 89, 182); }
-.table td { padding: 2px; font-size: .75em; }
+.table td { padding: 5px; font-size: .75em; }
 .table tr:nth-child(2n+2) { background-color: rgba(15, 89, 182, .2); }

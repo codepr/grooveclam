@@ -60,7 +60,7 @@ class Album {
 		$songs = [];
 		$id = intval($id);
 		$db = Db::getInstance();
-		$req = $db->prepare('SELECT a.IdAlbum, a.Live, a.Title as AlbumTitle, a.Author, s.* FROM Album a INNER JOIN Song s ON(a.IdAlbum = s.IdAlbum) WHERE a.IdAlbum = :id');
+		$req = $db->prepare('SELECT a.IdAlbum, a.Live, a.Location, a.Title as AlbumTitle, a.Author, s.* FROM Album a INNER JOIN Song s ON(a.IdAlbum = s.IdAlbum) WHERE a.IdAlbum = :id');
 		$req->execute(array('id' => $id));
 		foreach($req->fetchAll() as $song) {
 			$songs[] = new Song($song['IdSong'], $song['Title'],$song['Genre'], $song['Duration'], $song['Author']);
