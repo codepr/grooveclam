@@ -1,6 +1,7 @@
 <?php
 require_once('song.php');
 class Album {
+
 	private $id;
 	private $title;
 	private $author;
@@ -40,7 +41,19 @@ class Album {
 	public function songs() {
 		return $this->songs;
 	}
-
+	// add a new album to the database
+	public static function add($album) {
+		$db = Db::getInstance();
+		$req = $db->prepare('INSERT INTO Album (Title, Info, Author, Year, Live, Location) VALUES(:Title, :Info, :Author, :Year, :Live, :Location)');
+		$req->execute(array(
+			'Title' => $album['Title'],
+			'Info' => $album['Info'],
+			'Author' => $album['Year'],
+			'Live' => $album['Live'],
+			'Location' => $album['Location']
+		));
+	}
+	// retrieve all albums from the database
 	public static function all() {
 		$list = array();
 		$db = Db::getInstance();
@@ -59,7 +72,7 @@ class Album {
 		}
 		return $list;
 	}
-
+	// retrieve a single album from the database, by a given id
 	public static function find($id) {
 		$song;
 		$live;
