@@ -14,7 +14,7 @@
 		<td><a href='?controller=albums&action=show&id=<?php echo $album->id(); ?>'><?php echo $album->title(); ?></a></td>
 		<td><?php echo $album->author(); ?></td>
 		<td><?php if(is_array($album->live())) { echo "Live"; } else { echo "Studio"; } ?></td>
-		<td><?php if(is_array($album->live())) { echo $album->live()['Location']; } else { echo ""; } ?></td>
+		<td><?php if(is_array($album->live())) { $location = $album->live(); echo $location['Location']; } else { echo ""; } ?></td>
 	</tr>
 <?php } ?>
 </tbody>

@@ -42,7 +42,7 @@ class Album {
 	}
 
 	public static function all() {
-		$list = [];
+		$list = array();
 		$db = Db::getInstance();
 		$req = $db->query('SELECT * FROM Album');
 		foreach($req->fetchAll() as $album) {
@@ -55,7 +55,7 @@ class Album {
 			} else {
 				$live = false;
 			}
-			$list[] = new Album($album['IdAlbum'], $album['Title'], $album['Author'], $album['Info'], $live, []);
+			$list[] = new Album($album['IdAlbum'], $album['Title'], $album['Author'], $album['Info'], $live, array());
 		}
 		return $list;
 	}
@@ -63,7 +63,7 @@ class Album {
 	public static function find($id) {
 		$song;
 		$live;
-		$songs = [];
+		$songs = array();
 		$id = intval($id);
 		$db = Db::getInstance();
 		$req = $db->prepare('SELECT a.IdAlbum, a.Live, a.Location, a.Info, a.Title as AlbumTitle, a.Author, s.* FROM Album a INNER JOIN Song s ON(a.IdAlbum = s.IdAlbum) WHERE a.IdAlbum = :id');

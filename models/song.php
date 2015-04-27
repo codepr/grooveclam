@@ -47,7 +47,7 @@ class Song {
 	}
 
 	public static function all() {
-		$list = [];
+		$list = array();
 		$db = Db::getInstance();
 		$req = $db->query('SELECT s.*, a.Author, a.Title as AlbumTitle FROM Song s INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum)');
 

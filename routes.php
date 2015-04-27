@@ -30,14 +30,13 @@ function call($controller, $action) {
 	$controller->{$action}();
 }
 // array containing all action for every controller
-$controllers = array(
-	'pages' => ['home', 'error'],
-	'songs' => ['index', 'show'],
-	'albums' => ['index', 'show'],
-	'playlist' => ['index'],  // need add song action
-	'collection' => ['index'], // need add song action
-	'queue' => ['index'] // need add song action
-);
+$controllers = array();
+$controllers['pages'] = array('home', 'error');
+$controllers['songs'] = array('index', 'show');
+$controllers['albums'] = array('index', 'show');
+$controllers['playlist'][0] = 'index';
+$controllers['collection'][0] = 'index';
+$controllers['queue'][0] = 'index';
 
 if(array_key_exists($controller, $controllers)) {
 	if(in_array($action, $controllers[$controller])) {

@@ -20,19 +20,19 @@ class Playlist {
 	}
 	// list all playlists, for administrator users
 	public static function all() {
-		$list = [];
+		$list = array();
 		$db = Db::getInstance();
 		$req = $db->query('SELECT * FROM PlaylistSong');
 
 		foreach($req->fetchAll() as $playlist) {
-			$list[] = new Playlist($playlist['IdPlaylist'], $playlist['Name'], []);
+			$list[] = new Playlist($playlist['IdPlaylist'], $playlist['Name'], array());
 		}
 
 		return $list;
 	}
 	// find a single playlist and all songs contained
 	public static function find($id) {
-		$songlist = [];
+		$songlist = array();
 		$song;
 		$db = Db::getInstance();
 		$id = intval($id);

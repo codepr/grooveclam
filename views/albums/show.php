@@ -1,6 +1,6 @@
 <h3><?php echo $album->title(); ?> - <?php echo $album->author(); ?></h3>
 <p><?php echo $album->info(); ?></p>
-<?php if(is_array($album->live())) { echo "<p>Live at: " . $album->live()['Location']; } ?>
+<?php if(is_array($album->live())) { $location = $album->live();echo "<p>Live at: " . $location['Location']; } ?>
 <table class="table">
 <thead>
 	<tr>

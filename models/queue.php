@@ -11,7 +11,7 @@ class Queue {
 	}
 
 	public function find($id) {
-		$list = [];
+		$list = array();
 		$db = Db::getInstance();
 		$if = intval($id);
 		$req = $db->prepare('SELECT s.*, a.Author, a.Title as AlbumTitle FROM Song s INNER JOIN QueueSong qs ON(s.IdSong = qs.IdSong) INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum) WHERE qs.IdUser = :id');

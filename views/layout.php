@@ -13,7 +13,7 @@
 	<div class="content">
 		<nav>
 			<ul>
-				<li><img src="img/home.png" alt=""><a href='/grooveclam'>Home</a></li>
+				<li><img src="img/home.png" alt=""><a href='/basidati/~abaldan'>Home</a></li>
 				<li><img src="img/music.png" alt=""><a href='?controller=songs&action=index'>Songs</a></li>
 				<li><img src="img/folder-icon.png" alt=""><a href='?controller=albums&action=index'>Albums</a></li>
 				<li><img src="img/music-icon.png" alt=""><a href='?controller=collection&action=index&id=1'>Collection</a></li>
