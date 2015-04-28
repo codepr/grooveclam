@@ -2,7 +2,7 @@
 <h3><?php echo $album->title(); ?> - <?php echo $album->author(); ?></h3>
 <p><?php echo $album->info(); ?></p>
 <p><?php if(is_array($album->live())) { $location = $album->live();echo "Live at " . $location['Location']; } ?></p>
-<h5>Genre: </h5>
+<h5>Genre</h5>
 <p>
 <?php
 $genre = [];
@@ -14,6 +14,8 @@ foreach ($genre as $key => $g) {
 	echo $key." ";
 }?>
 </p>
+<h5>Tracks</h5>
+<p><?php echo count($album->songs()); ?></p>
 <table class="table">
 <thead>
 	<tr>

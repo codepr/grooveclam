@@ -1,6 +1,7 @@
 <?php
 require_once('song.php');
 class Collection {
+
 	private $id;
 	private $songs;
 
@@ -13,7 +14,7 @@ class Collection {
 		return $this->songs;
 	}
 	// list all collections, for administrator users
-	public function all() {
+	public static function all() {
 		$list = array();
 		$db = Db::getInstance();
 		$req = $db->query('SELECT * FROM Collection');
