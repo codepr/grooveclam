@@ -90,19 +90,28 @@ CREATE TABLE IF NOT EXISTS `PlaylistSong` (
 	FOREIGN KEY(`IdSong`) REFERENCES Song(`IdSong`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 -- Table Queue
+-- CREATE TABLE IF NOT EXISTS `Queue` (
+-- 	`IdUser` INT(11) NOT NULL,
+-- 	FOREIGN KEY(`IdUser`) REFERENCES User(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE
+-- ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Table Queue
 CREATE TABLE IF NOT EXISTS `Queue` (
 	`IdUser` INT(11) NOT NULL,
-	FOREIGN KEY(`IdUser`) REFERENCES User(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
--- Table QueueSong
-CREATE TABLE IF NOT EXISTS `QueueSong` (
-	`IdUser` INT(11) NOT NULL,
 	`IdSong` INT(11) NOT NULL,
-	CONSTRAINT PRIMARY KEY pk(`IdUser`, `IdSong`),
-	FOREIGN KEY(`IdUser`) REFERENCES Queue(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+	`TimeStamp` TIMESTAMP NOT NULL,
+	CONSTRAINT PRIMARY KEY pk(`IdUser`, `IdSong`, `TimeStamp`),
+	FOREIGN KEY(`IdUser`) REFERENCES User(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY(`IdSong`) REFERENCES Song(`IdSong`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
+-- Table Heard
+CREATE TABLE IF NOT EXISTS `Heard` (
+	`IdUser` INT(11) NOT NULL,
+	`IdSong` INT(11) NOT NULL,
+	`TimeStamp` TIMESTAMP NOT NULL,
+	CONSTRAINT PRIMARY KEY pk(`IdUser`, `IdSong`, `TimeStamp`),
+	FOREIGN KEY(`IdUser`) REFERENCES User(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY(`IdSong`) REFERENCES Song(`IdSong`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 -- INSERT POPULATION
 -- Insert into User
 INSERT INTO User(`Name`, `Surname`, `Email`, `Administrator`, `Username`, `Password`)
@@ -115,7 +124,7 @@ VALUES('Inception Suite', 'Hans Zimmer', 'Inception movie soundtack, composed by
 -- Insert into Song
 INSERT INTO Song(`IdAlbum`, `Title`, `Genre`, `Duration`, `IdImage`) VALUES(1, 'Mind Heist', 'Orchestra', 3.23, 1), (1, 'Dream is collapsing', 'Orchestra', 4.41, 1), (1, 'Time', 'Orchestra', 3.35, 1),(1, 'Half Remembered Dream', 'Orchestra', 1.11, 1),(1, 'We Built Our Own World', 'Orchestra', 1.55, 1), (1, 'Radical Notion', 'Orchestra', 3.42, 1),(1, 'Paradox', 'Orchestra', 3.25, 1),(2, 'Il Tramonto', 'Orchestra', 1.12, 2),(2, 'L\'estasi dell\'oro', 'Orchestra', 3.22, 2),(2, 'Morte di un soldato', 'Orchestra', 3.05, 2),(2, 'Il Triello', 'Orchestra', 7.14, 2),(3, 'The Simpsons', 'Orchestra', 2.52, 3),(3, 'The war of the Roses', 'Orchestra', 4.32, 3),(4, 'Somewhat Damaged', 'Industrial Metal', 4.31, 4),(4, 'The Day The Whole World Went Away', 'Industrial Metal', 4.33, 4),(4, 'We\'re In This Together', 'Industrial Metal', 7.16, 4),(4, 'Just Like You Imagined', 'Industrial Metal', 3.49, 4),(4, 'The Great Below', 'Industrial Metal', 5.17, 4),(5, 'Hurt', 'Country', 3.38, 5),(5, 'Danny Boy', 'Country', 3.19, 5);
 -- Insert into Cover
-INSERT INTO Cover(`IdImage`, `IdAlbum`, `Path`) VALUES(1, 1, 'img/covers/inception.jpg'), (2, 2, 'img/covers/morricone.jpg)');
+INSERT INTO Cover(`IdImage`, `IdAlbum`, `Path`) VALUES(1, 1, 'img/covers/inception.png'), (2, 2, 'img/covers/morricone.jpg'), (3, 3, 'img/covers/hivlogo.jpg'), (4, 4, 'img/covers/fragile.jpg'), (5, 5, '');
 -- Insert into Collection
 INSERT INTO Collection(`IdUser`) VALUES(1), (2);
 -- Insert into SongCollection
@@ -123,6 +132,10 @@ INSERT INTO SongCollection(`IdSong`, `IdCollection`) VALUES(1, 1), (2, 1), (3, 1
 -- Insert into Playlist
 INSERT INTO Playlist(`IdUser`, `Name`) VALUES(1, 'Score & Soundtracks'),(2, 'Colonne sonore western');
 -- Insert into PlaylistSong
-INSERT INTO PlaylistSong(`IdPlaylist`, `IdSong`) VALUES(1, 1), (1, 2), (1, 3), (1, 4), (2, 4);
+INSERT INTO PlaylistSong(`IdPlaylist`, `IdSong`) VALUES(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (2, 5), (2, 7), (2, 4);
+-- Insert into Queue
+INSERT INTO Queue(`IdUser`, `IdSong`, `TimeStamp`) VALUES(1, 1, '2015-04-28 18:50:03'), (1, 5, '2015-04-28 18:54:06'), (1, 1, '2015-04-28 19:01:43');
+-- Insert into Heard
+INSERT INTO Heard(`IdUser`, `IdSong`, `TimeStamp`) VALUES(1, 1, '2015-04-28 18:50:03'), (1, 5, '2015-04-28 18:54:06'), (1, 1, '2015-04-28 19:01:43');
 
 SET FOREIGN_KEY_CHECKS = 1;

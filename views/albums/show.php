@@ -1,6 +1,19 @@
+<div class="cover"><img alt="" src="<?php echo $album->path(); ?>"></div>
 <h3><?php echo $album->title(); ?> - <?php echo $album->author(); ?></h3>
 <p><?php echo $album->info(); ?></p>
-<?php if(is_array($album->live())) { $location = $album->live();echo "<p>Live at: " . $location['Location']; } ?>
+<p><?php if(is_array($album->live())) { $location = $album->live();echo "Live at " . $location['Location']; } ?></p>
+<h5>Genre: </h5>
+<p>
+<?php
+$genre = [];
+$count = 0;
+foreach ($album->songs() as $value) {
+	$genre[$value->genre()] = $count++;
+}
+foreach ($genre as $key => $g) {
+	echo $key." ";
+}?>
+</p>
 <table class="table">
 <thead>
 	<tr>
