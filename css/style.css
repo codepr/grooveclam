@@ -12,11 +12,11 @@ h1, h2, h3, h4, h5 { color: rgb(15, 89, 182); }
 .content nav { float: left; width: 15%; /* background: linear-gradient(to left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 40%); */ }
 .content nav ul { list-style: none; display: block; padding: 10px 0px 0px 18px; }
 .content nav ul li { margin: 15px 0px; }
-.content nav ul li a {
+.content nav ul li {
 	-webkit-transition: all 0.2s ease-out; transition: all 0.2s ease-out;
 	font-family: alien; color: rgb(15, 89, 182); font-weight: 600;
 }
-.content nav ul li a:hover { padding-left: 15px; }
+.content nav ul li:hover { padding-left: 15px; }
 .content nav ul li img { width: 22px; margin-right: 8px; vertical-align: middle; }
 main { margin-top:10px; float: left; width: 85%; }
 header { height: 15%; background: linear-gradient(to top, rgba(15, 89, 182, 0) -5%, rgba(15, 89, 182, .3) 190%); }
@@ -33,3 +33,4 @@ footer { position: fixed; bottom: 0; }
 .table tr:nth-child(2n+2) { background-color: rgba(15, 89, 182, .2); }
 .cover { float: left; margin-right: 15px;}
 .cover img { box-shadow: 2px 2px 6px #888; width: 300px; height: 300px; border-radius: 5px; }
+.active { padding-left: 15px; }
