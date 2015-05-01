@@ -34,3 +34,4 @@ footer { position: fixed; bottom: 0; }
 .cover { float: left; margin-right: 15px;}
 .cover img { box-shadow: 2px 2px 6px #888; width: 300px; height: 300px; border-radius: 5px; }
 .active { padding-left: 15px; }
+.logout { margin-right: 15px; float: right; }

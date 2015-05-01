@@ -33,6 +33,10 @@
 				</li>
 			</ul>
 		</nav>
+		<?php GrooveSession::getInstance();
+		 if(isset($_SESSION['logged'])) {?>
+			<div class="logout"><a href="/grooveclam/?controller=pages&action=logout">Logout</a></div>
+		<?php } ?>
 		<main>
 		<?php require_once('routes.php') ?>
 		</main>

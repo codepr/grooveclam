@@ -1,6 +1,7 @@
 <?php
 // all actions and requests pass here
 require_once('connection.php');
+require_once('session.php');
 
 if(isset($_GET['controller']) && isset($_GET['action'])) {
 	$controller = $_GET['controller'];

@@ -1,2 +1,6 @@
-<p>Hello there <?php echo $first_name . ' ' . $last_name; ?>!</p>
-<?php echo $_SERVER['REQUEST_URI']; ?>
+<?php // if(!isset($_SESSION['logged'])) {
+// 	include_once('login.php');
+// }
+echo 'Hello there'.$first_name;
+?>
+

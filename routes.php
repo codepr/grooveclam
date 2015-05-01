@@ -4,6 +4,7 @@ function call($controller, $action) {
 	require_once('controllers/' . $controller . '_controller.php');
 	switch($controller) {
 		case 'pages':
+			require_once('models/user.php');
 			$controller = new PagesController();
 	 	break;
 		case 'songs':
@@ -31,7 +32,7 @@ function call($controller, $action) {
 }
 // array containing all action for every controller
 $controllers = array(
-	'pages' => array('home', 'error'),
+	'pages' => array('home', 'error', 'login', 'checkuser', 'logout'),
 	'songs' => array('index', 'show'),
 	'albums' => array('index', 'show'),
 	'playlist' => array('index'),
