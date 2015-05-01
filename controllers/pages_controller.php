@@ -7,8 +7,9 @@ class PagesController {
 		if(!isset($_SESSION['logged'])) {
 			$this->login();
 		} else {
-			$first_name = 'Andrea';
-			$last_name  = 'Baldan';
+			$user = User::find($_SESSION['uid']);
+			$first_name = $user->name();
+			$lasten = Song::lasten();
 			require_once('views/pages/home.php');
 		}
 	}
@@ -25,12 +26,14 @@ class PagesController {
 		$uname = $_POST['uname'];
 		$passw = $_POST['passw'];
 		$user = User::checkuser($uname, $passw);
-		if($user) {
+		if($user != -1) {
 			$session = GrooveSession::getInstance();
 			$session->__set('logged', 1);
+			$session->__set('uid', $user->id());
+			header('Location:/grooveclam/');
+		} else {
+			$this->login();
 		}
-		// $this->home();
-		header('Location:/grooveclam/');
 	}
 	// logout
 	public function logout() {

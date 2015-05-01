@@ -5,6 +5,7 @@ function call($controller, $action) {
 	switch($controller) {
 		case 'pages':
 			require_once('models/user.php');
+			require_once('models/song.php');
 			$controller = new PagesController();
 	 	break;
 		case 'songs':

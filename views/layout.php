@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<?php GrooveSession::getInstance(); ?>
 <html>
 <head>
 <meta charset='utf-8'>
@@ -23,26 +24,25 @@
 					<img src="img/folder-icon.png" alt=""><a href='?controller=albums&action=index'>Albums</a>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=collection/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
-					<img src="img/music-icon.png" alt=""><a href='?controller=collection&action=index&id=1'>Collection</a>
+					<img src="img/music-icon.png" alt=""><a href='?controller=collection&action=index&id=<?php echo $_SESSION['uid']; ?>'>Collection</a>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=playlist/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
-					<img src="img/poweramp-icon.png" alt=""><a href='?controller=playlist&action=index&id=1'>Playlist</a>
+					<img src="img/poweramp-icon.png" alt=""><a href='?controller=playlist&action=index&id=<?php echo $_SESSION['uid']; ?>'>Playlist</a>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=queue/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
-					<img src="img/mic-icon.png" alt=""><a href='?controller=queue&action=index&id=1'>Queue</a>
+					<img src="img/mic-icon.png" alt=""><a href='?controller=queue&action=index&id=<?php echo $_SESSION['uid']; ?>'>Queue</a>
 				</li>
 			</ul>
 		</nav>
-		<?php GrooveSession::getInstance();
-		 if(isset($_SESSION['logged'])) {?>
-			<div class="logout"><a href="/grooveclam/?controller=pages&action=logout">Logout</a></div>
+		<?php if(isset($_SESSION['logged'])) {?>
+			<div class="logout"><button class="exit"><a href="/grooveclam/?controller=pages&action=logout">Logout</a></button></div>
 		<?php } ?>
 		<main>
 		<?php require_once('routes.php') ?>
 		</main>
 	</div>
 	<footer>
-		CodeP&copy; 2015
+		Progetto Basi di dati 2015
 	</footer>
 </body>
 </html>

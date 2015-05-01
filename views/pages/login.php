@@ -1,6 +1,5 @@
-<form action="/grooveclam/?controller=pages&action=checkuser" method="post">
+<form action="/grooveclam/?controller=pages&action=checkuser" method="post" class="loginform">
 	<fieldset>
-		<legend>Login</legend>
 		<label for="username">Username</label>
 		<input type="text" id="uname" name="uname" placeholder="Username">
 		<label for="passw">Password</label>

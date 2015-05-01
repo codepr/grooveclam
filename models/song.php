@@ -75,7 +75,6 @@ class Song {
 		foreach($req->fetchAll() as $song) {
 			$list[] = new Song($song['IdSong'], $song['Title'], $song['Genre'], $song['Duration'], $song['Author'], $song['IdAlbum'], $song['AlbumTitle']);
 		}
-
 		return $list;
 	}
 	// retrieve a single song, by a given id
@@ -86,6 +85,16 @@ class Song {
 		$req->execute(array('id' => $id));
 		$song = $req->fetch();
 		return new Song($song['IdSong'], $song['Title'], $song['Genre'], $song['Duration'], $song['Author'], $song['IdAlbum'], $song['AlbumTitle']);
+	}
+	// retrieve last 10 songs inserted
+	public static function lasten() {
+		$db = Db::getInstance();
+		$req = $db->query('SELECT s.IdSong, s.Title FROM Song s ORDER BY s.IdSong DESC LIMIT 10');
+		$list = array();
+		foreach ($req->fetchAll() as $result) {
+			$list[]	= array('id' => $result['IdSong'], 'Title' => $result['Title']);
+		}
+		return $list;
 	}
 }
 ?>
