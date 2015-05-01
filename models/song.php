@@ -46,6 +46,14 @@ class Song {
 	public function	album() {
 		return $this->album;
 	}
+	// get album cover path
+	public function cover() {
+		$db = Db::getInstance();
+		$req = $db->prepare('SELECT c.Path FROM Cover c INNER JOIN Album a ON(c.IdAlbum = a.IdAlbum) INNER JOIN Song s ON (s.IdAlbum = a.IdAlbum) WHERE a.IdAlbum = :id');
+		$req->execute(array('id' => $this->idalbum()));
+		$p = $req->fetch();
+		return $p['Path'];
+	}
 	// add a song to the database
 	public static function add($song) {
 		$db = Db::getInstance();

@@ -47,6 +47,16 @@ class Album {
 	public function path() {
 		return $this->path;
 	}
+	// return total duration of the album
+	public function totalDuration() {
+		$seconds = 0;
+		foreach ($this->songs() as $song) {
+			$intpart = intval($song->duration());
+			$fltpart = $song->duration() - $intpart;
+			$seconds += ($intpart * 60) + ($fltpart * 100);
+		}
+		return floor($seconds / 60).":".($seconds % 60);
+	}
 	// add a new album to the database
 	public static function add($album) {
 		$db = Db::getInstance();

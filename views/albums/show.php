@@ -16,6 +16,8 @@ foreach ($genre as $key => $g) {
 </p>
 <h5>Tracks</h5>
 <p><?php echo count($album->songs()); ?></p>
+<h5>Total duration</h5>
+<p><?php echo $album->totalDuration(); ?> minutes</p>
 <table class="table">
 <thead>
 	<tr>

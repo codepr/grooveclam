@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `Song` (
 CREATE TABLE IF NOT EXISTS `Cover` (
 	`IdImage` INT(11) NOT NULL AUTO_INCREMENT,
 	`IdAlbum` INT(11) NOT NULL,
-	`Path` VARCHAR (40) NOT NULL,
+	`Path` VARCHAR (40) NOT NULL DEFAULT "img/covers/nocover.jpg",
 	PRIMARY KEY(`IdImage`),
 	FOREIGN KEY(`IdAlbum`) REFERENCES Album(`IdAlbum`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -124,7 +124,7 @@ VALUES('Inception Suite', 'Hans Zimmer', 'Inception movie soundtack, composed by
 -- Insert into Song
 INSERT INTO Song(`IdAlbum`, `Title`, `Genre`, `Duration`, `IdImage`) VALUES(1, 'Mind Heist', 'Orchestra', 3.23, 1), (1, 'Dream is collapsing', 'Orchestra', 4.41, 1), (1, 'Time', 'Orchestra', 3.35, 1),(1, 'Half Remembered Dream', 'Orchestra', 1.11, 1),(1, 'We Built Our Own World', 'Orchestra', 1.55, 1), (1, 'Radical Notion', 'Orchestra', 3.42, 1),(1, 'Paradox', 'Orchestra', 3.25, 1),(2, 'Il Tramonto', 'Orchestra', 1.12, 2),(2, 'L\'estasi dell\'oro', 'Orchestra', 3.22, 2),(2, 'Morte di un soldato', 'Orchestra', 3.05, 2),(2, 'Il Triello', 'Orchestra', 7.14, 2),(3, 'The Simpsons', 'Orchestra', 2.52, 3),(3, 'The war of the Roses', 'Orchestra', 4.32, 3),(4, 'Somewhat Damaged', 'Industrial Metal', 4.31, 4),(4, 'The Day The Whole World Went Away', 'Industrial Metal', 4.33, 4),(4, 'We\'re In This Together', 'Industrial Metal', 7.16, 4),(4, 'Just Like You Imagined', 'Industrial Metal', 3.49, 4),(4, 'The Great Below', 'Industrial Metal', 5.17, 4),(5, 'Hurt', 'Country', 3.38, 5),(5, 'Danny Boy', 'Country', 3.19, 5);
 -- Insert into Cover
-INSERT INTO Cover(`IdImage`, `IdAlbum`, `Path`) VALUES(1, 1, 'img/covers/inception.png'), (2, 2, 'img/covers/morricone.jpg'), (3, 3, 'img/covers/hivlogo.jpg'), (4, 4, 'img/covers/fragile.jpg'), (5, 5, '');
+INSERT INTO Cover(`IdImage`, `IdAlbum`, `Path`) VALUES(1, 1, 'img/covers/inception.png'), (2, 2, 'img/covers/morricone.jpg'), (3, 3, 'img/covers/hivlogo.jpg'), (4, 4, 'img/covers/fragile.jpg'), (5, 5, 'img/covers/nocover.jpg');
 -- Insert into Collection
 INSERT INTO Collection(`IdUser`) VALUES(1), (2);
 -- Insert into SongCollection

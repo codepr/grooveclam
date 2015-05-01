@@ -1,5 +1,10 @@
+<div class="cover"><img alt="" src="<?php echo $song->cover(); ?>"></div>
 <h3><?php echo $song->title(); ?></h3>
-<p>Author: <?php echo $song->author(); ?></p>
-<p>Genre: <?php echo $song->genre(); ?></p>
-<p>Duration: <?php echo $song->duration(); ?> min</p>
-<p>Album: <a href="?controller=albums&action=show&id=<?php echo $song->idalbum(); ?>"><?php echo $song->album(); ?></a></p>
+<h5>Author</h5>
+<?php echo $song->author(); ?>
+<h5>Genre</h5>
+<?php echo $song->genre(); ?>
+<h5>Duration</h5>
+<?php echo $song->duration(); ?> min
+<h5>Album</h5>
+<a href="?controller=albums&action=show&id=<?php echo $song->idalbum(); ?>"><?php echo $song->album(); ?></a>
