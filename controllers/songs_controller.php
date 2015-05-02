@@ -2,6 +2,10 @@
 class SongsController {
 	public function index() {
 		$songs = Song::all();
+		$got = array();
+		if(isset($_SESSION['logged'])) {
+			$got = Song::got($_SESSION['uid']);
+		}
 		require_once('views/songs/index.php');
 	}
 	public function show() {

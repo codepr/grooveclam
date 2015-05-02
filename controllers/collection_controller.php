@@ -8,8 +8,22 @@ class CollectionController {
 		if(!isset($_SESSION['logged'])) {
 			return call('pages', 'login');
 		}
-		$collection = Collection::find($_GET['id']);
+		$collection = Collection::findbyid($_GET['id']);
 		require_once('views/collection/index.php');
+	}
+	public function addsong() {
+		if(!isset($_GET['id']) || !isset($_GET['idu'])) {
+			return call('pages', 'error');
+		}
+		Collection::addsong($_GET['id'], $_GET['idu']);
+		header('Location:/grooveclam/?controller=songs&action=index');
+	}
+	public function remove() {
+		if(!isset($_GET['id']) || !isset($_GET['idc'])) {
+			return call('pages', 'error');
+		}
+		Collection::remove($_GET['id'], $_GET['idc']);
+		header('Location:/grooveclam/?controller=collection&action=index&id='.$_GET['idc'].'');
 	}
 }
 ?>

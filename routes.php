@@ -37,7 +37,7 @@ $controllers = array(
 	'songs' => array('index', 'show'),
 	'albums' => array('index', 'show'),
 	'playlist' => array('index'),
-	'collection' => array('index'),
+	'collection' => array('index', 'addsong', 'remove'),
 	'queue' => array('index')
 );
 // $controllers['pages'] = array('home', 'error');

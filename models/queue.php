@@ -10,7 +10,7 @@ class Queue {
 	public function queue() {
 		return $this->queue;
 	}
-
+	// find a queue by its id
 	public static function find($id) {
 		$list = array();
 		$tstamps = array();

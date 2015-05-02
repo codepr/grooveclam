@@ -96,5 +96,16 @@ class Song {
 		}
 		return $list;
 	}
+	// retrieve all songs owned by a user by given id
+	public static function got($id) {
+		$list = array();
+		$db = Db::getInstance();
+		$req = $db->prepare('SELECT s.IdSong FROM Song s INNER JOIN SongCollection sc ON(s.IdSong = sc.IdSong) INNER JOIN Collection c ON(sc.IdCollection = c.IdCollection) INNER JOIN User u ON(c.IdUser = u.IdUser) WHERE u.IdUser = :id');
+		$req->execute(array('id' => $id));
+		foreach ($req->fetchAll() as $got) {
+			$list[] = $got['IdSong'];
+		}
+		return $list;
+	}
 }
 ?>
