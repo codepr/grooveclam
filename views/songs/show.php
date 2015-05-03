@@ -8,3 +8,8 @@
 <?php echo $song->duration(); ?> min
 <h5>Album</h5>
 <a href="?controller=albums&action=show&id=<?php echo $song->idalbum(); ?>"><?php echo $song->album(); ?></a>
+<?php if(isset($_SESSION['logged'])) {
+	if((!in_array($song->id(), $got))) {
+		echo "<p><button class='exit add'><a href='?controller=collection&action=addsong&id=".$song->id()."&idu=".$_SESSION['uid']."'>Add to collection</a></button></p>";
+	}
+} ?>

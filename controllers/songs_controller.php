@@ -12,6 +12,10 @@ class SongsController {
 		if(!isset($_GET['id'])) {
 			return call('pages', 'error');
 		}
+		$got = array();
+		if(isset($_SESSION['logged'])) {
+			$got = Song::got($_SESSION['uid']);
+		}
 		$song = Song::find($_GET['id']);
 		require_once('views/songs/show.php');
 	}

@@ -10,6 +10,7 @@ class PagesController {
 			$user = User::find($_SESSION['uid']);
 			$first_name = $user->name();
 			$lasten = Song::lasten();
+			$lastplay = Song::lastweekplay();
 			require_once('views/pages/home.php');
 		}
 	}

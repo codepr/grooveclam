@@ -107,5 +107,15 @@ class Song {
 		}
 		return $list;
 	}
+	// retrieve first 10 songs played during last week ordered by play time
+	public static function lastweekplay() {
+		$list = array();
+		$db = Db::getInstance();
+		$req = $db->query('SELECT s.IdSong, s.Title, COUNT(h.IdSong) AS played FROM Song s INNER JOIN Heard h ON(s.IdSong = h.IdSong) WHERE h.Timestamp BETWEEN ADDDATE(CURDATE(), - 7) AND CURDATE() GROUP BY h.IdSong ORDER BY played DESC LIMIT 10');
+		foreach ($req->fetchAll() as $result) {
+			$list[] = array('id' => $result['IdSong'], 'Title' => $result['Title'], 'Count' => $result['played']);
+		}
+		return $list;
+	}
 }
 ?>
