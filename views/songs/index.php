@@ -6,7 +6,7 @@
 		<th>Genre</th>
 		<th>Duration (min)</th>
 		<th>Album</th>
-		<?php if(isset($_SESSION['logged'])) { echo "<th></th>"; } ?>
+		<?php if(isset($_SESSION['logged'])) { echo "<th></th><th></th>"; } ?>
 	</tr>
 </thead>
 <tbody>
@@ -18,8 +18,11 @@
 		<td><a href='?controller=albums&action=show&id=<?php echo $song->idalbum(); ?>'><?php echo $song->album(); ?></a></td>
 		<?php if(isset($_SESSION['logged'])) {
 			if(in_array($song->id(), $got)) {
-				echo "<td style='color: rgb(15, 89, 182);'>&#10004</td>";
-			} else { echo "<td><a href='?controller=collection&action=addsong&id=".$song->id()."&idu=".$_SESSION['uid']."'>&#10010</a></td>"; }
+				echo "<td style='color: rgb(15, 89, 182);'>&#10004</td>\n";
+			} else { echo "<td><a href='?controller=collection&action=addsong&id=".$song->id()."&idu=".$_SESSION['uid']."'>&#10010</a></td>\n"; }
+		?>
+		<td><a href='?controller=queue&action=addsong&id=<?php echo $song->id(); ?>'>&#10148</a></td>
+		<?php
 		} ?>
 	</tr>
 <?php } ?>
