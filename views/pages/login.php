@@ -1,4 +1,4 @@
-<form action="/grooveclam/?controller=pages&action=checkuser" method="post" class="loginform">
+<form action="/basidati/~abaldan/?controller=pages&action=checkuser" method="post" class="loginform">
 	<fieldset>
 		<label for="username">Username</label>
 		<input type="text" id="uname" name="uname" placeholder="Username">

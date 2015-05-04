@@ -16,14 +16,14 @@ class CollectionController {
 			return call('pages', 'error');
 		}
 		Collection::addsong($_GET['id'], $_GET['idu']);
-		header('Location:/grooveclam/?controller=songs&action=index');
+		header('Location:/basidati/~abaldan/?controller=songs&action=index');
 	}
 	public function remove() {
 		if(!isset($_GET['id']) || !isset($_GET['idc'])) {
 			return call('pages', 'error');
 		}
 		Collection::remove($_GET['id'], $_GET['idc']);
-		header('Location:/grooveclam/?controller=collection&action=index&id='.$_GET['idc'].'');
+		header('Location:/basidati/~abaldan/?controller=collection&action=index&id='.$_GET['idc'].'');
 	}
 }
 ?>

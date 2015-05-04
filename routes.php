@@ -40,13 +40,6 @@ $controllers = array(
 	'collection' => array('index', 'addsong', 'remove'),
 	'queue' => array('index', 'addsong')
 );
-// $controllers['pages'] = array('home', 'error');
-// $controllers['songs'] = array('index', 'show');
-// $controllers['albums'] = array('index', 'show');
-// $controllers['playlist'][0] = 'index';
-// $controllers['collection'][0] = 'index';
-// $controllers['queue'][0] = 'index';
-
 if(array_key_exists($controller, $controllers)) {
 	if(in_array($action, $controllers[$controller])) {
 		call($controller, $action);

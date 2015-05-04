@@ -13,7 +13,7 @@ echo '<h3>Hello there '.$first_name.'</h3>';
 	<tbody>
 <?php foreach ($lasten as $title) { ?>
 	<tr>
-		<td><a href="/grooveclam/?controller=songs&action=show&id=<?php echo $title['id']; ?>"><?php echo $title['Title']; ?></a></td>
+		<td><a href="/basidati/~abaldan/?controller=songs&action=show&id=<?php echo $title['id']; ?>"><?php echo $title['Title']; ?></a></td>
 	</tr>
 <?php }
 ?>
@@ -31,7 +31,7 @@ echo '<h3>Hello there '.$first_name.'</h3>';
 	<tbody>
 <?php foreach ($lastplay as $title) { ?>
 	<tr>
-		<td><a href="/grooveclam/?controller=songs&action=show&id=<?php echo $title['id']; ?>"><?php echo $title['Title']; ?></a></td>
+		<td><a href="/basidati/~abaldan/?controller=songs&action=show&id=<?php echo $title['id']; ?>"><?php echo $title['Title']; ?></a></td>
 		<td><?php echo $title['Count']; ?></td>
 	</tr>
 <?php }
@@ -52,8 +52,8 @@ echo '<h3>Hello there '.$first_name.'</h3>';
 <?php foreach ($lastfellowsplay as $title) { ?>
 	<tr>
 		<td><?php echo $title['Username']; ?></td>
-		<td><a href="/grooveclam/?controller=songs&action=show&id=<?php echo $title['id']; ?>"><?php echo $title['Title']; ?></a></td>
-		<td><a href="/grooveclam/?controller=albums&action=show&id=<?php echo $title['IdAlbum']; ?>"><?php echo $title['AlbumTitle']; ?></a></td>
+		<td><a href="/basidati/~abaldan/?controller=songs&action=show&id=<?php echo $title['id']; ?>"><?php echo $title['Title']; ?></a></td>
+		<td><a href="/basidati/~abaldan/?controller=albums&action=show&id=<?php echo $title['IdAlbum']; ?>"><?php echo $title['AlbumTitle']; ?></a></td>
 	</tr>
 <?php }
 ?>

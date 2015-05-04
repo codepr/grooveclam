@@ -32,7 +32,7 @@ class PagesController {
 			$session = GrooveSession::getInstance();
 			$session->__set('logged', 1);
 			$session->__set('uid', $user->id());
-			header('Location:/grooveclam/');
+			header('Location:/basidati/~abaldan/');
 		} else {
 			$this->login();
 		}
@@ -42,7 +42,7 @@ class PagesController {
 		$session = GrooveSession::getInstance();
 		$session->destroy();
 		// $this->home();
-		header('Location:/grooveclam/');
+		header('Location:/basidati/~abaldan/');
 	}
 }
 ?>

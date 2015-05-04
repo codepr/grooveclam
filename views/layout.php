@@ -35,7 +35,7 @@
 			</ul>
 		</nav>
 		<?php if(isset($_SESSION['logged'])) {?>
-			<div class="logout"><button class="exit"><a href="/grooveclam/?controller=pages&action=logout">Logout &#10144</a></button></div>
+			<div class="logout"><button class="exit"><a href="/basidati/~abaldan/?controller=pages&action=logout">Logout &#10144</a></button></div>
 		<?php } ?>
 		<main>
 		<?php require_once('routes.php') ?>

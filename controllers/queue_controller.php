@@ -18,7 +18,7 @@ class QueueController {
 		} else {
 			if(isset($_SESSION['logged'])) {
 				Queue::addsong($_SESSION['uid'], $_GET['id']);
-				header('Location:/grooveclam/?controller=queue&action=index&id='.$_SESSION['uid'].'');
+				header('Location:/basidati/~abaldan/?controller=queue&action=index&id='.$_SESSION['uid'].'');
 			} else {
 				return call('pages', 'login');
 			}
