@@ -11,6 +11,7 @@ class PagesController {
 			$first_name = $user->name();
 			$lasten = Song::lasten();
 			$lastplay = Song::lastweekplay();
+			$lastfellowsplay = Song::lastfellowsplay($_SESSION['uid']);
 			require_once('views/pages/home.php');
 		}
 	}

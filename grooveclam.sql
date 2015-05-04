@@ -126,7 +126,9 @@ CREATE TABLE IF NOT EXISTS `Heard` (
 -- INSERT POPULATION
 -- Insert into User
 INSERT INTO User(`Name`, `Surname`, `Email`, `Administrator`, `Username`, `Password`)
-VALUES('Andrea', 'Baldan', 'a.g.baldan@gmail.com', 0, 'codep', 'ciao'), ('Federico', 'Angi', 'angiracing@gmail.com', 0, 'keepcalm', 'calm');
+VALUES('Andrea', 'Baldan', 'a.g.baldan@gmail.com', 0, 'codep', 'ciao'),
+	('Federico', 'Angi', 'angiracing@gmail.com', 0, 'keepcalm', 'calm'),
+	('Marco', 'Rossi', 'rossi@gmail.com', 0, 'rossi', 'marco');
 -- Insert into Subscrition
 INSERT INTO Subscription(`IdUser`, `Type`) VALUES(1, 'Free'), (2, 'Free');
 -- Insert into Album
@@ -147,6 +149,7 @@ INSERT INTO PlaylistSong(`IdPlaylist`, `IdSong`) VALUES(1, 1), (1, 2), (1, 3), (
 -- Insert into Queue
 INSERT INTO Queue(`IdUser`, `IdSong`, `TimeStamp`) VALUES(1, 1, '2015-04-28 18:50:03'), (1, 5, '2015-04-28 18:54:06'), (1, 1, '2015-04-28 19:01:43');
 -- Insert into Heard
-INSERT INTO Heard(`IdUser`, `IdSong`, `TimeStamp`) VALUES(1, 1, '2015-04-28 18:50:03'), (1, 5, '2015-04-28 18:54:06'), (1, 1, '2015-04-28 19:01:43');
-
+INSERT INTO Heard(`IdUser`, `IdSong`, `TimeStamp`) VALUES(1, 1, '2015-04-28 18:50:03'), (1, 5, '2015-04-28 18:54:06'), (1, 1, '2015-04-28 19:01:43'), (3, 7, '2015-04-29 18:51:02'), (3, 11, '2015-04-29 17:23:15'), (2, 9, '2015-04-30 21:12:52'), (2, 1, '2015-05-02 22:21:22');
+-- Insert into Follow
+INSERT INTO Follow(`IdUser`, `IdFellow`) VALUES(1, 2), (1, 3);
 SET FOREIGN_KEY_CHECKS = 1;

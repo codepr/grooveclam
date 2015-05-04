@@ -11,5 +11,7 @@
 <?php if(isset($_SESSION['logged'])) {
 	if((!in_array($song->id(), $got))) {
 		echo "<p><button class='exit add'><a href='?controller=collection&action=addsong&id=".$song->id()."&idu=".$_SESSION['uid']."'>Add to collection</a></button></p>";
+	} else {
+		echo "<p><button class='exit add'><a href='?controller=collection&action=remove&id=".$song->id()."&idu=".$_SESSION['uid']."'>Remove from collection<a></button></p>";
 	}
 } ?>

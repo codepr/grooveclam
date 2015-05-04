@@ -117,5 +117,27 @@ class Song {
 		}
 		return $list;
 	}
+	//retrieve last 10 songs played by fellow ordered by timestamp
+	public static function lastfellowsplay($id) {
+		$list = array();
+		$id = intval($id);
+		$db = Db::getInstance();
+		$query = 'SELECT s.IdSong, s.Title, a.IdAlbum, a.Title AS AlbumTitle, u.Username FROM Song s INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum) '.
+			'INNER JOIN Heard h ON(s.IdSong = h.IdSong) INNER JOIN Follow f ON(h.IdUser = f.IdFellow) INNER JOIN User u ON(u.IdUser = f.IdFellow) '.
+			'WHERE h.Timestamp BETWEEN ADDDATE(CURDATE(), -7) AND CURDATE() AND u.IdUser IN '.
+			'(SELECT u.IdUser FROM User u INNER JOIN Follow f ON(u.IdUser = f.IdFellow) WHERE f.IdUser = :id) ORDER BY h.Timestamp DESC LIMIT 10';
+		$req = $db->prepare($query);
+		$req->execute(array('id' => $id));
+		foreach ($req->fetchAll() as $result) {
+			$list[] = array(
+				'id' => $result['IdSong'],
+				'Title' => $result['Title'],
+				'AlbumTitle' => $result['AlbumTitle'],
+				'Username' => $result['Username'],
+				'IdAlbum' => $result['IdAlbum']
+			);
+		}
+		return $list;
+	}
 }
 ?>

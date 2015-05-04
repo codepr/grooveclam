@@ -1,18 +1,25 @@
 <?php
 require_once('song.php');
 class Playlist {
+
 	private $id;
 	private $name;
+	private $owner;
 	private $songs;
 
-	public function __construct($id, $name, $songs) {
+	public function __construct($id, $name, $owner, $songs) {
 		$this->id = $id;
 		$this->name = $name;
+		$this->owner = $owner;
 		$this->songs = $songs;
 	}
 
 	public function name() {
 		return $this->name;
+	}
+
+	public function owner() {
+		return $this->owner;
 	}
 
 	public function songs() {
@@ -22,10 +29,9 @@ class Playlist {
 	public static function all() {
 		$list = array();
 		$db = Db::getInstance();
-		$req = $db->query('SELECT * FROM PlaylistSong');
-
+		$req = $db->query('SELECT ps.*, u.IdUser, u.Username FROM PlaylistSong ps INNER JOIN Playlist p ON(ps.IdPlaylist = p.IdPlaylist) INNER JOIN User u ON(p.IdUser = u.IdUser)');
 		foreach($req->fetchAll() as $playlist) {
-			$list[] = new Playlist($playlist['IdPlaylist'], $playlist['Name'], array());
+			$list[] = new Playlist($playlist['IdPlaylist'], $playlist['Name'], array('IdUser' => $playlist['IdUser'], 'Username' => $playlist['Username']), array());
 		}
 
 		return $list;
@@ -41,7 +47,7 @@ class Playlist {
 		foreach($req->fetchAll() as $song) {
 			$songlist[] = new Song($song['IdSong'], $song['Title'], $song['Genre'], $song['Duration'], $song['Author'], $song['IdAlbum'], $song['AlbumTitle']);
 		}
-		return new Playlist($song['IdPlaylist'], $song['Name'], $songlist);
+		return new Playlist($song['IdPlaylist'], $song['Name'], array(), $songlist);
 	}
 }
 ?>
