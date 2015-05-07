@@ -48,5 +48,36 @@ class User {
 		$u = $req->fetch();
 		return new User($u['IdUser'], $u['Name'], $u['Email'], $u['Username'], $u['Password']);
 	}
+	// retrieve fellow list for a user
+	public function fellows() {
+		$list = array();
+		$db = Db::getInstance();
+		$req = $db->prepare('SELECT IdFellow FROM Follow WHERE IdUser = :id');
+		$req->execute(array('id' => $this->id()));
+		foreach ($req->fetchAll() as $result) {
+			$list[] = $result['IdFellow'];
+		}
+		return $list;
+	}
+	// insert new user
+	public static function insert($data) {
+		$name = '';
+		$surname = '';
+		if(array_key_exists('Name', $data)) {
+			$name = $data['Name'];
+		}
+		if(array_key_exists('Surname', $data)) {
+			$surname = $data['Surname'];
+		}
+		$db = Db::getInstance();
+		$req = $db->prepare('INSERT INTO User (Name, Surname, Email, Username, Password, Administrator) VALUES(:name, :surname, :email, :username, :password, 0)');
+		$req->execute(array(
+			'name' => $data['Name'],
+			'surname' => $data['Surname'],
+			'email' => $data['Email'],
+			'username' => $data['Username'],
+			'password' => $data['Password']
+		));
+	}
 }
 ?>

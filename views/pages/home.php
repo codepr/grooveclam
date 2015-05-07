@@ -2,11 +2,12 @@
 echo '<h3>Hello there '.$first_name.'</h3>';
 ?>
 <br />
-<h4>Last 10 songs inserted by community</h4>
-<table class="table floated" style="width:15%;">
+<table class="table floated" style="width:30%;">
+	<caption>New entries</caption>
 	<thead>
 	<tr>
 		<!-- <th>Song</th> -->
+		<th></th>
 		<th></th>
 	</tr>
 	</thead>
@@ -14,6 +15,7 @@ echo '<h3>Hello there '.$first_name.'</h3>';
 <?php foreach ($lasten as $title) { ?>
 	<tr>
 		<td><a href="/basidati/~abaldan/?controller=songs&action=show&id=<?php echo $title['id']; ?>"><?php echo $title['Title']; ?></a></td>
+		<td><?php echo $title['Genre']; ?></td>
 	</tr>
 <?php }
 ?>
@@ -21,6 +23,7 @@ echo '<h3>Hello there '.$first_name.'</h3>';
 </table>
 <!-- table last ten played -->
 <table class="table floated" style="width:15%;">
+	<caption>Top ten played songs</caption>
 	<thead>
 	<tr>
 		<!-- <th>Song</th> -->
@@ -39,7 +42,8 @@ echo '<h3>Hello there '.$first_name.'</h3>';
 	</tbody>
 </table>
 <!-- table last 10 played by followers -->
-<table class="table floated" style="width:30%;">
+<table class="table floated" style="width:45%;">
+	<caption>Last played by fellows</caption>
 	<thead>
 	<tr>
 		<!-- <th>Song</th> -->
@@ -51,7 +55,7 @@ echo '<h3>Hello there '.$first_name.'</h3>';
 	<tbody>
 <?php foreach ($lastfellowsplay as $title) { ?>
 	<tr>
-		<td><?php echo $title['Username']; ?></td>
+		<td><a href="/basidati/~abaldan/?controller=user&action=show&id=<?php echo $title['IdUser']; ?>"><?php echo $title['Username']; ?></a></td>
 		<td><a href="/basidati/~abaldan/?controller=songs&action=show&id=<?php echo $title['id']; ?>"><?php echo $title['Title']; ?></a></td>
 		<td><a href="/basidati/~abaldan/?controller=albums&action=show&id=<?php echo $title['IdAlbum']; ?>"><?php echo $title['AlbumTitle']; ?></a></td>
 	</tr>

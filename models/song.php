@@ -89,10 +89,10 @@ class Song {
 	// retrieve last 10 songs inserted
 	public static function lasten() {
 		$db = Db::getInstance();
-		$req = $db->query('SELECT s.IdSong, s.Title FROM Song s ORDER BY s.IdSong DESC LIMIT 10');
+		$req = $db->query('SELECT s.IdSong, s.Title, s.Genre FROM Song s ORDER BY s.IdSong DESC LIMIT 10');
 		$list = array();
 		foreach ($req->fetchAll() as $result) {
-			$list[]	= array('id' => $result['IdSong'], 'Title' => $result['Title']);
+			$list[]	= array('id' => $result['IdSong'], 'Title' => $result['Title'], 'Genre' => $result['Genre']);
 		}
 		return $list;
 	}
@@ -122,7 +122,7 @@ class Song {
 		$list = array();
 		$id = intval($id);
 		$db = Db::getInstance();
-		$query = 'SELECT s.IdSong, s.Title, a.IdAlbum, a.Title AS AlbumTitle, u.Username FROM Song s INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum) '.
+		$query = 'SELECT s.IdSong, s.Title, a.IdAlbum, a.Title AS AlbumTitle, u.Username, u.IdUser FROM Song s INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum) '.
 			'INNER JOIN Heard h ON(s.IdSong = h.IdSong) INNER JOIN Follow f ON(h.IdUser = f.IdFellow) INNER JOIN User u ON(u.IdUser = f.IdFellow) '.
 			'WHERE h.Timestamp BETWEEN ADDDATE(CURDATE(), -7) AND CURDATE() AND u.IdUser IN '.
 			'(SELECT u.IdUser FROM User u INNER JOIN Follow f ON(u.IdUser = f.IdFellow) WHERE f.IdUser = :id) ORDER BY h.Timestamp DESC LIMIT 10';
@@ -134,6 +134,7 @@ class Song {
 				'Title' => $result['Title'],
 				'AlbumTitle' => $result['AlbumTitle'],
 				'Username' => $result['Username'],
+				'IdUser' => $result['IdUser'],
 				'IdAlbum' => $result['IdAlbum']
 			);
 		}

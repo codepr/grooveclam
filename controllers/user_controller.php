@@ -6,6 +6,7 @@ class UserController {
 		} else {
 			$id = intval($_GET['id']);
 			$user = User::find($id);
+			$fellows = $user->fellows();
 			require_once('views/user/show.php');
 		}
 	}

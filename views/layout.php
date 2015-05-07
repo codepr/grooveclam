@@ -14,7 +14,7 @@
 	<div class="content">
 		<nav>
 			<ul>
-				<li <?php if($_SERVER['REQUEST_URI'] == '/basidati/~abaldan') { echo 'class="active"'; }?>>
+				<li <?php if($_SERVER['REQUEST_URI'] == '/basidati/~abaldan/') { echo 'class="active"'; }?>>
 					<img src="img/home.png" alt=""><a href='/basidati/~abaldan'>Home</a>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=songs/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>

@@ -37,7 +37,7 @@ function call($controller, $action) {
 }
 // array containing all action for every controller
 $controllers = array(
-	'pages' => array('home', 'error', 'login', 'checkuser', 'logout'),
+	'pages' => array('home', 'error', 'login', 'checkuser', 'logout', 'registration'),
 	'songs' => array('index', 'show'),
 	'albums' => array('index', 'show'),
 	'playlist' => array('index', 'show'),

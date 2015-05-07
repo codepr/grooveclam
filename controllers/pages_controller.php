@@ -44,5 +44,19 @@ class PagesController {
 		// $this->home();
 		header('Location:/basidati/~abaldan/');
 	}
+	// registration form
+	public function registration() {
+		require_once('views/pages/register.php');
+	}
+	// registration
+	public function register() {
+		if(!isset($_POST['Username']) || !isset($_POST['Password']) ||!isset($_POST['Email'])) {
+			return call('pages', 'error');
+		} else {
+			$postdata = $_POST;
+			User::insert($postdata);
+			header('Location:/basidati/~abaldan/');
+		}
+	}
 }
 ?>

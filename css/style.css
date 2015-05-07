@@ -40,11 +40,14 @@ footer { position: fixed; bottom: 5px; right: 5px; color: rgb(15, 89, 182); font
 .loginform { width: 30%; color: rgb(15, 89, 182); }
 .loginform fieldset { border-radius: 8px; border-color: rgb(15, 89, 182); border-width: 0px;}
 .loginform fieldset input[type="text"],
+.loginform fieldset input[type="email"],
 .loginform fieldset input[type="password"] {
 	border-radius: 3px; display: block; padding: 5px;
 	margin: 8px 0px; outline: none; border: 1px solid rgb(15, 89, 182);
 }
-.loginform fieldset input[type="submit"] {
+.loginform fieldset input[type="submit"], .regbutton {
 	border-radius: 3px; border: 1px solid rgb(15, 89, 182); background-color: rgb(15, 89, 182);
 	padding: 5px; outline: none; margin: 8px 0px; color: #ffffff; width: 85px;
 }
+.regbutton a { color: #ffffff; }
+caption { color: rgb(15, 89, 182); font-weight: 700; }
