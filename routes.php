@@ -28,6 +28,10 @@ function call($controller, $action) {
 			require_once('models/queue.php');
 			$controller = new QueueController();
 		break;
+		case 'user':
+			require_once('models/user.php');
+			$controller = new UserController();
+		break;
 	}
 	$controller->{$action}();
 }
@@ -36,9 +40,10 @@ $controllers = array(
 	'pages' => array('home', 'error', 'login', 'checkuser', 'logout'),
 	'songs' => array('index', 'show'),
 	'albums' => array('index', 'show'),
-	'playlist' => array('index'),
+	'playlist' => array('index', 'show'),
 	'collection' => array('index', 'addsong', 'remove'),
-	'queue' => array('index', 'addsong')
+	'queue' => array('index', 'addsong'),
+	'user' => array('show')
 );
 if(array_key_exists($controller, $controllers)) {
 	if(in_array($action, $controllers[$controller])) {

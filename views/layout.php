@@ -27,7 +27,7 @@
 					<img src="img/music-icon.png" alt=""><a href='?controller=collection&action=index&id=<?php echo $_SESSION['uid']; ?>'>Collection</a>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=playlist/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
-					<img src="img/poweramp-icon.png" alt=""><a href='?controller=playlist&action=index&id=<?php echo $_SESSION['uid']; ?>'>Playlist</a>
+					<img src="img/poweramp-icon.png" alt=""><a href='?controller=playlist&action=index'>Playlist</a>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=queue/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
 					<img src="img/mic-icon.png" alt=""><a href='?controller=queue&action=index&id=<?php echo $_SESSION['uid']; ?>'>Queue</a>

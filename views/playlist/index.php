@@ -1,20 +1,20 @@
-<h3><?php echo $playlist->name(); ?></h3>
+<h3>Playlists</h3>
 <table class="table">
 <thead>
 	<tr>
-		<th>Title</th>
-		<th>Genre</th>
+		<th>Name</th>
+		<th>Author</th>
+		<th># Tracks</th>
 		<th>Duration (min)</th>
-		<th>Album</th>
 	</tr>
 </thead>
 <tbody>
-<?php foreach($playlist->songs() as $song) { ?>
+<?php foreach($playlists as $playlist) { ?>
 	<tr>
-		<td><a href='?controller=songs&action=show&id=<?php echo $song->id(); ?>'><?php echo $song->title(); ?></a></td>
-		<td><?php echo $song->genre(); ?></td>
-		<td><?php echo $song->duration(); ?></td>
-		<td><a href='?controller=albums&action=show&id=<?php echo $song->idalbum(); ?>'><?php echo $song->album(); ?></a></td>
+		<td><a href='?controller=playlist&action=show&id=<?php echo $playlist->id(); ?>'><?php echo $playlist->name(); ?></a></td>
+		<td><?php $owner = $playlist->owner(); echo $owner['Username']; ?></td>
+		<td><?php $stats = $playlist->stats($playlist->id()); echo $stats['count']; ?></td>
+		<td><?php echo $stats['duration']; ?></td>
 	</tr>
 <?php } ?>
 </tbody>

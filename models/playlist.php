@@ -14,6 +14,10 @@ class Playlist {
 		$this->songs = $songs;
 	}
 
+	public function id() {
+		return $this->id;
+	}
+
 	public function name() {
 		return $this->name;
 	}
@@ -25,11 +29,30 @@ class Playlist {
 	public function songs() {
 		return $this->songs;
 	}
+	// retrieve number of songs and total duration of a given playlist
+	public function stats($id) {
+		$stats = array();
+		$dur = 0;
+		$seconds = 0;
+		$id = intval($id);
+		$db = Db::getInstance();
+		$req = $db->prepare('SELECT s.Duration FROM Song s INNER JOIN PlaylistSong p ON(s.IdSong = p.IdSong) WHERE p.IdPlaylist = :id');
+		$req->execute(array('id' => $id));
+		$res = $req->fetchAll();
+		foreach ($res as $duration) {
+			$intpart = intval($duration['Duration']);
+			$fltpart = $duration['Duration'] - $intpart;
+			$seconds += ($intpart * 60) + ($fltpart * 100);
+			$dur += $seconds;
+		}
+		$dur = floor($dur / 60).":".($dur % 60);
+		return array('count' => count($res), 'duration' => $dur);
+	}
 	// list all playlists, for administrator users
 	public static function all() {
 		$list = array();
 		$db = Db::getInstance();
-		$req = $db->query('SELECT ps.*, u.IdUser, u.Username FROM PlaylistSong ps INNER JOIN Playlist p ON(ps.IdPlaylist = p.IdPlaylist) INNER JOIN User u ON(p.IdUser = u.IdUser)');
+		$req = $db->query('SELECT p.*, u.Username FROM Playlist p INNER JOIN User u ON(p.IdUser = u.IdUser)');
 		foreach($req->fetchAll() as $playlist) {
 			$list[] = new Playlist($playlist['IdPlaylist'], $playlist['Name'], array('IdUser' => $playlist['IdUser'], 'Username' => $playlist['Username']), array());
 		}

@@ -24,11 +24,11 @@ class User {
 	}
 
 	public function email() {
-		return $this->email();
+		return $this->email;
 	}
 
 	public function username() {
-		return $this->username();
+		return $this->username;
 	}
 	// check if the user exists and return it by given credentials
 	public static function checkuser($uname, $passw) {
