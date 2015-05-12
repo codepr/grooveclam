@@ -1,4 +1,11 @@
-<h3>Album list:</h3>
+<h3>Album list</h3>
+<?php if(isset($_SESSION['logged'])) { ?>
+    <div class="addstuff">
+        <div class="addstuff-circle">
+            <a class="addstuff" href="?controller=albums&action=add">&#10133</a>
+        </div>
+    </div>
+<?php } ?>
 <table class="table">
 <thead>
 	<tr>

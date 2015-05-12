@@ -24,13 +24,13 @@
 					<img src="img/folder-icon.png" alt=""><a href='?controller=albums&action=index'>Albums</a>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=collection/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
-					<img src="img/music-icon.png" alt=""><a href='?controller=collection&action=index&id=<?php echo $_SESSION['uid']; ?>'>Collection</a>
+					<img src="img/music-icon.png" alt=""><a href='?controller=collection&action=index&id=<?php echo isset($_SESSION['uid']) ? $_SESSION['uid'] : '-1'; ?>'>Collection</a>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=playlist/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
 					<img src="img/poweramp-icon.png" alt=""><a href='?controller=playlist&action=index'>Playlist</a>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=queue/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
-					<img src="img/mic-icon.png" alt=""><a href='?controller=queue&action=index&id=<?php echo $_SESSION['uid']; ?>'>Queue</a>
+					<img src="img/mic-icon.png" alt=""><a href='?controller=queue&action=index&id=<?php echo isset($_SESSION['uid']) ? $_SESSION['uid'] : '-1'; ?>'>Queue</a>
 				</li>
 			</ul>
 		</nav>
