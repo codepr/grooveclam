@@ -113,5 +113,16 @@ class Album {
 		}
 		return new Album($song['IdAlbum'], $song['AlbumTitle'], $song['Author'], $song['Info'], $live, $songs, $song['Path']);
 	}
+    // add a new album into the database
+    public static function addalbum($newalbum) {
+        $db = Db::getInstance();
+        $req = $db->prepare('INSERT INTO Album VALUES(:Title, :Author, :Live, :Location)');
+        $req->execute(array(
+                'Title' => $newalbum['Title'],
+                'Author' => $newalbum['Author'],
+                'Live' => $newalbum['Live'],
+                'Location' => $newalbum['Location']
+            ));
+    }
 }
 ?>

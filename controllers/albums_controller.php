@@ -19,7 +19,9 @@ class AlbumController {
         if(!isset($_POST['Title'])) {
             return call('pages', 'error');
         } else {
-            
+            $postdata = $_POST;
+            Album::addalbum($postdata);
+            header('Location:basidati/~abaldan/?controller=albums&action=index');
         }
     }
 }
