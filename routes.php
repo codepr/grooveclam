@@ -39,7 +39,7 @@ function call($controller, $action) {
 $controllers = array(
 	'pages' => array('home', 'error', 'login', 'checkuser', 'logout', 'registration'),
 	'songs' => array('index', 'show'),
-	'albums' => array('index', 'show'),
+	'albums' => array('index', 'show', 'add', 'addalbum'),
 	'playlist' => array('index', 'show'),
 	'collection' => array('index', 'addsong', 'remove'),
 	'queue' => array('index', 'addsong'),
