@@ -61,3 +61,8 @@ caption { color: rgb(15, 89, 182); font-weight: 700; }
     display:block; float:left; width:100%; padding-top:50%; padding-bottom:50%; line-height:1em; margin-top:-0.5em;
     text-align:center; color:#e2eaf3; font-size:1.2em; font-weight:bold; text-decoration:none;
 }
+#player {
+    position: fixed; left: 0px; bottom: 40px; font-size: 1.5em; font-family: alien; font-weight: bold; color: rgb(15, 89, 182);
+    width: 100px; height:100px; text-align: center; visibility: hidden;
+}
+#songtitle { font-family: Grumpy; font-size: .5em; font-weight: 400; margin: 10px 0px; }

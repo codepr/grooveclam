@@ -41,8 +41,51 @@
 		<?php require_once('routes.php') ?>
 		</main>
 	</div>
+    <div id="player">
+        <label id="minutes">00</label>:<label id="seconds">00</label>
+        <p id="songtitle">Song title</p>
+        <span style="font-size: .7em;"> &#9646;&#9646;   &#9724;</span>
+    </div>
 	<footer>
 		Progetto Basi di dati 2015
 	</footer>
+    <script type="text/javascript">
+     var min = document.getElementById("minutes");
+     var sec = document.getElementById("seconds");
+     var tot = 0;
+     var threshold = 0;
+     var timer;
+     var min,
+         sec;
+     function play(end, title) {
+         min.innerHTML = "00";
+         sec.innerHTML = "00";
+         tot = 0;
+         document.getElementById("player").style.visibility = "visible";
+         clearInterval(timer);
+         var time = end.split(".");
+         console.log(time);
+         threshold = (parseInt(time[0]) * 60) + parseInt(time[1]);
+         document.getElementById("songtitle").innerHTML = title;
+         timer = setInterval(countUp, 1000);
+     }
+
+     function countUp() {
+         if(tot < threshold) {
+             ++tot;
+         } else { clearInterval(timer); }
+         sec.innerHTML = pad(tot % 60);
+         min.innerHTML = pad(parseInt(tot/60));
+     }
+
+     function pad(val) {
+         var valString = val + "";
+         if(valString.length < 2) {
+             return "0" + valString;
+         } else {
+             return valString;
+         }
+     }
+    </script>
 </body>
 </html>

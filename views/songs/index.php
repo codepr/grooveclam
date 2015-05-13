@@ -1,4 +1,4 @@
-<h3>Song list:</h3>
+<h3>Song list</h3>
 <table class="table">
 <thead>
 	<tr>
