@@ -63,14 +63,19 @@
      var timer;
      var min,
          sec;
+     // get progress bar element
+     var progressbar = document.getElementById("progressbar");
      // add listener to play/pause button
      document.getElementById("com_1").addEventListener("click", play_or_pause);
      // add listener to stop button
      document.getElementById("com_2").addEventListener("click", stop);
      // simulate song play
      function play(end, title) {
+         document.getElementById("com_2").click(); // better reset triggering click stop()
          min.innerHTML = "00";
          sec.innerHTML = "00";
+         document.getElementById("com_1").innerHTML="&#9646;&#9646;";
+         pause = true;
          tot = 0;
          document.getElementById("player").style.visibility = "visible";
          clearInterval(timer);
@@ -78,9 +83,8 @@
          threshold = (parseInt(time[0]) * 60) + parseInt(time[1]);
          document.getElementById("songtitle").innerHTML = title;
          timer = setInterval(countUp, 1000);
-         document.getElementById("progressbar").style.width="0px";
-         document.getElementById("progressbar").style.transition="all " + threshold +"s linear";
-         document.getElementById("progressbar").style.width="100%";
+         progressbar.style.transition="all " + threshold + "s linear";
+         progressbar.style.width="100%";
          document.getElementById("limits").innerHTML=end;
      }
      // simulate a counter to the end of the song
@@ -107,9 +111,9 @@
              endtime = endtime.split('.');
              endtime = (parseInt(endtime[0]) * 60) + parseInt(endtime[1]);
              var currtime = endtime - ((parseInt(min.innerHTML) * 60) + (parseInt(sec.innerHTML)));
-             document.getElementById("progressbar").style.transition="all " + currtime +"s linear";
-             var currwidth = document.getElementById("progressbar").offsetWidth; // getting current width
-             document.getElementById("progressbar").style.width=currwidth + "px"; // stop the transition setting current width
+             progressbar.style.transition="all " + currtime +"s linear";
+             var currwidth = progressbar.offsetWidth; // getting current width
+             progressbar.style.width=currwidth + "px"; // stop the transition setting current width
              clearInterval(timer);
              document.getElementById("com_1").innerHTML = '&#9654;';
              pause = false;
@@ -118,8 +122,8 @@
              endtime = endtime.split('.');
              endtime = (parseInt(endtime[0]) * 60) + parseInt(endtime[1]);
              var currtime = endtime - ((parseInt(min.innerHTML) * 60) + (parseInt(sec.innerHTML)));
-             document.getElementById("progressbar").style.transition="all " + currtime +"s linear";
-             document.getElementById("progressbar").style.width="100%";
+             progressbar.style.transition="all " + currtime +"s linear";
+             progressbar.style.width="100%";
              timer = setInterval(countUp, 1000);
              document.getElementById("com_1").innerHTML = '&#9646;&#9646;';
              pause = true;
@@ -129,8 +133,8 @@
      function stop() {
          clearInterval(timer);
          document.getElementById("com_1").innerHTML = '&#9654;';
-         document.getElementById("progressbar").style.transition="all 0s";
-         document.getElementById("progressbar").style.width="0px";
+         progressbar.style.transition="all 0s linear";
+         progressbar.style.width="0px";
          pause = false;
          tot = 0;
          min.innerHTML = '00';

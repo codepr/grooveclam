@@ -51,7 +51,7 @@ footer { position: fixed; bottom: 5px; right: 5px; color: rgb(15, 89, 182); font
 }
 .regbutton a { color: #ffffff; }
 caption { color: rgb(15, 89, 182); font-weight: 700; }
-.addstuff {	width:2%; margin-top: 10px; }
+.addstuff {	width:1.7%; margin-top: 10px; }
 .addstuff-circle {
 	width: 100%; height:0; padding-bottom: 100%; border-radius: 50%; border: 4px solid #cfdcec;
     overflow:hidden; background: #4679BD; box-shadow: 0 0 3px gray;
@@ -59,7 +59,7 @@ caption { color: rgb(15, 89, 182); font-weight: 700; }
 .addstuff-circle:hover { background:#30588e; }
 .addstuff a {
     display:block; float:left; width:100%; padding-top:50%; padding-bottom:50%; line-height:1em; margin-top:-0.5em;
-    text-align:center; color:#e2eaf3; font-size:1.2em; font-weight:bold; text-decoration:none;
+    text-align:center; color:#e2eaf3; font-size:1.125em; font-weight:bold; text-decoration:none;
 }
 #player {
     position: fixed; left: 0px; bottom: 40px; font-size: 1.5em; font-family: alien; font-weight: bold; color: rgb(15, 89, 182);
