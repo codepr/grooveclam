@@ -78,6 +78,7 @@
          threshold = (parseInt(time[0]) * 60) + parseInt(time[1]);
          document.getElementById("songtitle").innerHTML = title;
          timer = setInterval(countUp, 1000);
+         document.getElementById("progressbar").style.width="0px";
          document.getElementById("progressbar").style.transition="all " + threshold +"s linear";
          document.getElementById("progressbar").style.width="100%";
          document.getElementById("limits").innerHTML=end;
