@@ -10,6 +10,7 @@ function call($controller, $action) {
 	 	break;
 		case 'songs':
 			require_once('models/song.php');
+            require_once('models/album.php');
 			$controller = new SongsController();
 		break;
 		case 'albums':
@@ -18,6 +19,7 @@ function call($controller, $action) {
 		break;
 		case 'playlist':
 			require_once('models/playlist.php');
+            require_once('models/collection.php');
 			$controller = new PlayListController();
 		break;
 		case 'collection':
@@ -38,9 +40,9 @@ function call($controller, $action) {
 // array containing all action for every controller
 $controllers = array(
 	'pages' => array('home', 'error', 'login', 'checkuser', 'logout', 'registration'),
-	'songs' => array('index', 'show'),
+	'songs' => array('index', 'show', 'addnew'),
 	'albums' => array('index', 'show', 'add', 'addalbum'),
-	'playlist' => array('index', 'show'),
+	'playlist' => array('index', 'show', 'newplaylist'),
 	'collection' => array('index', 'addsong', 'remove'),
 	'queue' => array('index', 'addsong'),
 	'user' => array('show')

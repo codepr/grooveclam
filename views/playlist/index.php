@@ -1,4 +1,9 @@
 <h3>Playlists</h3>
+<div class="addstuff">
+    <div class="addstuff-circle">
+        <a class="addstuff" href="?controller=playlist&action=newplaylist">&#10133</a>
+    </div>
+</div>
 <table class="table">
 <thead>
 	<tr>

@@ -13,11 +13,15 @@ class AlbumController {
 		require_once('views/albums/show.php');
 	}
     public function add() {
-        require_once('views/albums/add.php');
+        if(!isset($_SESSION['logged'])) {
+            return call('pages', 'login');
+        } else {
+            require_once('views/albums/add.php');
+        }
     }
     public function addalbum() {
         if(!isset($_POST['Title'])) {
-            return call('pages', 'error');
+            return call('pages', 'login');
         } else {
             $postdata = $_POST;
             Album::addalbum($postdata);

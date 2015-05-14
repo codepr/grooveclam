@@ -19,5 +19,22 @@ class SongsController {
 		$song = Song::find($_GET['id']);
 		require_once('views/songs/show.php');
 	}
+    public function addnew() {
+        if(!isset($_SESSION['logged'])) {
+            return call('pages', 'login');
+        } else {
+            $albums = Album::all();
+            require_once('views/songs/addnew.php');
+        }
+    }
+    public function addsong() {
+        if(!isset($_SESSION['logged'])) {
+            return call('pages', 'error');
+        } else {
+            $postdata = $_POST;
+            Song::add($postdata);
+            Header('Location:/basidati/~abaldan/?controller=songs&action=index');
+        }
+    }
 }
 ?>

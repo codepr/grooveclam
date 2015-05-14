@@ -46,7 +46,7 @@ class User {
 		$req = $db->prepare('SELECT * FROM User WHERE IdUser = :id');
 		$req->execute(array('id' => $id));
 		$u = $req->fetch();
-		return new User($u['IdUser'], $u['Name'], $u['Email'], $u['Username'], $u['Password']);
+		return new User($u['IdUser'], $u['Name']." ".$u['Surname'], $u['Email'], $u['Username'], $u['Password']);
 	}
 	// retrieve fellow list for a user
 	public function fellows() {

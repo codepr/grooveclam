@@ -41,8 +41,8 @@ footer { position: fixed; bottom: 5px; right: 5px; color: rgb(15, 89, 182); font
 .loginform fieldset { border-radius: 8px; border-color: rgb(15, 89, 182); border-width: 0px;}
 .loginform fieldset input[type="text"],
 .loginform fieldset input[type="email"],
-.loginform fieldset input[type="password"] {
-	border-radius: 3px; display: block; padding: 5px;
+.loginform fieldset input[type="password"], select {
+	border-radius: 3px; display: block; padding: 5px; background-color: transparent;
 	margin: 8px 0px; outline: none; border: 1px solid rgb(15, 89, 182);
 }
 .loginform fieldset input[type="submit"], .regbutton {
@@ -66,3 +66,7 @@ caption { color: rgb(15, 89, 182); font-weight: 700; }
     width: 100px; height:100px; text-align: center; visibility: hidden;
 }
 #songtitle { font-family: Grumpy; font-size: .5em; font-weight: 400; margin: 10px 0px; }
+fieldset.list { margin: 10px 0px; border: 1px solid rgb(15, 89, 182); }
+.loginform.playlist { width: 40% }
+#progressbar { width: 0%; background-color: rgb(15, 89, 182); height:5px; margin-top: 5px; margin-left: 5px; }
+#limits { width: 100%; text-align: right; font-size: .45em; font-weight: 400; font-family: Grumpy; }
