@@ -15,29 +15,29 @@
 		<nav>
 			<ul>
 				<li <?php if($_SERVER['REQUEST_URI'] == '/basidati/~abaldan/') { echo 'class="active"'; }?>>
-					<img src="img/home.png" alt=""><a href='/basidati/~abaldan'>Home</a>
+					<a href='/basidati/~abaldan'><img src="img/home.png" alt="">Home</a>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=songs/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
-					<img src="img/music.png" alt=""><a href='?controller=songs&action=index'>Songs</a>
+					<a href='?controller=songs&action=index'><img src="img/music.png" alt="">Songs</a>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=albums/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
-					<img src="img/folder-icon.png" alt=""><a href='?controller=albums&action=index'>Albums</a>
+					<a href='?controller=albums&action=index'><img src="img/folder-icon.png" alt="">Albums</a>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=collection/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
-					<img src="img/music-icon.png" alt=""><a href='?controller=collection&action=index&id=<?php echo isset($_SESSION['uid']) ? $_SESSION['uid'] : '-1'; ?>'>Collection</a>
+					<a href='?controller=collection&action=index&id=<?php echo isset($_SESSION['uid']) ? $_SESSION['uid'] : '-1'; ?>'><img src="img/music-icon.png" alt="">Collection</a>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=playlist/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
-					<img src="img/poweramp-icon.png" alt=""><a href='?controller=playlist&action=index'>Playlist</a>
+					<a href='?controller=playlist&action=index'><img src="img/poweramp-icon.png" alt="">Playlist</a>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=queue/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
-					<img src="img/mic-icon.png" alt=""><a href='?controller=queue&action=index&id=<?php echo isset($_SESSION['uid']) ? $_SESSION['uid'] : '-1'; ?>'>Queue</a>
+					<a href='?controller=queue&action=index&id=<?php echo isset($_SESSION['uid']) ? $_SESSION['uid'] : '-1'; ?>'><img src="img/mic-icon.png" alt="">Queue</a>
 				</li>
 			</ul>
 		</nav>
 		<?php if(isset($_SESSION['logged'])) {?>
 			<div class="logout">
-                <button class="exit"><a href="/basidati/~abaldan/?controller=user&action=show&id=<?php echo $_SESSION['uid']; ?>">Settings &#9881</a></button>
-                <button class="exit"><a href="/basidati/~abaldan/?controller=pages&action=logout">Logout &#10144</a></button>
+                <button class="exit"><a href="/basidati/~abaldan/?controller=user&action=show&id=<?php echo $_SESSION['uid']; ?>">Settings &#9881;</a></button>
+                <button class="exit"><a href="/basidati/~abaldan/?controller=pages&action=logout">Logout &#10144;</a></button>
             </div>
 		<?php } ?>
 		<main>
@@ -63,18 +63,20 @@
      var timer;
      var min,
          sec;
-     // get progress bar element
+     // get progress bar and commands elements 
      var progressbar = document.getElementById("progressbar");
+     var com_1 = document.getElementById("com_1");
+     var com_2 = document.getElementById("com_2");
      // add listener to play/pause button
-     document.getElementById("com_1").addEventListener("click", play_or_pause);
+     com_1.addEventListener("click", play_or_pause);
      // add listener to stop button
-     document.getElementById("com_2").addEventListener("click", stop);
+     com_2.addEventListener("click", stop);
      // simulate song play
      function play(end, title) {
-         document.getElementById("com_2").click(); // better reset triggering click stop()
+         com_2.click(); // better reset triggering click stop()
          min.innerHTML = "00";
          sec.innerHTML = "00";
-         document.getElementById("com_1").innerHTML="&#9646;&#9646;";
+         com_1.innerHTML="&#9646;&#9646;";
          pause = true;
          tot = 0;
          document.getElementById("player").style.visibility = "visible";
@@ -115,7 +117,7 @@
              var currwidth = progressbar.offsetWidth; // getting current width
              progressbar.style.width=currwidth + "px"; // stop the transition setting current width
              clearInterval(timer);
-             document.getElementById("com_1").innerHTML = '&#9654;';
+             com_1.innerHTML = '&#9654;';
              pause = false;
          } else {
              var endtime = document.getElementById("limits").innerHTML;
@@ -125,14 +127,14 @@
              progressbar.style.transition="all " + currtime +"s linear";
              progressbar.style.width="100%";
              timer = setInterval(countUp, 1000);
-             document.getElementById("com_1").innerHTML = '&#9646;&#9646;';
+             com_1.innerHTML = '&#9646;&#9646;';
              pause = true;
          }
      }
      // stop simulation
      function stop() {
          clearInterval(timer);
-         document.getElementById("com_1").innerHTML = '&#9654;';
+         com_1.innerHTML = '&#9654;';
          progressbar.style.transition="all 0s linear";
          progressbar.style.width="0px";
          pause = false;

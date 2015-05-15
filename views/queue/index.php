@@ -1,4 +1,4 @@
-<h3>Queue</h3>
+<h2>&crarr; QUEUE</h2>
 <?php foreach($queue->queue() as $key => $song) { ?>
     <p>
         <a href='?controller=songs&action=show&id=<?php echo $song->id(); ?>'><?php echo $song->title(); ?></a> -

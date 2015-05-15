@@ -1,4 +1,4 @@
-<h3>Album list</h3>
+<h2>&#9839; ALBUM LIST</h2>
 <?php if(isset($_SESSION['logged'])) { ?>
     <div class="addstuff">
         <div class="addstuff-circle">

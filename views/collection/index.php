@@ -1,4 +1,4 @@
-<h3>Collection:</h3>
+<h2>&#9738; COLLECTION</h2>
 <table class="table">
 <thead>
 	<tr>
@@ -21,7 +21,7 @@
 		<td><a href='?controller=albums&action=show&id=<?php echo $song->idalbum(); ?>'><?php echo $song->album(); ?></a></td>
 		<td><a href='?controller=collection&action=remove&id=<?php echo $song->id(); ?>&idc=<?php echo $collection->id(); ?>'>&#10008</a></td>
 		<?php if(isset($_SESSION['logged'])) { ?>
-		<td><a href='?controller=queue&action=addsong&id=<?php echo $song->id(); ?>'>&#10148</a></td>
+		<td><a href='?controller=queue&action=addsong&id=<?php echo $song->id(); ?>'>&crarr;</a></td>
 		<?php } ?>
 	</tr>
 <?php } ?>

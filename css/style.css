@@ -26,19 +26,19 @@ header h1 {
 	letter-spacing: 3px; text-shadow: 0 2px 2px #d4d4d4;
 }
 footer { position: fixed; bottom: 5px; right: 5px; color: rgb(15, 89, 182); font-family: alien; }
-.table { width:80%; border-collapse: collapse; margin-top: 1em; }
+.table { width:80%; border-collapse: collapse; margin: 1.5em 0em; }
 .table th { border-bottom: 1px solid #777; text-align: left; padding: .5em; font-size: .9em; color: rgb(15, 89, 182); }
 .table td { padding: 5px; font-size: .75em; }
 .table tr:nth-child(2n+2) { background-color: rgba(15, 89, 182, .2); }
 .table.floated { float: left; margin-right: 20px; }
-.cover { float: left; margin-right: 15px;}
+.cover { float: left; margin-right: 15px; }
 .cover img { box-shadow: 2px 2px 6px #888; width: 300px; height: 300px; border-radius: 5px; }
 .active { padding-left: 15px; }
 .logout { margin-right: 15px; float: right; }
 .exit { border-radius: 3px; border: 1px solid rgb(15, 89, 182); background-color: rgb(15, 89,182); padding: 3px 10px; }
 .exit a { color: #ffffff; }
 .loginform { width: 30%; color: rgb(15, 89, 182); }
-.loginform fieldset { border-radius: 8px; border-color: rgb(15, 89, 182); border-width: 0px;}
+.loginform fieldset { border-radius: 8px; border-color: rgb(15, 89, 182); border-width: 0px; }
 .loginform fieldset input[type="text"],
 .loginform fieldset input[type="email"],
 .loginform fieldset input[type="password"], select {
@@ -62,11 +62,13 @@ caption { color: rgb(15, 89, 182); font-weight: 700; }
     text-align:center; color:#e2eaf3; font-size:1.125em; font-weight:bold; text-decoration:none;
 }
 #player {
-    position: fixed; left: 0px; bottom: 40px; font-size: 1.5em; font-family: alien; font-weight: bold; color: rgb(15, 89, 182);
-    width: 100px; height:100px; text-align: center; visibility: hidden;
+    position: fixed; left: 15px; bottom: 40px; font-size: 1.6em; font-family: alien; font-weight: bold; color: rgb(15, 89, 182);
+    width: 10%; height:100px; text-align: center; visibility: hidden;
 }
 #songtitle { font-family: Grumpy; font-size: .5em; font-weight: 400; margin: 10px 0px; }
 fieldset.list { margin: 10px 0px; border: 1px solid rgb(15, 89, 182); }
 .loginform.playlist { width: 40% }
 #progressbar { width: 0%; background-color: rgb(15, 89, 182); height:5px; margin-top: 5px; margin-left: 5px; }
-#limits { width: 100%; text-align: right; font-size: .45em; font-weight: 400; font-family: Grumpy; }
+#limits { margin-left: 5px; width: 100%; text-align: right; font-size: .45em; font-weight: 400;
+          font-family: Grumpy; border-style: solid; border-width: 1px 0px 0px 0px; border-color: rgba(15, 89, 182, .5);
+}

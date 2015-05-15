@@ -1,4 +1,11 @@
-<h3>Song list</h3>
+<h2>&#9836; SONG LIST</h2>
+<?php if(isset($_SESSION['logged'])) { ?>
+    <div class="addstuff">
+        <div class="addstuff-circle">
+            <a class="addstuff" href="?controller=songs&action=addnew">&#10133</a>
+        </div>
+    </div>
+<?php } ?>
 <table class="table">
 <thead>
 	<tr>
@@ -21,7 +28,7 @@
 				echo "<td style='color: rgb(15, 89, 182);'>&#10004</td>\n";
 			} else { echo "<td><a href='?controller=collection&action=addsong&id=".$song->id()."&idu=".$_SESSION['uid']."'>&#10010</a></td>\n"; }
 		?>
-		<td><a href='?controller=queue&action=addsong&id=<?php echo $song->id(); ?>'>&#10148</a></td>
+		<td><a href='?controller=queue&action=addsong&id=<?php echo $song->id(); ?>'>&crarr;</a></td>
 		<?php
 		} ?>
 	</tr>
