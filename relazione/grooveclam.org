@@ -57,7 +57,7 @@ free o utilizzare un piano premium.
 * Progettazione concettuale
 ** Classi
 - *User:* Rappresenta un utente del servizio.
-  - IdUser: /Int/ Primary key
+  - IdUser: /Int/ =<<PK>>=
   - Name: /String/
   - Surname: /String/
   - Email: /String/
@@ -65,17 +65,17 @@ free o utilizzare un piano premium.
   - *Administrator*: Rappresenta un utente con privilegi amministrativi.
   - *Ordinario*: Rappresenta un utente ordinario.
 - *Login:* Rappresenta delle credenziali d'accesso per un utente.
-  - Username: /String/ Primary key
+  - Username: /String/ =<<PK>>=
   - Password: /String/
 - *Subscription:* Modella un piano di iscrizione.
   - Type: /Enum/ ['Free', 'Premium']
 - *Song:* Rappresenta un brano.
-  - IdSong: /Int/ Primary key
+  - IdSong: /Int/ =<<PK>>=
   - Title: /String/
   - Genre: /String/
   - Duration: /Float/
 - *Album:* Modella un album di brani.
-  - IdAlbum: /Int/ Primary Key
+  - IdAlbum: /Int/ =<<PK>>=
   - Title: /String/
   - Author: /String/
   - Info: /String/
@@ -85,12 +85,12 @@ free o utilizzare un piano premium.
     - Location: /String/
   - *Studio:* Rappresenta un album registrato in studio.
 - *Cover:* Rappresenta una generica cover di album.
-  - IdImage: /Int/ Primary key
+  - IdImage: /Int/ =<<PK>>=
   - Path: /String/
 - *Playlist:* Modella una playlist.
   - Name: /String/
 - *Collection:* Rappresenta una collezione di brani preferiti dall'utente.
-  - IdCollection: /Int/ Primary key
+  - IdCollection: /Int/ =<<PK>>=
 ** Associazioni
 - *User-Collection:* "Crea"
   - Ogni utente può creare zero o una collezione, ogni collezione può essere creata da un solo utente.
@@ -156,9 +156,9 @@ Sono state create alcune chiavi primarie per identificare le istanze di alcune t
   - Attributi:
     - Timestamp: /Timestamp/
   - Nuova tabella *Heard*, attributi:
-    - IdUser: /Int/ Primary key Foreign key(User)
-    - IdSong: /Int/ Primary key Foreign key(Song)
-    - Timestamp: /Timestamp/ Primary key
+    - IdUser: /Int/ =<<PK>> <<FK(User)>>=
+    - IdSong: /Int/ =<<PK>> <<FK(Song)>>=
+    - Timestamp: /Timestamp/ =<<PK>>=
 - *User-Song:* "Accoda"
   - Ogni utente può accodare zero o più brani, ogni brano può essere accodato da zero o più utenti.
   - Molteplicità N : N
@@ -166,16 +166,16 @@ Sono state create alcune chiavi primarie per identificare le istanze di alcune t
   - Attributi:
     - Timestamp: /Timestamp/
   - Nuova tabella *Queue*, attributi:
-    - IdUser: /Int/ Primary key Foreign key(User)
-    - IdSong: /Int/ Primary key Foreign key(Song)
-    - Timestamp: /Timestamp/ Primary key
+    - IdUser: /Int/ =<<PK>> <<FK(User)>>=
+    - IdSong: /Int/ =<<PK>> <<FK(Song)>>=
+    - Timestamp: /Timestamp/ =<<PK>>=
 - *User-User:* "Segue"
   - Ogni utente può seguire zero o più utenti, ogni utente può essere seguito da zero o più utenti.
   - Molteplicità N : N
   - Parziale verso entrambi.
   - Nuova tabella *Follow*, attributi:
-    - IdUser: /Int/ Primary key Foreign Key(User)
-    - IdFellow: /Int/ Primary key Foreign Key(User)
+    - IdUser: /Int/ =<<PK>> <<FK(User)>>=
+    - IdFellow: /Int/ =<<PK>> <<FK(User)>>=
 - *User-Playlist*: "Crea"
   - Ogni utente può creare zero o più playlist, ogni playlist può essere creata da un solo utente.
   - Molteplicità N : 1
@@ -191,8 +191,8 @@ Sono state create alcune chiavi primarie per identificare le istanze di alcune t
   - Molteplicità N : N
   - Parziale verso *Playlist*, parziale verso *Song*.
   - Nuova tabella *PlaylistSong*, attributi:
-    - IdPlaylist: /Int/ Primary key Foreign key(Playlist)
-    - IdSong: /Int/ Primary key Foreign key(Song)
+    - IdPlaylist: /Int/ =<<PK>> <<FK(Playlist)>>=
+    - IdSong: /Int/ =<<PK>> <<FK(Song)>>=
 - *Song-Album:* "AppartieneA"
   - Ogni brano appartiene a zero o un brano, ogni brano contiene uno o più brani.
   - Molteplicità 1 : N
