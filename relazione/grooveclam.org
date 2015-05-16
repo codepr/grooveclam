@@ -143,6 +143,71 @@ nessuna di esse possedeva sottoclassi con un numero significativo di attributi o
 di qualche genere.
 ** Chiavi Primarie
 Sono state create alcune chiavi primarie per identificare le istanze di alcune tabelle, quali /IdPlaylist/ a *Playlist*. 
+** Associazioni
+- *User-Collection:* "Crea"
+  - Ogni utente può creare zero o una collezione, ogni collezione può essere creata da un solo utente.
+  - Molteplicità 1 : 1
+  - Parziale verso *User*, totale verso *Collection*.
+  - Chiave esterna non-nulla in *Collection* verso *User*.
+- *User-Song:* "Ascolta"
+  - Ogni utente può ascoltare zero o più brani, ogni brano può essere ascoltato da zero o più utenti.
+  - Molteplicità N : N
+  - Parziale verso *User*, parziale verso *Song*.
+  - Attributi:
+    - Timestamp: /Timestamp/
+  - Nuova tabella *Heard*, attributi:
+    - IdUser: /Int/ Primary key Foreign key(User)
+    - IdSong: /Int/ Primary key Foreign key(Song)
+    - Timestamp: /Timestamp/ Primary key
+- *User-Song:* "Accoda"
+  - Ogni utente può accodare zero o più brani, ogni brano può essere accodato da zero o più utenti.
+  - Molteplicità N : N
+  - Parziale verso *User*, parziale verso *Song*.
+  - Attributi:
+    - Timestamp: /Timestamp/
+  - Nuova tabella *Queue*, attributi:
+    - IdUser: /Int/ Primary key Foreign key(User)
+    - IdSong: /Int/ Primary key Foreign key(Song)
+    - Timestamp: /Timestamp/ Primary key
+- *User-User:* "Segue"
+  - Ogni utente può seguire zero o più utenti, ogni utente può essere seguito da zero o più utenti.
+  - Molteplicità N : N
+  - Parziale verso entrambi.
+  - Nuova tabella *Follow*, attributi:
+    - IdUser: /Int/ Primary key Foreign Key(User)
+    - IdFellow: /Int/ Primary key Foreign Key(User)
+- *User-Playlist*: "Crea"
+  - Ogni utente può creare zero o più playlist, ogni playlist può essere creata da un solo utente.
+  - Molteplicità N : 1
+  - Parziale verso *User*, totale verso *Playlist*.
+  - Chiave esterna non-nulla in *Playlist* verso *User*.
+- *User-Subscription:* "Iscritto"
+  - Ogni utente può avere una sola iscrizione, ogni iscrizione può essere associata ad un solo utente.
+  - Molteplicità 1 : 1
+  - Totale verso *User* e verso *Subscription*.
+  - Chiave esterna non-nulla in *Subscription* verso *User*.
+- *Playlist-Song:* "PopolataDa"
+  - Ogni playlist è popolata da zero o più brani, ogni brano popola zero o più playlist.
+  - Molteplicità N : N
+  - Parziale verso *Playlist*, parziale verso *Song*.
+  - Nuova tabella *PlaylistSong*, attributi:
+    - IdPlaylist: /Int/ Primary key Foreign key(Playlist)
+    - IdSong: /Int/ Primary key Foreign key(Song)
+- *Song-Album:* "AppartieneA"
+  - Ogni brano appartiene a zero o un brano, ogni brano contiene uno o più brani.
+  - Molteplicità 1 : N
+  - Parziale verso *Song*, totale verso *Album*.
+  - Chiave esterna non-nulla in *Song* verso *Album*.
+- *Album-Cover:* "Possiede"
+  - Ogni album possiede zero o una cover, ogni cover è posseduta da un solo album.
+  - Molteplicità 1 : 1
+  - Parziale verso *Album*, totale verso *Cover*.
+  - Chiave esterna non-nulla in *Cover* verso *Album*.
+- *Song-Cover:* "Possiede"
+  - Ogni brano possiede una cover, ogni cover è posseduta da una o più canzoni.
+  - Molteplicità 1 : N
+  - Totale verso *Song*, totale verso *Cover*.
+  - Chiave esterna non-nulla in *Song* verso *Cover*.
 * Implementazione Fisica
 Query di implementazione DDL SQL della base di dati. Sorgente in /genera.sql/, popolamento in /popola.sql/.
 E' stata implementata una tabella *Errori*, riempita mediante procedura a sua volta richiamata dai trigger che ne fanno uso, 
