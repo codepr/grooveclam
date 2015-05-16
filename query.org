@@ -1,7 +1,5 @@
-# ultimi 2 utenti che hanno ascoltato le ultime 10 canzoni tra i follower di
-# codep nell' ultima settimana
-
-# titolo album e username dell'utente delle ultime 10 canzoni ascoltate tra i follower
+* ultimi 2 utenti che hanno ascoltato le ultime 10 canzoni tra i follower di codep nell' ultima settimana
+** titolo album e username dell'utente delle ultime 10 canzoni ascoltate tra i follower
 SELECT s.Title, a.Title as AlbumTitle, u.Username
 FROM Song s INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum)
 			INNER JOIN Heard h ON(h.IdSong = s.IdSong)
@@ -11,7 +9,7 @@ WHERE u.IdUser = 1
 AND h.Timestamp BETWEEN ADDDATE(CURDATE(), -7) AND CURDATE()
 ORDER BY h.Timestamp LIMIT 10;
 
-# variante riveduta
+** variante riveduta
 SELECT s.Title, a.Title as AlbumTitle, u.Username, h.Timestamp
 FROM Song s INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum)
 			INNER JOIN Heard h ON(h.IdSong = s.IdSong)

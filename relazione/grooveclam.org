@@ -1,0 +1,330 @@
+#+AUTHOR: Andrea Giacomo Baldan 579117
+#+EMAIL: a.g.baldan@gmail.com
+#+TITLE: GROOVECLAM
+#+LaTeX_HEADER: \usepackage{titlesec}
+#+LaTeX_HEADER: \titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}[{\titlerule[0.8pt]}]
+#+LaTeX_HEADER: \usepackage[T1]{fontenc} 
+#+LaTeX_HEADER: \usepackage{libertine}
+#+LaTeX_HEADER: \renewcommand*\oldstylenums[1]{{\fontfamily{fxlj}\selectfont #1}}
+#+LaTeX_HEADER: \usepackage{lmodern}
+#+LaTeX_HEADER: \lstset{basicstyle=\normalfont\ttfamily\scriptsize,numberstyle=\scriptsize,breaklines=true,frame=tb,tabsize=1,showstringspaces=false,numbers=left,commentstyle=\color{grey},keywordstyle=\color{black}\bfseries,stringstyle=\color{red}}
+#+LaTeX_HEADER: \newenvironment{changemargin}[2]{\list{}{\rightmargin#2\leftmargin#1\parsep=0pt\topsep=0pt\partopsep=0pt}\item[]}{\endlist}
+#+LaTeX_HEADER: \newenvironment{indentmore}{\begin{changemargin}{1cm}{0cm}}{\end{changemargin}}
+#+BEGIN_ABSTRACT
+A seguito degli eventi riguardanti il caso 'Napster' nei primi anni 2000,
+l'industria musicale e la distribuzione del materiale digitale ha subito
+notevoli cambiamenti e negli anni successivi prese piede il fenomeno del
+P2P (scambio tra utenti di files musicali, e non solo, mediante la rete)
+avviato da 'Napster', seguito da piattaforme e siti che offrono un servizio
+di streaming di file audio/video nel (quasi) totale rispetto dei diritti
+sugli album pubblicati. Grooveclam è una piattaforma online sulla linea del
+recente defunto Grooveshark, un sito di streaming audio appunto, e si
+propone di offrire un servizio di condivisione musicale tra utenti,
+permettendo di selezionare brani MP3 per l'ascolto, organizzarli in
+playlist che possono essere condivise tra utenti connessi tra di loro o
+semplici code di riproduzione anonime, offrendo la possibilità di generare
+e popolare la propria libreria personale di brani e di contribuire al
+popolamento della base di dati su cui poggia la piattaforma aggiungendo le
+proprie canzoni e rendendole disponibili per l'ascolto a tutti gli utenti.
+#+END_ABSTRACT
+* Analisi Dei Requisiti
+Si vuole realizzare una base di dati per la gestione di una libreria musicale
+condivisa e la relativa interfaccia web che permetta interazione tra gli
+utenti.\\
+Il cuore della libreria è formato da un insieme di album, suddivisi a loro
+volta in brani musicali; ogni album è identificato da un codice, ed è formato
+da alcuni metadati(titolo, autore, anno di pubblicazione) ed è specificato se
+si tratta di un album registrato in studio o una versione live, in quest'ultimo
+caso è possibile specificare la città in cui si è svolto il concerto, possiede
+inoltre informazioni opzionali di carattere generale (critiche ricevute,
+recensioni o breve storia sulla realizzazione dell'album).
+Gli album possono avere una copertina, a cui fanno riferimento anche tutti i
+brani che contengono.\\ Ogni brano musicale contenuto nell'album è
+identificato da un codice, ed è formato da alcuni metadati quali titolo,
+genere, durata.
+Esistono due tipi di utenti che possono accedere alla libreria, ordinari e
+amministratori, di entrambi interessano l'indirizzo e-mail, uno username e una
+password, sono opzionali i dati anagrafici quali nome e cognome. Gli utenti
+odinari possono seguire altri utenti ordinari, eccetto se stessi, inoltre ogni
+utente ha la possibilità di creare una propria collezione di brani preferiti
+selezionandoli dalla libreria, creare una coda di riproduzione anonima, o
+creare delle playlist delle quali interessa sapere il nome, queste ultime
+possono inoltre essere condivise con altri utenti \lq\lq seguiti \rq\rq.
+All'interno della collezione i brani non possono ripetersi mentre nelle code di
+riproduzione o nelle playlist uno stesso brano può comparire più volte.
+All'atto di registrazione un utente può decidere se attivare un abbonamento
+free o utilizzare un piano premium.
+* Progettazione concettuale
+** Classi
+- *User:* Rappresenta un utente del servizio.
+  - IdUser: /Int/ Primary key
+  - Name: /String/
+  - Surname: /String/
+  - Email: /String/
+  Sono definite le seguenti sottoclassi disgiunte:
+  - *Administrator*: Rappresenta un utente con privilegi amministrativi.
+  - *Ordinario*: Rappresenta un utente ordinario.
+- *Login:* Rappresenta delle credenziali d'accesso per un utente.
+  - Username: /String/ Primary key
+  - Password: /String/
+- *Subscription:* Modella un piano di iscrizione.
+  - Type: /Enum/ ['Free', 'Premium']
+- *Song:* Rappresenta un brano.
+  - IdSong: /Int/ Primary key
+  - Title: /String/
+  - Genre: /String/
+  - Duration: /Float/
+- *Album:* Modella un album di brani.
+  - IdAlbum: /Int/ Primary Key
+  - Title: /String/
+  - Author: /String/
+  - Info: /String/
+  - Year: /Date/
+  Sono definite le seguenti sottoclassi disgiunte con vincolo di partizionamento.
+  - *Live:* Rappresenta un album registrato durante una performance live.
+    - Location: /String/
+  - *Studio:* Rappresenta un album registrato in studio.
+- *Cover:* Rappresenta una generica cover di album.
+  - IdImage: /Int/ Primary key
+  - Path: /String/
+- *Playlist:* Modella una playlist.
+  - Name: /String/
+- *Collection:* Rappresenta una collezione di brani preferiti dall'utente.
+  - IdCollection: /Int/ Primary key
+** Associazioni
+- *User-Collection:* "Crea"
+  - Ogni utente può creare zero o una collezione, ogni collezione può essere creata da un solo utente.
+  - Molteplicità 1 : 1
+  - Parziale verso *User*, totale verso *Collection*.
+- *User-Song:* "Ascolta"
+  - Ogni utente può ascoltare zero o più brani, ogni brano può essere ascoltato da zero o più utenti.
+  - Molteplicità N : N
+  - Parziale verso *User*, parziale verso *Song*.
+  - Attributi:
+    - Timestamp: /Timestamp/
+- *User-Song:* "Accoda"
+  - Ogni utente può accodare zero o più brani, ogni brano può essere accodato da zero o più utenti.
+  - Molteplicità N : N
+  - Parziale verso *User*, parziale verso *Song*.
+  - Attributi:
+    - Timestamp: /Timestamp/
+- *User-User:* "Segue"
+  - Ogni utente può seguire zero o più utenti, ogni utente può essere seguito da zero o più utenti.
+  - Molteplicità N : N
+  - Parziale verso entrambi.
+- *User-Playlist*: "Crea"
+  - Ogni utente può creare zero o più playlist, ogni playlist può essere creata da un solo utente.
+  - Molteplicità N : 1
+  - Parziale verso *User*, totale verso *Playlist*.
+- *User-Subscription:* "Iscritto"
+  - Ogni utente può avere una sola iscrizione, ogni iscrizione può essere associata ad un solo utente.
+  - Molteplicità 1 : 1
+  - Totale verso *User* e verso *Subscription*.
+- *Playlist-Song:* "PopolataDa"
+  - Ogni playlist è popolata da zero o più brani, ogni brano popola zero o più playlist.
+  - Molteplicità N : N
+  - Parziale verso *Playlist*, parziale verso *Song*.
+- *Song-Album:* "AppartieneA"
+  - Ogni brano appartiene a zero o un brano, ogni brano contiene uno o più brani.
+  - Molteplicità 1 : N
+  - Parziale verso *Song*, totale verso *Album*.
+- *Album-Cover:* "Possiede"
+  - Ogni album possiede zero o una cover, ogni cover è posseduta da un solo album.
+  - Molteplicità 1 : 1
+  - Parziale verso *Album*, totale verso *Cover*.
+- *Song-Cover:* "Possiede"
+  - Ogni brano possiede una cover, ogni cover è posseduta da una o più canzoni.
+  - Molteplicità 1 : N
+  - Totale verso *Song*, totale verso *Cover*.
+* Progettazione Logica
+** Gerarchie
+Tutte le gerarchie presenti nella progettazione concettuale sono state risolte mediante accorpamento in tabella unica, questo perchè
+nessuna di esse possedeva sottoclassi con un numero significativo di attributi o associazioni entranti da giustificarne un partizionamento
+di qualche genere.
+** Chiavi Primarie
+Sono state create alcune chiavi primarie per identificare le istanze di alcune tabelle, quali /IdPlaylist/ a *Playlist*. 
+* Implementazione Fisica
+Query di implementazione DDL SQL della base di dati. Sorgente in /genera.sql/, popolamento in /popola.sql/.
+E' stata implementata una tabella *Errori*, riempita mediante procedura a sua volta richiamata dai trigger che ne fanno uso, 
+contiene i messaggi d'errore rilevati.
+/funproc.sql/ contiene invece le funzioni, i trigger e le procedure implementate.\\
+#+BEGIN_LaTeX
+\begin{lstlisting}[language=SQL]
+SET FOREIGN_KEY_CHECKS = 0;
+-- Table Album
+CREATE TABLE IF NOT EXISTS `Album` (
+	`IdAlbum` INT(11) NOT NULL AUTO_INCREMENT,
+	`Title` VARCHAR(140) NOT NULL,
+	`Author` VARCHAR(140) NOT NULL,
+	`Info` VARCHAR(300) DEFAULT NULL,
+	`Year` DATE NOT NULL,
+	`Live` BOOLEAN NOT NULL,
+	`Location` VARCHAR(40) DEFAULT NULL,
+	PRIMARY KEY(`IdAlbum`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Table Song
+CREATE TABLE IF NOT EXISTS `Song` (
+	`IdSong` INT(11) NOT NULL AUTO_INCREMENT,
+	`IdAlbum` INT(11) NOT NULL,
+	`Title` VARCHAR(140) NOT NULL,
+	`Genre` VARCHAR(40) NOT NULL,
+	`Duration` FLOAT,
+	`IdImage` INT(11) NOT NULL,
+	PRIMARY KEY(`IdSong`),
+	FOREIGN KEY(`IdAlbum`) REFERENCES Album(`IdAlbum`) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY(`IdImage`) REFERENCES Cover(`IdImage`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Table Cover
+CREATE TABLE IF NOT EXISTS `Cover` (
+	`IdImage` INT(11) NOT NULL AUTO_INCREMENT,
+	`IdAlbum` INT(11) NOT NULL,
+	`Path` VARCHAR (40) NOT NULL DEFAULT "img/covers/nocover.jpg",
+	PRIMARY KEY(`IdImage`),
+	FOREIGN KEY(`IdAlbum`) REFERENCES Album(`IdAlbum`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Table User
+CREATE TABLE IF NOT EXISTS `User` (
+	`IdUser` INT(11) NOT NULL AUTO_INCREMENT,
+	`Name` VARCHAR(40) DEFAULT NULL,
+	`Surname` VARCHAR(40) DEFAULT NULL,
+	`Email` VARCHAR(40) NOT NULL,
+	`Administrator` BOOLEAN NOT NULL,
+	`Username` VARCHAR(40) NOT NULL,
+	`Password` VARCHAR(40) NOT NULL,
+	PRIMARY KEY(`IdUser`),
+	UNIQUE(`Username`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Table Follow
+CREATE TABLE IF NOT EXISTS `Follow` (
+	`IdUser` INT(11) NOT NULL,
+	`IdFellow` INT(11) NOT NULL,
+	CONSTRAINT PRIMARY KEY pk(`IdUser`, `IdFellow`),
+	FOREIGN KEY(`IdUser`) REFERENCES User(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY(`IdFellow`) REFERENCES User(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+	CHECK(`IdUser` != `IdFellow`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Table SharedPlaylist
+-- CREATE TABLE IF NOT EXISTS `SharedPlaylist` (
+-- 	`IdUser` INT(11) NOT NULL,
+-- 	`IdFellow` INT(11) NOT NULL,
+-- 	`IdPlaylist` INT(11) NOT NULL,
+-- 	CONSTRAINT PRIMARY KEY pk(`IdUser`, `IdFellow`, `IdPlaylist`),
+-- 	FOREIGN KEY(`IdUser`) REFERENCES User(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+-- 	FOREIGN KEY(`IdFellow`) REFERENCES User(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+-- 	FOREIGN KEY(`IdPlaylist`) REFERENCES Playlist(`IdPlaylist`) ON DELETE CASCADE ON UPDATE CASCADE,
+-- 	CHECK(`IdUser` != `IdFellow`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Table Subscription
+CREATE TABLE IF NOT EXISTS `Subscription` (
+	`IdUser` INT(10) NOT NULL,
+	`Type` ENUM('Free', 'Premium') NOT NULL,
+	PRIMARY KEY(`IdUser`),
+	FOREIGN KEY(`IdUser`) REFERENCES User(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Table Collection
+CREATE TABLE IF NOT EXISTS `Collection` (
+	`IdCollection` INT(11) NOT NULL AUTO_INCREMENT,
+	`IdUser` INT(11) NOT NULL,
+	PRIMARY KEY(`IdCollection`),
+	FOREIGN KEY(`IdUser`) REFERENCES User(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Table SongCollection
+CREATE TABLE IF NOT EXISTS `SongCollection` (
+	`IdSong` INT(11) NOT NULL,
+	`IdCollection` INT(11) NOT NULL,
+	CONSTRAINT PRIMARY KEY pk(`IdCollection`, `IdSong`),
+	FOREIGN KEY(`IdSong`) REFERENCES Song(`IdSong`) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY(`IdCollection`) REFERENCES Collection(`IdCollection`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Table Playlist
+CREATE TABLE IF NOT EXISTS `Playlist` (
+	`IdPlaylist` INT(11) NOT NULL AUTO_INCREMENT,
+	`IdUser` INT(11) NOT NULL,
+	`Name` VARCHAR(40) NOT NULL,
+    `Private` BOOLEAN DEFAULT FALSE,
+	PRIMARY KEY(`IdPlaylist`),
+	FOREIGN KEY(`IdUser`) REFERENCES User(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Table PlaylistSong
+CREATE TABLE IF NOT EXISTS `PlaylistSong` (
+	`IdPlaylist` INT(11) NOT NULL,
+	`IdSong` INT(11) NOT NULL,
+	CONSTRAINT PRIMARY KEY pk(`IdPlaylist`, `IdSong`),
+	FOREIGN KEY(`IdPlaylist`) REFERENCES Playlist(`IdPlaylist`) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY(`IdSong`) REFERENCES Song(`IdSong`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Table Queue
+-- CREATE TABLE IF NOT EXISTS `Queue` (
+-- 	`IdUser` INT(11) NOT NULL,
+-- 	FOREIGN KEY(`IdUser`) REFERENCES User(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE
+-- ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Table Queue
+CREATE TABLE IF NOT EXISTS `Queue` (
+	`IdUser` INT(11) NOT NULL,
+	`IdSong` INT(11) NOT NULL,
+	`TimeStamp` TIMESTAMP NOT NULL,
+	CONSTRAINT PRIMARY KEY pk(`IdUser`, `IdSong`, `TimeStamp`),
+	FOREIGN KEY(`IdUser`) REFERENCES User(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY(`IdSong`) REFERENCES Song(`IdSong`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Table Heard
+CREATE TABLE IF NOT EXISTS `Heard` (
+	`IdUser` INT(11) NOT NULL,
+	`IdSong` INT(11) NOT NULL,
+	`TimeStamp` TIMESTAMP NOT NULL,
+	CONSTRAINT PRIMARY KEY pk(`IdUser`, `IdSong`, `TimeStamp`),
+	FOREIGN KEY(`IdUser`) REFERENCES User(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY(`IdSong`) REFERENCES Song(`IdSong`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+\end{lstlisting}
+#+END_LaTeX
+** Trigger
+** Funzioni e Procedure
+* Query
+Alcune query significative.
+1. Titolo, album e username dell'utente, degli ultimi 10 brani ascoltati tra i followers.
+#+BEGIN_LaTeX
+\begin{lstlisting}[language=SQL]
+SELECT s.Title, a.Title as AlbumTitle, u.Username, h.Timestamp
+FROM Song s INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum)
+			INNER JOIN Heard h ON(h.IdSong = s.IdSong)
+			INNER JOIN Follow f ON(f.IdFellow = h.IdUser)
+			INNER JOIN User u ON(u.IdUser = f.IdFellow)
+WHERE h.Timestamp BETWEEN ADDDATE(CURDATE(), -7) AND CURDATE()
+	AND u.IdUser IN (SELECT u.IdUser FROM User u INNER JOIN Follow f ON(f.IdFellow = u.IdUser) WHERE f.IdUser = 1)
+	ORDER BY h.Timestamp DESC LIMIT 10;
+\end{lstlisting}
+#+END_LaTeX
+* Interfaccia Web
+Per l'interfaccia web è stato seguito un pattern MVC molto rudimentale, che tuttavia ha permesso di semplificarne la realizzazione modularizzando
+le operazione da effettuare sulla base di dati mediante le pagine.
+** Organizzazione e Struttura Generale
+La struttura generale dell'interfaccia consiste di 3 cartelle principali e 2 pagine di servizio contenenti rispettivamente un singleton dedicato
+esclusivamente alla connessione alla base di dati e un singleton dedicato alla creazione e manipolazione delle sessioni.
+Le cartelle /models, /views, /controllers seguono le tipiche linee guida del pattern MVC, all'interno di /models troviamo infatti i modelli, 
+oggetti atti ad interfacciarsi con la base di dati ed eseguire le query richieste dalle pagine (routes) contenute nei controllers, infine le view, 
+pagine "di template" contenenti per lo più codice HTML e brevi tratti di PHP, vengono popolate mediante le chiamate ai controllers.
+La navigazione vera e propria tra le pagine avviene mediante parametri GET che si occupano di selezionare il controller richiesto e l'azione da 
+eseguire (funzioni all'interno del controller richiesto).
+*** Esempi
+- Richiedere la pagina albums:
+~/basidati/~abaldan/?controller=albums&action=index~
+- Visualizzazione brano con id = 4:
+~/basidati/~abaldan/?controller=songs&action=show&id=4~
+** Pagine Principali
+Ci sono 6 pagine principali che consentono la navigazione all'interno dell'interfaccia, accedibili mediante un menù laterale a sinistra.
+*Home* contiene alcune statistiche sullo stato della BD, ad esempio i brani ascoltati recentemente dai propri followers, questo solo dopo aver
+effettuato l'accesso con un proprio account registrato, altrimenti in home, come pure in ogni pagina che richiede di essere loggati, viene 
+mostrato un form di login mediantei il quale è anche possibile registrare un account.
+*Songs* è la pagina adibita alla visualizzazione di tutte le canzoni contenute nella BD o, nel caso di account loggato, offre la possibilità di 
+aggiungere i propri brani alla BD, aggiungerne alla propria collezione o alla coda di riproduzione; *albums* contiene tutti gli album presenti nella
+piattaforma, sempre previa autenticazione permette di inserirne di nuovi ed è possibile visualizzare i dettagli di ogni album e brano contenuto in
+esso. *Collection* e *playlist* sono rispettivamente le pagine di gestione della propria collezione brani e playlist, con la possibilità di privatizzare
+o rendere pubbliche le proprie playlist. *Queue* infine ospita la coda di riproduzione, ordinate in base ai timestamp di aggiunta.
+E' possibile modificare i dati relativi al proprio account, incluso il piano di'iscrizione, utilizzando la pagina accessibile clickando sul 
+bottone in alto a sinistra *settings*, solo dopo aver loggato.
+** Note
+Trattandosi di un interfaccia "simulativa", in quanto la principale materia d'interesse è la struttura della base di dati su cui poggia, la 
+riproduzione effettiva dei brani non è stata implementata, e non esistono fisicamente file Mp3 caricati all'interno della base di dati, è stato
+tuttavia implementato un semplice e rudimentale riproduttore in poche righe di javascript atto a dare un'idea dell'effettivo utilizzo che una 
+completa implementazione della piattaforma porterebbe ad avere. Non sono stati scritti controlli di alcun tipo sull'input da parte dell'utente.
