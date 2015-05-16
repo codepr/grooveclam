@@ -1,4 +1,0 @@
-* Progettazione concettuale
-** Classi
-- *User*: Rappresenta un utente del servizio.
-  - IdUser: String <<PK>>
