@@ -79,5 +79,19 @@ class User {
 			'password' => $data['Password']
 		));
 	}
+    // follow an User
+    public static function follow($id, $uid) {
+        $id = intval($id);
+        $db = Db::getInstance();
+        $req = $db->prepare('INSERT INTO Follow(`IdUser`, `IdFellow`) VALUES(:uid, :id)');
+        $req->execute(array('id' => $id, 'uid' => $uid));
+    }
+    // unfollow an User
+    public static function follow($id, $uid) {
+        $id = intval($id);
+        $db = Db::getInstance();
+        $req = $db->prepare('DELETE FROM Follow WHERE IdUser = :uid AND IdFellow = :id');
+        $req->execute(array('id' => $id, 'uid' => $uid));
+    }
 }
 ?>

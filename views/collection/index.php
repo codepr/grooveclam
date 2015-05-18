@@ -10,6 +10,7 @@
 		<?php if(isset($_SESSION['logged'])) {
 			echo "<th></th>\n";
 		} ?>
+        <th></th>
 	</tr>
 </thead>
 <tbody>
@@ -23,6 +24,7 @@
 		<?php if(isset($_SESSION['logged'])) { ?>
 		<td><a href='?controller=queue&action=addsong&id=<?php echo $song->id(); ?>'>&crarr;</a></td>
 		<?php } ?>
+        <td><a href="#" onclick="play('<?php echo $song->duration() . '\'',',\'' . addslashes($song->title()) . '\'',',\'' . $song->id(); ?>');">&#9654;</a></td>
 	</tr>
 <?php } ?>
 </tbody>

@@ -36,5 +36,15 @@ class SongsController {
             Header('Location:/basidati/~abaldan/?controller=songs&action=index');
         }
     }
+    public function addheard() {
+        if(isset($_SESSION['logged'])) {
+            if(!isset($_GET['id'])){ 
+                return call('pages', 'error');
+            } else {
+                Song::addheard($_GET['id'], $_SESSION['uid']);
+                exit;
+            }
+        }
+    }
 }
 ?>

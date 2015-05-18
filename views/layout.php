@@ -72,7 +72,7 @@
      // add listener to stop button
      com_2.addEventListener("click", stop);
      // simulate song play
-     function play(end, title) {
+     function play(end, title, id) {
          com_2.click(); // better reset triggering click stop()
          min.innerHTML = "00";
          sec.innerHTML = "00";
@@ -88,6 +88,10 @@
          progressbar.style.transition="all " + threshold + "s linear";
          progressbar.style.width="100%";
          document.getElementById("limits").innerHTML=end;
+         // add to Heard table
+         xmlhttp = new XMLHttpRequest();
+         xmlhttp.open("GET", "?controller=songs&action=addheard&id=" + id, true);
+         xmlhttp.send();
      }
      // simulate a counter to the end of the song
      function countUp() {

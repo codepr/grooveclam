@@ -197,5 +197,5 @@ INSERT INTO Heard(`IdUser`, `IdSong`, `TimeStamp`)
        (2, 9, '2015-04-30 21:12:52'),
        (2, 1, '2015-05-02 22:21:22');
 -- Insert into Follow
--- INSERT INTO Follow(`IdUser`, `IdFellow`) VALUES(1, 2), (1, 3);
+INSERT INTO Follow(`IdUser`, `IdFellow`) VALUES(1, 2), (1, 3), (2, 1), (3, 1);
 SET FOREIGN_KEY_CHECKS = 1;

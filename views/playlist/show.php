@@ -6,6 +6,7 @@
 		<th>Genre</th>
 		<th>Duration (min)</th>
 		<th>Album</th>
+        <th></th>
 	</tr>
 </thead>
 <tbody>
@@ -15,6 +16,7 @@
 		<td><?php echo $song->genre(); ?></td>
 		<td><?php echo $song->duration(); ?></td>
 		<td><a href='?controller=albums&action=show&id=<?php echo $song->idalbum(); ?>'><?php echo $song->album(); ?></a></td>
+        <td><a href="#" onclick="play('<?php echo $song->duration() . '\'',',\'' . addslashes($song->title()) . '\'',',\'' . $song->id(); ?>');">&#9654;</a></td>
 	</tr>
 <?php } ?>
 </tbody>

@@ -111,7 +111,7 @@ class Song {
 	public static function lastweekplay() {
 		$list = array();
 		$db = Db::getInstance();
-		$req = $db->query('SELECT s.IdSong, s.Title, COUNT(h.IdSong) AS played FROM Song s INNER JOIN Heard h ON(s.IdSong = h.IdSong) WHERE h.Timestamp BETWEEN ADDDATE(CURDATE(), - 7) AND CURDATE() GROUP BY h.IdSong ORDER BY played DESC LIMIT 10');
+		$req = $db->query('SELECT s.IdSong, s.Title, COUNT(h.IdSong) AS played FROM Song s INNER JOIN Heard h ON(s.IdSong = h.IdSong) WHERE h.TimeStamp BETWEEN ADDDATE(CURDATE(), - 7) AND NOW() GROUP BY h.IdSong ORDER BY played DESC LIMIT 10');
 		foreach ($req->fetchAll() as $result) {
 			$list[] = array('id' => $result['IdSong'], 'Title' => $result['Title'], 'Count' => $result['played']);
 		}
@@ -124,8 +124,8 @@ class Song {
 		$db = Db::getInstance();
 		$query = 'SELECT s.IdSong, s.Title, a.IdAlbum, a.Title AS AlbumTitle, u.Username, u.IdUser FROM Song s INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum) '.
 			'INNER JOIN Heard h ON(s.IdSong = h.IdSong) INNER JOIN Follow f ON(h.IdUser = f.IdFellow) INNER JOIN User u ON(u.IdUser = f.IdFellow) '.
-			'WHERE h.Timestamp BETWEEN ADDDATE(CURDATE(), -7) AND CURDATE() AND u.IdUser IN '.
-			'(SELECT u.IdUser FROM User u INNER JOIN Follow f ON(u.IdUser = f.IdFellow) WHERE f.IdUser = :id) ORDER BY h.Timestamp DESC LIMIT 10';
+			'WHERE h.TimeStamp BETWEEN ADDDATE(CURDATE(), -7) AND NOW() AND u.IdUser IN '.
+			     '(SELECT u.IdUser FROM User u INNER JOIN Follow f ON(u.IdUser = f.IdFellow) WHERE f.IdUser = :id) ORDER BY h.TimeStamp DESC LIMIT 10';
 		$req = $db->prepare($query);
 		$req->execute(array('id' => $id));
 		foreach ($req->fetchAll() as $result) {
@@ -139,6 +139,14 @@ class Song {
 			);
 		}
 		return $list;
-	}
+    }
+    // add a song to heard table
+    public static function addheard($id, $uid) {
+        $id = intval($id);
+        $uid = intval($uid);
+        $db = Db::getInstance();
+        $req = $db->prepare('INSERT INTO Heard (`IdUser`, `IdSong`, `TimeStamp`) VALUES(:uid, :id, NOW())');
+        $req->execute(array('id' => $id, 'uid' => $uid));
+    }
 }
 ?>

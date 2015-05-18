@@ -24,6 +24,7 @@ foreach ($genre as $key => $g) {
 		<th>Title</th>
 		<th>Genre</th>
 		<th>Duration (min)</th>
+        <th></th>
 	</tr>
 </thead>
 <tbody>
@@ -32,6 +33,7 @@ foreach ($genre as $key => $g) {
 		<td><a href='?controller=songs&action=show&id=<?php echo $song->id(); ?>'><?php echo $song->title(); ?></a></td>
 		<td><?php echo $song->genre(); ?></td>
 		<td><?php echo $song->duration(); ?></td>
+        <td><a href="#" onclick="play('<?php echo $song->duration() . '\'',',\'' . addslashes($song->title()) . '\'',',\'' . $song->id(); ?>');">&#9654;</a></td>
 	</tr>
 <?php } ?>
 </tbody>
