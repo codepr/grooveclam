@@ -1,0 +1,22 @@
+DROP TRIGGER IF EXISTS checkDuration;
+DROP TRIGGER IF EXISTS errorTrigger;
+
+DELIMITER $$
+
+CREATE TRIGGER checkDuration
+BEFORE INSERT ON `Song`
+FOR EACH ROW
+BEGIN
+IF(NEW.Duration < 0) THEN
+    CALL RAISE_ERROR('Song duration cannot be negative');
+END IF;
+END $$
+
+CREATE TRIGGER errorTrigger
+BEFORE INSERT ON `Errors`
+FOR EACH ROW
+BEGIN
+    SET NEW = NEW.error;
+END $$
+
+DELIMITER ;
