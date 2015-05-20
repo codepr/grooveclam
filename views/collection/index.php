@@ -18,7 +18,7 @@
 	<tr>
 		<td><a href='?controller=songs&action=show&id=<?php echo $song->id(); ?>'><?php echo $song->title(); ?></a></td>
 		<td><?php echo $song->genre(); ?></td>
-		<td><?php echo $song->duration(); ?></td>
+		<td><?php echo floor($song->duration() / 60).":".($song->duration() % 60); ?></td>
 		<td><a href='?controller=albums&action=show&id=<?php echo $song->idalbum(); ?>'><?php echo $song->album(); ?></a></td>
 		<td><a href='?controller=collection&action=remove&id=<?php echo $song->id(); ?>&idc=<?php echo $collection->id(); ?>'>&#10008</a></td>
 		<?php if(isset($_SESSION['logged'])) { ?>

@@ -56,13 +56,15 @@ class Song {
 	}
 	// add a song to the database
 	public static function add($song) {
+        $duration = split('[:.]', $song['Duration']);
+        $duration = ($duration[0] * 60) + $duration[1];
 		$db = Db::getInstance();
 		$req = $db->prepare('INSERT INTO SONG (IdAlbum, Title, Genre, Duration, IdImage) VALUES (:IdAlbum, :Title, :Genre, :Duration, :IdImage)');
 		$req->execute(array(
 			'IdAlbum' => $song['IdAlbum'],
 			'Title' => $song['Title'],
 			'Genre' => $song['Genre'],
-			'Duration' => $song['Duration'],
+			'Duration' => $duration,
 			'IdImage' => $song['IdImage']
 			)
 		);

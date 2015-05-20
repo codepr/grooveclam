@@ -5,7 +5,7 @@
 <h5>Genre</h5>
 <p>
 <?php
-$genre = [];
+$genre = array();
 $count = 0;
 foreach ($album->songs() as $value) {
 	$genre[$value->genre()] = $count++;
@@ -32,7 +32,7 @@ foreach ($genre as $key => $g) {
 	<tr>
 		<td><a href='?controller=songs&action=show&id=<?php echo $song->id(); ?>'><?php echo $song->title(); ?></a></td>
 		<td><?php echo $song->genre(); ?></td>
-		<td><?php echo $song->duration(); ?></td>
+		<td><?php echo floor($song->duration() / 60).":".($song->duration() % 60); ?></td>
         <td><a href="#" onclick="play('<?php echo $song->duration() . '\'',',\'' . addslashes($song->title()) . '\'',',\'' . $song->id(); ?>');">&#9654;</a></td>
 	</tr>
 <?php } ?>

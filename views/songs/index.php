@@ -2,7 +2,7 @@
 <?php if(isset($_SESSION['logged'])) { ?>
     <div class="addstuff">
         <div class="addstuff-circle">
-            <a class="addstuff" href="?controller=songs&action=addnew">&#10133</a>
+            <a class="addstuff" href="?controller=songs&action=addnew">&#10133;</a>
         </div>
     </div>
 <?php } ?>
@@ -22,7 +22,7 @@
 	<tr>
 		<td><a href='?controller=songs&action=show&id=<?php echo $song->id(); ?>'><?php echo $song->title(); ?></a></td>
 		<td><?php echo $song->genre(); ?></td>
-		<td><?php echo $song->duration(); ?></td>
+		<td><?php echo floor($song->duration() / 60).":".($song->duration() % 60); ?></td>
 		<td><a href='?controller=albums&action=show&id=<?php echo $song->idalbum(); ?>'><?php echo $song->album(); ?></a></td>
 		<?php if(isset($_SESSION['logged'])) {
 			if(in_array($song->id(), $got)) {

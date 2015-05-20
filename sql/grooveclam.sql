@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `Song` (
 	`IdAlbum` INT(11) NOT NULL,
 	`Title` VARCHAR(140) NOT NULL,
 	`Genre` VARCHAR(40) NOT NULL,
-	`Duration` FLOAT,
+	`Duration` INT(11),
 	`IdImage` INT(11) NOT NULL,
 	PRIMARY KEY(`IdSong`),
 	FOREIGN KEY(`IdAlbum`) REFERENCES Album(`IdAlbum`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -51,17 +51,6 @@ CREATE TABLE IF NOT EXISTS `Follow` (
 	FOREIGN KEY(`IdFellow`) REFERENCES User(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE,
 	CHECK(`IdUser` != `IdFellow`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
--- Table SharedPlaylist
--- CREATE TABLE IF NOT EXISTS `SharedPlaylist` (
--- 	`IdUser` INT(11) NOT NULL,
--- 	`IdFellow` INT(11) NOT NULL,
--- 	`IdPlaylist` INT(11) NOT NULL,
--- 	CONSTRAINT PRIMARY KEY pk(`IdUser`, `IdFellow`, `IdPlaylist`),
--- 	FOREIGN KEY(`IdUser`) REFERENCES User(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE,
--- 	FOREIGN KEY(`IdFellow`) REFERENCES User(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE,
--- 	FOREIGN KEY(`IdPlaylist`) REFERENCES Playlist(`IdPlaylist`) ON DELETE CASCADE ON UPDATE CASCADE,
--- 	CHECK(`IdUser` != `IdFellow`)
--- ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 -- Table Subscription
 CREATE TABLE IF NOT EXISTS `Subscription` (
 	`IdUser` INT(10) NOT NULL,
@@ -102,11 +91,6 @@ CREATE TABLE IF NOT EXISTS `PlaylistSong` (
 	FOREIGN KEY(`IdSong`) REFERENCES Song(`IdSong`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 -- Table Queue
--- CREATE TABLE IF NOT EXISTS `Queue` (
--- 	`IdUser` INT(11) NOT NULL,
--- 	FOREIGN KEY(`IdUser`) REFERENCES User(`IdUser`) ON DELETE CASCADE ON UPDATE CASCADE
--- ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
--- Table Queue
 CREATE TABLE IF NOT EXISTS `Queue` (
 	`IdUser` INT(11) NOT NULL,
 	`IdSong` INT(11) NOT NULL,
@@ -144,28 +128,28 @@ INSERT INTO Album(`Title`, `Author`, `Info`, `Year`, `Live`, `Location`)
              ('Greatest Hits', 'Neil Young', 'Rock & Folk Rock greatest success songs by Neil Young', '2004-06-21', 0, NULL);
 -- Insert into Song
 INSERT INTO Song(`IdAlbum`, `Title`, `Genre`, `Duration`, `IdImage`)
-       VALUES(1, 'Mind Heist', 'Orchestra', 3.23, 1),
-             (1, 'Dream is collapsing', 'Orchestra', 4.41, 1),
-             (1, 'Time', 'Orchestra', 3.35, 1),
-             (1, 'Half Remembered Dream', 'Orchestra', 1.11, 1),
-             (1, 'We Built Our Own World', 'Orchestra', 1.55, 1),
-             (1, 'Radical Notion', 'Orchestra', 3.42, 1),
-             (1, 'Paradox', 'Orchestra', 3.25, 1),
-             (2, 'Il Tramonto', 'Orchestra', 1.12, 2),
-             (2, 'L\'estasi dell\'oro', 'Orchestra', 3.22, 2),
-             (2, 'Morte di un soldato', 'Orchestra', 3.05, 2),
-             (2, 'Il Triello', 'Orchestra', 7.14, 2),
-             (3, 'The Simpsons', 'Orchestra', 2.52, 3),
-             (3, 'The war of the Roses', 'Orchestra', 4.32, 3),
-             (4, 'Somewhat Damaged', 'Industrial Metal', 4.31, 4),
-             (4, 'The Day The Whole World Went Away', 'Industrial Metal', 4.33, 4),
-             (4, 'We\'re In This Together', 'Industrial Metal', 7.16, 4),
-             (4, 'Just Like You Imagined', 'Industrial Metal', 3.49, 4),
-             (4, 'The Great Below', 'Industrial Metal', 5.17, 4),
-             (5, 'Hurt', 'Country', 3.38, 5),
-             (5, 'Danny Boy', 'Country', 3.19, 5),
-             (6, 'Old Man', 'Rock', 3.23, 6),
-             (6, 'Southern Man', 'Rock', 5.31, 6);
+       VALUES(1, 'Mind Heist', 'Orchestra', 203, 1),
+             (1, 'Dream is collapsing', 'Orchestra', 281, 1),
+             (1, 'Time', 'Orchestra', 215, 1),
+             (1, 'Half Remembered Dream', 'Orchestra', 71, 1),
+             (1, 'We Built Our Own World', 'Orchestra', 115, 1),
+             (1, 'Radical Notion', 'Orchestra', 222, 1),
+             (1, 'Paradox', 'Orchestra', 205, 1),
+             (2, 'Il Tramonto', 'Orchestra', 72, 2),
+             (2, 'L\'estasi dell\'oro', 'Orchestra', 202, 2),
+             (2, 'Morte di un soldato', 'Orchestra', 185, 2),
+             (2, 'Il Triello', 'Orchestra', 434, 2),
+             (3, 'The Simpsons', 'Orchestra', 172, 3),
+             (3, 'The war of the Roses', 'Orchestra', 272, 3),
+             (4, 'Somewhat Damaged', 'Industrial Metal', 271, 4),
+             (4, 'The Day The Whole World Went Away', 'Industrial Metal', 273, 4),
+             (4, 'We\'re In This Together', 'Industrial Metal', 436, 4),
+             (4, 'Just Like You Imagined', 'Industrial Metal', 229, 4),
+             (4, 'The Great Below', 'Industrial Metal', 317, 4),
+             (5, 'Hurt', 'Country', 218, 5),
+             (5, 'Danny Boy', 'Country', 199, 5),
+             (6, 'Old Man', 'Rock', 203, 6),
+             (6, 'Southern Man', 'Rock', 331, 6);
 -- Insert into Cover
 INSERT INTO Cover(`IdImage`, `IdAlbum`, `Path`)
        VALUES(1, 1, 'img/covers/inception.png'),

@@ -46,10 +46,11 @@ class Playlist {
 		$req->execute(array('id' => $id));
 		$res = $req->fetchAll();
 		foreach ($res as $duration) {
-			$intpart = intval($duration['Duration']);
-			$fltpart = $duration['Duration'] - $intpart;
-			$seconds += ($intpart * 60) + ($fltpart * 100);
-			$dur += $seconds;
+			/* $intpart = intval($duration['Duration']);
+			   $fltpart = $duration['Duration'] - $intpart;
+			   $seconds += ($intpart * 60) + ($fltpart * 100); 
+			   $dur += $seconds; */
+            $dur += $duration['Duration'];
 		}
 		$dur = floor($dur / 60).":".($dur % 60);
 		return array('count' => count($res), 'duration' => $dur);

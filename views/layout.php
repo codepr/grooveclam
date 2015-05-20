@@ -81,13 +81,12 @@
          tot = 0;
          document.getElementById("player").style.visibility = "visible";
          clearInterval(timer);
-         var time = end.split(".");
-         threshold = (parseInt(time[0]) * 60) + parseInt(time[1]);
+         threshold = end;
          document.getElementById("songtitle").innerHTML = title;
          timer = setInterval(countUp, 1000);
          progressbar.style.transition="all " + threshold + "s linear";
          progressbar.style.width="100%";
-         document.getElementById("limits").innerHTML=end;
+         document.getElementById("limits").innerHTML=Math.floor(end / 60) + "." + (end % 60);
          // add to Heard table
          xmlhttp = new XMLHttpRequest();
          xmlhttp.open("GET", "?controller=songs&action=addheard&id=" + id, true);

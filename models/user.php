@@ -87,7 +87,7 @@ class User {
         $req->execute(array('id' => $id, 'uid' => $uid));
     }
     // unfollow an User
-    public static function follow($id, $uid) {
+    public static function unfollow($id, $uid) {
         $id = intval($id);
         $db = Db::getInstance();
         $req = $db->prepare('DELETE FROM Follow WHERE IdUser = :uid AND IdFellow = :id');

@@ -51,9 +51,7 @@ class Album {
 	public function totalDuration() {
 		$seconds = 0;
 		foreach ($this->songs() as $song) {
-			$intpart = intval($song->duration());
-			$fltpart = $song->duration() - $intpart;
-			$seconds += ($intpart * 60) + ($fltpart * 100);
+            $seconds += $song->duration();
 		}
 		return floor($seconds / 60).":".($seconds % 60);
 	}
@@ -98,7 +96,7 @@ class Album {
 		$req = $db->prepare('SELECT a.IdAlbum, a.Live, a.Location, a.Info, a.Title as AlbumTitle, a.Author, s.*, c.Path FROM Album a INNER JOIN Song s ON(a.IdAlbum = s.IdAlbum) INNER JOIN Cover c ON(a.IdAlbum = c.IdAlbum) WHERE a.IdAlbum = :id');
 		$req->execute(array('id' => $id));
 		foreach($req->fetchAll() as $song) {
-			$songs[] = new Song($song['IdSong'], $song['Title'],$song['Genre'], $song['Duration'], $song['Author'], $song['IdAlbum'], $song['AlbumTitle']);
+			$songs[] = new Song($song['IdSong'], $song['Title'], $song['Genre'], $song['Duration'], $song['Author'], $song['IdAlbum'], $song['AlbumTitle']);
 		}
 		if(!isset($song['Path'])) {
 			$song['Path'] = '';
