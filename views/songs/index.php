@@ -22,7 +22,7 @@
 	<tr>
 		<td><a href='?controller=songs&action=show&id=<?php echo $song->id(); ?>'><?php echo $song->title(); ?></a></td>
 		<td><?php echo $song->genre(); ?></td>
-		<td><?php echo floor($song->duration() / 60).":".($song->duration() % 60); ?></td>
+		<td><?php echo floor($song->duration() / 60).":".sprintf('%02s', ($song->duration() % 60)); ?></td>
 		<td><a href='?controller=albums&action=show&id=<?php echo $song->idalbum(); ?>'><?php echo $song->album(); ?></a></td>
 		<?php if(isset($_SESSION['logged'])) {
 			if(in_array($song->id(), $got)) {

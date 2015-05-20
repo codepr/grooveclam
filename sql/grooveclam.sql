@@ -130,11 +130,11 @@ CREATE TABLE IF NOT EXISTS `Heard` (
 -- INSERT POPULATION
 -- Insert into User
 INSERT INTO User(`Name`, `Surname`, `Email`, `Administrator`, `Username`, `Password`)
-       VALUES('Andrea', 'Baldan', 'a.g.baldan@gmail.com', 0, 'codep', 'ciao'),
-	         ('Federico', 'Angi', 'angiracing@gmail.com', 0, 'keepcalm', 'calm'),
-	         ('Marco', 'Rossi', 'rossi@gmail.com', 0, 'rossi', 'marco'),
-             ('Luca', 'Verdi', 'verdi@yahoo.it', 0, 'verdi', 'luca'),
-             ('Alessia', 'Neri', 'neri@gmail.com', 0, 'neri', 'alessia');
+       VALUES('Andrea', 'Baldan', 'a.g.baldan@gmail.com', 0, 'codep', MD5('ciao')),
+	         ('Federico', 'Angi', 'angiracing@gmail.com', 0, 'keepcalm', MD5('calm')),
+	         ('Marco', 'Rossi', 'rossi@gmail.com', 0, 'rossi', MD5('marco')),
+             ('Luca', 'Verdi', 'verdi@yahoo.it', 0, 'verdi', MD5('luca')),
+             ('Alessia', 'Neri', 'neri@gmail.com', 0, 'neri', MD5('alessia'));
 -- Insert into Subscrition
 INSERT INTO Subscription(`IdUser`, `Type`) VALUES(1, 'Free'), (2, 'Free');
 -- Insert into Album

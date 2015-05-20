@@ -34,7 +34,7 @@ class User {
 	public static function checkuser($uname, $passw) {
 		$db = Db::getInstance();
 		$req = $db->prepare('SELECT * FROM User WHERE Username = :username AND Password = :password');
-		$req->execute(array('username' => $uname, 'password' => $passw));
+		$req->execute(array('username' => $uname, 'password' => md5($passw)));
 		$u = $req->fetch();
 		if($u) {
 			return new User($u['IdUser'], $u['Name'], $u['Email'], $u['Username'], $u['Password']);

@@ -347,11 +347,11 @@ CREATE TABLE IF NOT EXISTS `Heard` (
 -- INSERT POPULATION
 -- Insert into User
 INSERT INTO User(`Name`, `Surname`, `Email`, `Administrator`, `Username`, `Password`)
-       VALUES('Andrea', 'Baldan', 'a.g.baldan@gmail.com', 0, 'codep', 'ciao'),
-	         ('Federico', 'Angi', 'angiracing@gmail.com', 0, 'keepcalm', 'calm'),
-	         ('Marco', 'Rossi', 'rossi@gmail.com', 0, 'rossi', 'marco'),
-             ('Luca', 'Verdi', 'verdi@yahoo.it', 0, 'verdi', 'luca'),
-             ('Alessia', 'Neri', 'neri@gmail.com', 0, 'neri', 'alessia');
+       VALUES('Andrea', 'Baldan', 'a.g.baldan@gmail.com', 0, 'codep', MD5('ciao')),
+	         ('Federico', 'Angi', 'angiracing@gmail.com', 0, 'keepcalm', MD5('calm')),
+	         ('Marco', 'Rossi', 'rossi@gmail.com', 0, 'rossi', MD5('marco')),
+             ('Luca', 'Verdi', 'verdi@yahoo.it', 0, 'verdi', MD5('luca')),
+             ('Alessia', 'Neri', 'neri@gmail.com', 0, 'neri', MD5('alessia'));
 -- Insert into Subscrition
 INSERT INTO Subscription(`IdUser`, `Type`) VALUES(1, 'Free'), (2, 'Free');
 -- Insert into Album
@@ -494,6 +494,26 @@ FROM Song s INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum)
 WHERE h.Timestamp BETWEEN ADDDATE(CURDATE(), -7) AND CURDATE()
 	AND u.IdUser IN (SELECT u.IdUser FROM User u INNER JOIN Follow f ON(f.IdFellow = u.IdUser) WHERE f.IdUser = 1)
 	ORDER BY h.Timestamp DESC LIMIT 10;
+\end{lstlisting}
+#+END_LaTeX
+2. Username e numero di volte che è stata ascoltata la canzone Paradox dai follower dell'user id 1
+#+BEGIN_LaTeX
+\begin{lstlisting}[language=SQL]
+SELECT COUNT(s.IdSong) AS Conto, u.Username 
+FROM Song s INNER JOIN Heard h ON(s.IdSong = h.IdSong) 
+            INNER JOIN Follow f ON(h.IdUser = f.IdFellow)
+            INNER JOIN User u ON(f.IdFellow = u.IdUser) 
+WHERE s.Title = 'Paradox' AND f.IdUser = 1 GROUP BY u.Username ORDER BY Conto DESC;
+\end{lstlisting}
+#+END_LaTeX
+3. Username, titolo e conto delle canzoni piu ascoltate dai follower dell'user id 1
+#+BEGIN_LaTeX
+\begin{lstlisting}[language=SQL]
+SELECT u.Username, s.Title, COUNT(s.IdSong) AS Conto 
+FROM Song s INNER JOIN Heard h ON(s.IdSong = h.IdSong) 
+            INNER JOIN Follow f ON(h.IdUser = f.IdFellow)
+            INNER JOIN User u ON(f.IdFellow = u.IdUser) 
+WHERE f.IdUser = 1 GROUP BY s.Title ORDER BY Conto DESC;
 \end{lstlisting}
 #+END_LaTeX
 * Interfaccia Web

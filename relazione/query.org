@@ -18,3 +18,16 @@ FROM Song s INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum)
 WHERE h.Timestamp BETWEEN ADDDATE(CURDATE(), -7) AND CURDATE()
 	AND u.IdUser IN (SELECT u.IdUser FROM User u INNER JOIN Follow f ON(f.IdFellow = u.IdUser) WHERE f.IdUser = 1)
 	ORDER BY h.Timestamp DESC LIMIT 10;
+* username e numero di volte che è stata ascoltata la canzone Mind Heist dai follower dell'user id 1
+SELECT COUNT(s.IdSong) AS Conto, u.Username 
+FROM Song s INNER JOIN Heard h ON(s.IdSong = h.IdSong) 
+            INNER JOIN Follow f ON(h.IdUser = f.IdFellow)
+            INNER JOIN User u ON(f.IdFellow = u.IdUser) 
+WHERE s.Title = 'Mind Heist' AND f.IdUser = 1 GROUP BY u.Username ORDER BY Conto DESC;
+* username, titolo e conto delle canzoni piu ascoltate dai follower dell'user id 1
+SELECT u.Username, s.Title, COUNT(s.IdSong) AS Conto 
+FROM Song s INNER JOIN Heard h ON(s.IdSong = h.IdSong) 
+            INNER JOIN Follow f ON(h.IdUser = f.IdFellow)
+            INNER JOIN User u ON(f.IdFellow = u.IdUser) 
+WHERE f.IdUser = 1 GROUP BY s.Title ORDER BY Conto DESC;
+
