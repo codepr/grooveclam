@@ -539,6 +539,19 @@ FROM Brani b INNER JOIN Ascoltate h ON(b.IdBrano = h.IdBrano)
 WHERE f.IdUtente = 1 GROUP BY b.Titolo ORDER BY Conto DESC;
 \end{lstlisting}
 #+END_LaTeX
+4. Username e numero brani nella collezione dell'utente con più canzoni di genere 'Orchestra'
+#+BEGIN_LaTeX
+\begin{lstlisting}[language=SQL]
+DROP VIEW IF EXISTS ContoBrani;
+CREATE VIEW ContoBrani AS
+SELECT u.Username, COUNT(b.Genere) as Conteggio
+FROM Brani b INNER JOIN BraniCollezione bc ON(b.IdBrano = bc.IdBrano)
+             INNER JOIN Collezioni c ON(bc.IdCollezione = c.IdCollezione)
+             INNER JOIN Utenti u ON(c.IdUtente = u.IdUtente)
+WHERE b.Genere = 'Orchestra' GROUP BY c.IdUtente;
+SELECT * FROM ContoBrani HAVING MAX(Conteggio);
+\end{lstlisting}
+#+END_LaTeX
 * Interfaccia Web
 Per l'interfaccia web è stato seguito un pattern MVC molto rudimentale, che tuttavia ha permesso di semplificarne la realizzazione modularizzando
 le operazione da effettuare sulla base di dati mediante le pagine.
