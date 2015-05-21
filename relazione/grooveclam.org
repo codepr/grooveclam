@@ -472,6 +472,7 @@ END $$
 DELIMITER ;
 
 DROP PROCEDURE IF EXISTS RAISE_ERROR;
+DROP PROCEDURE IF EXISTS GENRE_DISTRIBUTION;
 
 DELIMITER $$
 
@@ -480,6 +481,24 @@ BEGIN
 DECLARE V_ERROR VARCHAR(256);
 SET V_ERROR := CONCAT('[ERROR: ', ERROR, ']');
 INSERT INTO Errors VALUES(V_ERROR);
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE PROCEDURE GENRE_DISTRIBUTION()
+BEGIN
+DECLARE Total INT DEFAULT 0;
+DROP TEMPORARY TABLE IF EXISTS `Distribution`;
+CREATE TEMPORARY TABLE `Distribution` (
+       `Genere` VARCHAR(100),
+       `Percentuale` VARCHAR(6)
+) ENGINE=InnoDB;
+SELECT count(b.Genere) INTO Total FROM Brani b;
+INSERT INTO Distribution (Genere, Percentuale)
+SELECT Genere, CONCAT(FLOOR((count(Genere) / Total) * 100), "%")
+FROM Brani GROUP BY Genere;
 END $$
 
 DELIMITER ;
@@ -554,6 +573,10 @@ e gestione di una personale collezione è necessario registrarsi e loggare utili
 gestione delle sessioni mediante la classe singleton /GrooveSession/, nel file session.php.\\
 Essa contiene i campi dati basilari quali l'id della sessione che si va a creare e l'istanza dell'oggetto che la contiene, e i metodi necessari alla 
 gestione con la possibilità di aggiungere variabili utili.
+Alcuni account di prova:
+- codep : ciao
+- rossi : marco
+- verdi : luca
 ** Note
 Trattandosi di un interfaccia "simulativa", in quanto la principale materia d'interesse è la struttura della base di dati su cui poggia, la 
 riproduzione effettiva dei brani non è stata implementata, e non esistono fisicamente file Mp3 caricati all'interno della base di dati, è stato

@@ -1,8 +1,8 @@
-DROP FUNCTION IF EXISTS AlbumTotalDuration;
+DROP FUNCTION IF EXISTS albumTotalDuration;
 
 DELIMITER $$
 
-CREATE FUNCTION AlbumTotalDuration(IdAlbum INT)
+CREATE FUNCTION albumTotalDuration(IdAlbum INT)
 RETURNS VARCHAR(5)
 BEGIN
 DECLARE Seconds INT UNSIGNED;
