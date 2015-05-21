@@ -16,12 +16,10 @@ class Queue {
 		$tstamps = array();
 		$db = Db::getInstance();
 		$id = intval($id);
-		$req = $db->prepare('SELECT s.*, qs.TimeStamp, a.Author, a.Title as AlbumTitle FROM Song s INNER JOIN Queue qs ON(s.IdSong = qs.IdSong) INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum) WHERE qs.IdUser = :id');
+		$req = $db->prepare('SELECT s.*, qs.Timestamp, a.Autore, a.Titolo as AlbumTitle FROM Brani s INNER JOIN Code qs ON(s.IdBrano = qs.IdBrano) INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum) WHERE qs.IdUtente = :id');
 		$req->execute(array('id' => $id));
 		foreach($req->fetchAll() as $song) {
-			// $tstamps = date_create($song['TimeStamp']);
-			// date_format($tstamps, 'd-m-Y H:i:s');
-			$list[$song['TimeStamp']] = new Song($song['IdSong'], $song['Title'], $song['Genre'], $song['Duration'], $song['Author'], $song['IdAlbum'], $song['AlbumTitle']);
+			$list[$song['Timestamp']] = new Song($song['IdBrano'], $song['Titolo'], $song['Genere'], $song['Durata'], $song['Autore'], $song['IdAlbum'], $song['AlbumTitle']);
 		}
 		return new Queue($list);
 	}
@@ -30,7 +28,7 @@ class Queue {
 		$db = Db::getInstance();
 		$id = intval($id);
 		$uid = intval($uid);
-		$req = $db->prepare('INSERT INTO Queue VALUES(:uid, :id, NOW())');
+		$req = $db->prepare('INSERT INTO Code VALUES(:uid, :id, NOW())');
 		$req->execute(array('uid' => $uid, 'id' => $id));
 	}
 }

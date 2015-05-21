@@ -49,7 +49,7 @@ class Song {
 	// get album cover path
 	public function cover() {
 		$db = Db::getInstance();
-		$req = $db->prepare('SELECT c.Path FROM Cover c INNER JOIN Album a ON(c.IdAlbum = a.IdAlbum) INNER JOIN Song s ON (s.IdAlbum = a.IdAlbum) WHERE a.IdAlbum = :id');
+		$req = $db->prepare('SELECT c.Path FROM Copertine c INNER JOIN Album a ON(c.IdAlbum = a.IdAlbum) INNER JOIN Brani s ON (s.IdAlbum = a.IdAlbum) WHERE a.IdAlbum = :id');
 		$req->execute(array('id' => $this->idalbum()));
 		$p = $req->fetch();
 		return $p['Path'];
@@ -59,7 +59,7 @@ class Song {
         $duration = split('[:.]', $song['Duration']);
         $duration = ($duration[0] * 60) + $duration[1];
 		$db = Db::getInstance();
-		$req = $db->prepare('INSERT INTO SONG (IdAlbum, Title, Genre, Duration, IdImage) VALUES (:IdAlbum, :Title, :Genre, :Duration, :IdImage)');
+		$req = $db->prepare('INSERT INTO Brani (IdAlbum, Titolo, Genere, Durata, IdImm) VALUES (:IdAlbum, :Title, :Genre, :Duration, :IdImage)');
 		$req->execute(array(
 			'IdAlbum' => $song['IdAlbum'],
 			'Title' => $song['Title'],
@@ -73,9 +73,9 @@ class Song {
 	public static function all() {
 		$list = array();
 		$db = Db::getInstance();
-		$req = $db->query('SELECT s.*, a.Author, a.Title as AlbumTitle FROM Song s INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum)');
+		$req = $db->query('SELECT s.*, a.Autore, a.Titolo as AlbumTitle FROM Brani s INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum)');
 		foreach($req->fetchAll() as $song) {
-			$list[] = new Song($song['IdSong'], $song['Title'], $song['Genre'], $song['Duration'], $song['Author'], $song['IdAlbum'], $song['AlbumTitle']);
+			$list[] = new Song($song['IdBrano'], $song['Titolo'], $song['Genere'], $song['Durata'], $song['Autore'], $song['IdAlbum'], $song['AlbumTitle']);
 		}
 		return $list;
 	}
@@ -83,18 +83,18 @@ class Song {
 	public static function find($id) {
 		$db = Db::getInstance();
 		$id = intval($id);
-		$req = $db->prepare('SELECT s.*, a.Author, a.Title as AlbumTitle FROM Song s INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum) WHERE IdSong = :id');
+		$req = $db->prepare('SELECT s.*, a.Autore, a.Titolo as AlbumTitle FROM Brani s INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum) WHERE IdBrano = :id');
 		$req->execute(array('id' => $id));
 		$song = $req->fetch();
-		return new Song($song['IdSong'], $song['Title'], $song['Genre'], $song['Duration'], $song['Author'], $song['IdAlbum'], $song['AlbumTitle']);
+		return new Song($song['IdBrano'], $song['Titolo'], $song['Genere'], $song['Durata'], $song['Autore'], $song['IdAlbum'], $song['AlbumTitle']);
 	}
 	// retrieve last 10 songs inserted
 	public static function lasten() {
 		$db = Db::getInstance();
-		$req = $db->query('SELECT s.IdSong, s.Title, s.Genre FROM Song s ORDER BY s.IdSong DESC LIMIT 10');
+		$req = $db->query('SELECT s.IdBrano, s.Titolo, s.Genere FROM Brani s ORDER BY s.IdBrano DESC LIMIT 10');
 		$list = array();
 		foreach ($req->fetchAll() as $result) {
-			$list[]	= array('id' => $result['IdSong'], 'Title' => $result['Title'], 'Genre' => $result['Genre']);
+			$list[]	= array('id' => $result['IdBrano'], 'Title' => $result['Titolo'], 'Genre' => $result['Genere']);
 		}
 		return $list;
 	}
@@ -102,10 +102,10 @@ class Song {
 	public static function got($id) {
 		$list = array();
 		$db = Db::getInstance();
-		$req = $db->prepare('SELECT s.IdSong FROM Song s INNER JOIN SongCollection sc ON(s.IdSong = sc.IdSong) INNER JOIN Collection c ON(sc.IdCollection = c.IdCollection) INNER JOIN User u ON(c.IdUser = u.IdUser) WHERE u.IdUser = :id');
+		$req = $db->prepare('SELECT s.IdBrano FROM Brani s INNER JOIN BraniCollezione sc ON(s.IdBrano = sc.IdBrano) INNER JOIN Collezioni c ON(sc.IdCollezione = c.IdCollezione) INNER JOIN Utenti u ON(c.IdUtente = u.IdUtente) WHERE u.IdUtente = :id');
 		$req->execute(array('id' => $id));
 		foreach ($req->fetchAll() as $got) {
-			$list[] = $got['IdSong'];
+			$list[] = $got['IdBrano'];
 		}
 		return $list;
 	}
@@ -113,9 +113,9 @@ class Song {
 	public static function lastweekplay() {
 		$list = array();
 		$db = Db::getInstance();
-		$req = $db->query('SELECT s.IdSong, s.Title, COUNT(h.IdSong) AS played FROM Song s INNER JOIN Heard h ON(s.IdSong = h.IdSong) WHERE h.TimeStamp BETWEEN ADDDATE(CURDATE(), - 7) AND NOW() GROUP BY h.IdSong ORDER BY played DESC LIMIT 10');
+		$req = $db->query('SELECT s.IdBrano, s.Titolo, COUNT(h.IdBrano) AS played FROM Brani s INNER JOIN Ascoltate h ON(s.IdBrano = h.IdBrano) WHERE h.Timestamp BETWEEN ADDDATE(CURDATE(), - 7) AND NOW() GROUP BY h.IdBrano ORDER BY played DESC LIMIT 10');
 		foreach ($req->fetchAll() as $result) {
-			$list[] = array('id' => $result['IdSong'], 'Title' => $result['Title'], 'Count' => $result['played']);
+			$list[] = array('id' => $result['IdBrano'], 'Title' => $result['Titolo'], 'Count' => $result['played']);
 		}
 		return $list;
 	}
@@ -124,19 +124,19 @@ class Song {
 		$list = array();
 		$id = intval($id);
 		$db = Db::getInstance();
-		$query = 'SELECT s.IdSong, s.Title, a.IdAlbum, a.Title AS AlbumTitle, u.Username, u.IdUser FROM Song s INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum) '.
-			'INNER JOIN Heard h ON(s.IdSong = h.IdSong) INNER JOIN Follow f ON(h.IdUser = f.IdFellow) INNER JOIN User u ON(u.IdUser = f.IdFellow) '.
-			'WHERE h.TimeStamp BETWEEN ADDDATE(CURDATE(), -7) AND NOW() AND u.IdUser IN '.
-			     '(SELECT u.IdUser FROM User u INNER JOIN Follow f ON(u.IdUser = f.IdFellow) WHERE f.IdUser = :id) ORDER BY h.TimeStamp DESC LIMIT 10';
+		$query = 'SELECT s.IdBrano, s.Titolo, a.IdAlbum, a.Titolo AS AlbumTitle, u.Username, u.IdUtente FROM Brani s INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum) '.
+			'INNER JOIN Ascoltate h ON(s.IdBrano = h.IdBrano) INNER JOIN Seguaci f ON(h.IdUtente = f.IdSeguace) INNER JOIN Utenti u ON(u.IdUtente = f.IdSeguace) '.
+			'WHERE h.Timestamp BETWEEN ADDDATE(CURDATE(), -7) AND NOW() AND u.IdUtente IN '.
+			     '(SELECT u.IdUtente FROM Utenti u INNER JOIN Seguaci f ON(u.IdUtente = f.IdSeguace) WHERE f.IdUtente = :id) ORDER BY h.Timestamp DESC LIMIT 10';
 		$req = $db->prepare($query);
 		$req->execute(array('id' => $id));
 		foreach ($req->fetchAll() as $result) {
 			$list[] = array(
-				'id' => $result['IdSong'],
-				'Title' => $result['Title'],
+				'id' => $result['IdUtente'],
+				'Title' => $result['Titolo'],
 				'AlbumTitle' => $result['AlbumTitle'],
 				'Username' => $result['Username'],
-				'IdUser' => $result['IdUser'],
+				'IdUser' => $result['IdUtente'],
 				'IdAlbum' => $result['IdAlbum']
 			);
 		}
@@ -147,7 +147,7 @@ class Song {
         $id = intval($id);
         $uid = intval($uid);
         $db = Db::getInstance();
-        $req = $db->prepare('INSERT INTO Heard (`IdUser`, `IdSong`, `TimeStamp`) VALUES(:uid, :id, NOW())');
+        $req = $db->prepare('INSERT INTO Ascoltate (`IdUtente`, `IdBrano`, `Timestamp`) VALUES(:uid, :id, NOW())');
         $req->execute(array('id' => $id, 'uid' => $uid));
     }
 }

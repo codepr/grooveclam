@@ -6,7 +6,7 @@ CREATE FUNCTION AlbumTotalDuration(IdAlbum INT)
 RETURNS VARCHAR(5)
 BEGIN
 DECLARE Seconds INT UNSIGNED;
-SELECT SUM(s.Duration) INTO Seconds FROM Song s WHERE s.IdAlbum = IdAlbum;
+SELECT SUM(b.Durata) INTO Seconds FROM Brani b WHERE b.IdAlbum = IdAlbum;
 RETURN CONCAT(FLOOR(Seconds / 60), ':', (Seconds % 60));
 END $$
 

@@ -4,19 +4,19 @@ DROP TRIGGER IF EXISTS errorTrigger;
 DELIMITER $$
 
 CREATE TRIGGER checkDuration
-BEFORE INSERT ON `Song`
+BEFORE INSERT ON `Brani`
 FOR EACH ROW
 BEGIN
-IF(NEW.Duration < 0) THEN
+IF(NEW.Durata < 0) THEN
     CALL RAISE_ERROR('Song duration cannot be negative');
 END IF;
 END $$
 
 CREATE TRIGGER errorTrigger
-BEFORE INSERT ON `Errors`
+BEFORE INSERT ON `Errori`
 FOR EACH ROW
 BEGIN
-    SET NEW = NEW.error;
+    SET NEW = NEW.errore;
 END $$
 
 DELIMITER ;

@@ -42,15 +42,11 @@ class Playlist {
 		$seconds = 0;
 		$id = intval($id);
 		$db = Db::getInstance();
-		$req = $db->prepare('SELECT s.Duration FROM Song s INNER JOIN PlaylistSong p ON(s.IdSong = p.IdSong) WHERE p.IdPlaylist = :id');
+		$req = $db->prepare('SELECT s.Durata FROM Brani s INNER JOIN BraniPlaylist p ON(s.IdBrano = p.IdBrano) WHERE p.IdPlaylist = :id');
 		$req->execute(array('id' => $id));
 		$res = $req->fetchAll();
 		foreach ($res as $duration) {
-			/* $intpart = intval($duration['Duration']);
-			   $fltpart = $duration['Duration'] - $intpart;
-			   $seconds += ($intpart * 60) + ($fltpart * 100); 
-			   $dur += $seconds; */
-            $dur += $duration['Duration'];
+            $dur += $duration['Durata'];
 		}
 		$dur = floor($dur / 60).":".($dur % 60);
 		return array('count' => count($res), 'duration' => $dur);
@@ -59,9 +55,9 @@ class Playlist {
 	public static function all() {
 		$list = array();
 		$db = Db::getInstance();
-		$req = $db->query('SELECT p.*, u.Username FROM Playlist p INNER JOIN User u ON(p.IdUser = u.IdUser) WHERE p.Private = FALSE');
+		$req = $db->query('SELECT p.*, u.Username FROM Playlist p INNER JOIN Utenti u ON(p.IdUtente = u.IdUtente) WHERE p.Privata = FALSE');
 		foreach($req->fetchAll() as $playlist) {
-			$list[] = new Playlist($playlist['IdPlaylist'], $playlist['Name'], array('IdUser' => $playlist['IdUser'], 'Username' => $playlist['Username']), array(), 0);
+			$list[] = new Playlist($playlist['IdPlaylist'], $playlist['Nome'], array('IdUtente' => $playlist['IdUtente'], 'Username' => $playlist['Username']), array(), 0);
 		}
 
 		return $list;
@@ -72,22 +68,22 @@ class Playlist {
 		$song;
 		$db = Db::getInstance();
 		$id = intval($id);
-		$req = $db->prepare('SELECT pl.IdPlaylist, pl.Name, pl.Private, s.*, a.Author, a.Title as AlbumTitle FROM Song s INNER JOIN PlaylistSong p ON(s.IdSong = p.IdSong) INNER JOIN Playlist pl ON(pl.IdPlaylist = p.IdPlaylist) INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum) WHERE pl.IdPlaylist = :id');
+		$req = $db->prepare('SELECT pl.IdPlaylist, pl.Nome, pl.Privata, s.*, a.Autore, a.Titolo as AlbumTitle FROM Brani s INNER JOIN BraniPlaylist p ON(s.IdBrano = p.IdBrano) INNER JOIN Playlist pl ON(pl.IdPlaylist = p.IdPlaylist) INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum) WHERE pl.IdPlaylist = :id');
 		$req->execute(array('id' => $id));
 		foreach($req->fetchAll() as $song) {
-			$songlist[] = new Song($song['IdSong'], $song['Title'], $song['Genre'], $song['Duration'], $song['Author'], $song['IdAlbum'], $song['AlbumTitle']);
+			$songlist[] = new Song($song['IdBrano'], $song['Titolo'], $song['Genere'], $song['Durata'], $song['Autore'], $song['IdAlbum'], $song['AlbumTitle']);
 		}
-		return new Playlist($song['IdPlaylist'], $song['Name'], array(), $songlist, $song['Private']);
+		return new Playlist($song['IdPlaylist'], $song['Nome'], array(), $songlist, $song['Privata']);
 	}
     // retrieve all personal playlist by a given userID
     public static function personal_playlist($id) {
         $list = array();
         $id = intval($id);
         $db = Db::getInstance();
-        $req = $db->prepare('SELECT p.* FROM Playlist p WHERE p.IdUser = :id');
+        $req = $db->prepare('SELECT p.* FROM Playlist p WHERE p.IdUtente = :id');
         $req->execute(array('id' => $id));
         foreach($req->fetchAll() as $playlist) {
-            $list[] = new Playlist($playlist['IdPlaylist'], $playlist['Name'], array('IdUser' => $id, 'Username' => ''), array(), $playlist['Private']);
+            $list[] = new Playlist($playlist['IdPlaylist'], $playlist['Nome'], array('IdUser' => $id, 'Username' => ''), array(), $playlist['Privata']);
         }
         return $list;
     }

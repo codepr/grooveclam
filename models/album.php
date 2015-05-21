@@ -58,7 +58,7 @@ class Album {
 	// add a new album to the database
 	public static function add($album) {
 		$db = Db::getInstance();
-		$req = $db->prepare('INSERT INTO Album (Title, Info, Author, Year, Live, Location) VALUES(:Title, :Info, :Author, :Year, :Live, :Location)');
+		$req = $db->prepare('INSERT INTO Album (Titolo, Info, Autore, Anno, Live, Locazione) VALUES(:Title, :Info, :Author, :Year, :Live, :Location)');
 		$req->execute(array(
 			'Title' => $album['Title'],
 			'Info' => $album['Info'],
@@ -77,12 +77,12 @@ class Album {
 			if(isset($album['Live']) && $album['Live'] == true) {
 				$live = array(
 					'Live' => $album['Live'],
-					'Location' => $album['Location']
+					'Location' => $album['Locazione']
 				);
 			} else {
 				$live = false;
 			}
-			$list[] = new Album($album['IdAlbum'], $album['Title'], $album['Author'], $album['Info'], $live, array(), '');
+			$list[] = new Album($album['IdAlbum'], $album['Titolo'], $album['Autore'], $album['Info'], $live, array(), '');
 		}
 		return $list;
 	}
@@ -93,10 +93,10 @@ class Album {
 		$songs = array();
 		$id = intval($id);
 		$db = Db::getInstance();
-		$req = $db->prepare('SELECT a.IdAlbum, a.Live, a.Location, a.Info, a.Title as AlbumTitle, a.Author, s.*, c.Path FROM Album a INNER JOIN Song s ON(a.IdAlbum = s.IdAlbum) INNER JOIN Cover c ON(a.IdAlbum = c.IdAlbum) WHERE a.IdAlbum = :id');
+		$req = $db->prepare('SELECT a.IdAlbum, a.Live, a.Locazione, a.Info, a.Titolo as AlbumTitle, a.Autore, s.*, c.Path FROM Album a INNER JOIN Brani s ON(a.IdAlbum = s.IdAlbum) INNER JOIN Copertine c ON(a.IdAlbum = c.IdAlbum) WHERE a.IdAlbum = :id');
 		$req->execute(array('id' => $id));
 		foreach($req->fetchAll() as $song) {
-			$songs[] = new Song($song['IdSong'], $song['Title'], $song['Genre'], $song['Duration'], $song['Author'], $song['IdAlbum'], $song['AlbumTitle']);
+			$songs[] = new Song($song['IdBrano'], $song['Titolo'], $song['Genere'], $song['Durata'], $song['Autore'], $song['IdAlbum'], $song['AlbumTitle']);
 		}
 		if(!isset($song['Path'])) {
 			$song['Path'] = '';
@@ -104,12 +104,12 @@ class Album {
 		if(isset($song['Live']) && $song['Live'] == true) {
 			$live = array(
 				'Live' => $song['Live'],
-				'Location' => $song['Location']
+				'Location' => $song['Locazione']
 			);
 		} else {
 			$live = false;
 		}
-		return new Album($song['IdAlbum'], $song['AlbumTitle'], $song['Author'], $song['Info'], $live, $songs, $song['Path']);
+		return new Album($song['IdAlbum'], $song['AlbumTitle'], $song['Autore'], $song['Info'], $live, $songs, $song['Path']);
 	}
     // add a new album into the database
     public static function addalbum($newalbum) {

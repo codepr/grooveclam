@@ -33,29 +33,29 @@ class User {
 	// check if the user exists and return it by given credentials
 	public static function checkuser($uname, $passw) {
 		$db = Db::getInstance();
-		$req = $db->prepare('SELECT * FROM User WHERE Username = :username AND Password = :password');
+		$req = $db->prepare('SELECT * FROM Utenti WHERE Username = :username AND Password = :password');
 		$req->execute(array('username' => $uname, 'password' => md5($passw)));
 		$u = $req->fetch();
 		if($u) {
-			return new User($u['IdUser'], $u['Name'], $u['Email'], $u['Username'], $u['Password']);
+			return new User($u['IdUtente'], $u['Nome'], $u['Email'], $u['Username'], $u['Password']);
 		} else return -1;
 	}
 	// return a complete user by a given id
 	public static function find($id) {
 		$db = Db::getInstance();
-		$req = $db->prepare('SELECT * FROM User WHERE IdUser = :id');
+		$req = $db->prepare('SELECT * FROM Utenti WHERE IdUtente = :id');
 		$req->execute(array('id' => $id));
 		$u = $req->fetch();
-		return new User($u['IdUser'], $u['Name']." ".$u['Surname'], $u['Email'], $u['Username'], $u['Password']);
+		return new User($u['IdUtente'], $u['Nome']." ".$u['Cognome'], $u['Email'], $u['Username'], $u['Password']);
 	}
 	// retrieve fellow list for a user
 	public function fellows() {
 		$list = array();
 		$db = Db::getInstance();
-		$req = $db->prepare('SELECT IdFellow FROM Follow WHERE IdUser = :id');
+		$req = $db->prepare('SELECT IdSeguace FROM Seguaci WHERE IdUtente = :id');
 		$req->execute(array('id' => $this->id()));
 		foreach ($req->fetchAll() as $result) {
-			$list[] = $result['IdFellow'];
+			$list[] = $result['IdSeguace'];
 		}
 		return $list;
 	}
@@ -70,7 +70,7 @@ class User {
 			$surname = $data['Surname'];
 		}
 		$db = Db::getInstance();
-		$req = $db->prepare('INSERT INTO User (Name, Surname, Email, Username, Password, Administrator) VALUES(:name, :surname, :email, :username, :password, 0)');
+		$req = $db->prepare('INSERT INTO Utenti (Nome, Cognome, Email, Username, Password, Amministratore) VALUES(:name, :surname, :email, :username, :password, 0)');
 		$req->execute(array(
 			'name' => $data['Name'],
 			'surname' => $data['Surname'],
@@ -83,14 +83,14 @@ class User {
     public static function follow($id, $uid) {
         $id = intval($id);
         $db = Db::getInstance();
-        $req = $db->prepare('INSERT INTO Follow(`IdUser`, `IdFellow`) VALUES(:uid, :id)');
+        $req = $db->prepare('INSERT INTO Seguaci(`IdUtente`, `IdSeguace`) VALUES(:uid, :id)');
         $req->execute(array('id' => $id, 'uid' => $uid));
     }
     // unfollow an User
     public static function unfollow($id, $uid) {
         $id = intval($id);
         $db = Db::getInstance();
-        $req = $db->prepare('DELETE FROM Follow WHERE IdUser = :uid AND IdFellow = :id');
+        $req = $db->prepare('DELETE FROM Seguaci WHERE IdUtente = :uid AND IdSeguace = :id');
         $req->execute(array('id' => $id, 'uid' => $uid));
     }
 }

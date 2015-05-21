@@ -20,7 +20,7 @@
         <?php foreach($playlists as $playlist) { ?>
 	        <tr>
 		        <td><a href='?controller=playlist&action=show&id=<?php echo $playlist->id(); ?>'><?php echo $playlist->name(); ?></a></td>
-		        <td><a href='?controller=user&action=show&id=<?php echo $playlist->id(); ?>'><?php $owner = $playlist->owner(); echo $owner['Username']; ?></a></td>
+		        <td><a href='?controller=user&action=show&id=<?php $owner = $playlist->owner(); echo $owner['IdUtente']; ?>'><?php echo $owner['Username']; ?></a></td>
 		        <td><?php $stats = $playlist->stats($playlist->id()); echo $stats['count']; ?></td>
 		        <td><?php echo $stats['duration']; ?></td>
 	        </tr>
