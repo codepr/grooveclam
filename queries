@@ -1,0 +1,9 @@
+# Trova gli utenti che abbiano ascoltato canzoni di durata inferiore a 2 minuti
+# e 21 secondi durante l'ultima settimana e stampa i titoli e timestamp delle
+# canzoni.
+
+SELECT u.Name, s.Title, s.Duration, h.Timestamp
+FROM User u INNER JOIN Heard h ON(u.IdUser = h.IdUser)
+			INNER JOIN Song s ON(h.IdSong = s.IdSong)
+WHERE s.Duration > 2.21 AND h.Timestamp BETWEEN ADDDATE(CURDATE()- 7) AND
+CURDATE();

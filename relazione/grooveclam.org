@@ -136,6 +136,10 @@ free o utilizzare un piano premium.
   - Ogni brano possiede una cover, ogni cover è posseduta da una o più canzoni.
   - Molteplicità 1 : N
   - Totale verso *Song*, totale verso *Cover*.
+** Schema E/R
+#+CAPTION: Schema entity-relationship
+#+ATTR_LATEX: :width 18cm :float nil
+[[~/Basi/progetto2015/grooveclam/relazione/img/concettuale.png]]
 * Progettazione Logica
 ** Gerarchie
 Tutte le gerarchie presenti nella progettazione concettuale sono state risolte mediante accorpamento in tabella unica, questo perchè
