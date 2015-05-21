@@ -2,7 +2,7 @@
 <?php if(isset($_SESSION['logged'])) { ?>
     <div class="addstuff">
         <div class="addstuff-circle">
-            <a class="addstuff" href="?controller=songs&action=addnew">&#10133;</a>
+            <a class="addstuff" href="?controller=songs&action=addnew">&#10010;</a>
         </div>
     </div>
 <?php } ?>
@@ -27,7 +27,7 @@
 		<?php if(isset($_SESSION['logged'])) {
 			if(in_array($song->id(), $got)) {
 				echo "<td style='color: rgb(15, 89, 182);'>&#10004</td>\n";
-			} else { echo "<td><a href='?controller=collection&action=addsong&id=".$song->id()."&idu=".$_SESSION['uid']."'>&#10010</a></td>\n"; }
+			} else { echo "<td><a href='?controller=collection&action=addsong&id=".$song->id()."&idu=".$_SESSION['uid']."'>&#10010;</a></td>\n"; }
 		?>
 		<td><a href='?controller=queue&action=addsong&id=<?php echo $song->id(); ?>'>&crarr;</a></td>
 		<?php

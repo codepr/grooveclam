@@ -2,7 +2,7 @@
 <?php if(isset($_SESSION['logged'])) { ?>
     <div class="addstuff">
         <div class="addstuff-circle">
-            <a class="addstuff" href="?controller=albums&action=add">&#10133;</a>
+            <a class="addstuff" href="?controller=albums&action=add">&#10010;</a>
         </div>
     </div>
 <?php } ?>
