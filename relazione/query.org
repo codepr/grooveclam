@@ -53,3 +53,14 @@ FROM Ascoltate a INNER JOIN Utenti u ON(a.IdUtente = u.IdUtente)
                  INNER JOIN Brani b ON(a.IdBrano = b.IdBrano)
 WHERE b.Genere = 'Orchestra' GROUP BY a.IdUtente ORDER BY DurataTotale DESC;
 SELECT * FROM UtentiGenere LIMIT 3;
+* trova gli utenti che hanno ascoltato un numero di canzoni sopra la media nell'ultimo mese
+DROP VIEW IF EXISTS CanzoniAscoltate;
+CREATE VIEW CanzoniAscoltate AS
+SELECT u.Username, COUNT(a.IdBrano) as Conto
+FROM Ascolte a INNER JOIN Brani b ON(a.IdBrano = b.IdBrano)
+               INNER JOIN Utenti u ON(a.IdUtente = u.IdUtente)
+WHERE a.Timestamp BETWEEN ADDDATE(CURDATE(), -30) AND NOW()
+GROUP BY a.IdUtente;
+SELECT ca.* 
+FROM CanzoniUtente ca 
+WHERE ca.Conto > (SELECT AVG(ce.Conto) FROM CanzoniAscoltate ce) ORDER BY ca.Conto DESC;

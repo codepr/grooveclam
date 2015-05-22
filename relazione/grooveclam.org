@@ -435,6 +435,7 @@ Di seguito i trigger creati.
 \begin{lstlisting}[language=SQL]
 DROP TRIGGER IF EXISTS checkDuration;
 DROP TRIGGER IF EXISTS errorTrigger;
+DROP TRIGGER IF EXISTS checkFollower;
 
 DELIMITER $$
 
@@ -443,7 +444,7 @@ BEFORE INSERT ON `Brani`
 FOR EACH ROW
 BEGIN
 IF(NEW.Durata < 0) THEN
-    CALL RAISE_ERROR('Song duration cannot be negative');
+    CALL RAISE_ERROR('La durata di un brano non può essere negativa');
 END IF;
 END $$
 
@@ -454,6 +455,18 @@ BEGIN
     SET NEW = NEW.errore;
 END $$
 
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER checkFollower
+BEFORE INSERT ON `Seguaci`
+FOR EACH ROW
+BEGIN
+    IF NEW.IdUtente = NEW.IdSeguace THEN
+       CALL RAISE_ERROR('Un utente non può seguire se stesso (IdUtente e IdSeguace devono essere diversi fra loro)');
+    END IF;       
+END $$
 DELIMITER ;
 \end{lstlisting}
 #+END_LaTeX
@@ -607,7 +620,22 @@ Alcune query significative.
  WHERE b.Genere = 'Orchestra' GROUP BY a.IdUtente ORDER BY DurataTotale DESC;
  SELECT * FROM UtentiGenere LIMIT 3;
  \end{lstlisting}
- #+END_LaTeX
+   #+END_LaTeX
+6. Trova gli utenti che hanno ascoltato un numero di canzoni sopra alla media nell'ultimo mese
+  #+BEGIN_LaTeX
+  \begin{lstlisting}[language=SQL]
+  DROP VIEW IF EXISTS CanzoniAscoltate;
+  CREATE VIEW CanzoniAscoltate AS
+  SELECT u.Username, COUNT(a.IdBrano) as Conto
+  FROM Ascolte a INNER JOIN Brani b ON(a.IdBrano = b.IdBrano)
+                 INNER JOIN Utenti u ON(a.IdUtente = u.IdUtente)
+  WHERE a.Timestamp BETWEEN ADDDATE(CURDATE(), -30) AND NOW()
+  GROUP BY a.IdUtente;
+  SELECT ca.* 
+  FROM CanzoniUtente ca 
+  WHERE ca.Conto > (SELECT AVG(ce.Conto) FROM CanzoniAscoltate ce) ORDER BY ca.Conto DESC;
+  \end{lstlisting}
+  #+END_LaTeX
 * Interfaccia Web
 Per l'interfaccia web è stato seguito un pattern MVC molto rudimentale, che tuttavia ha permesso di semplificarne la realizzazione modularizzando
 le operazione da effettuare sulla base di dati mediante le pagine.
