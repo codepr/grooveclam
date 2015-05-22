@@ -68,10 +68,10 @@ class Playlist {
 		$song;
 		$db = Db::getInstance();
 		$id = intval($id);
-		$req = $db->prepare('SELECT pl.IdPlaylist, pl.Nome, pl.Privata, s.*, a.Autore, a.Titolo as AlbumTitle FROM Brani s INNER JOIN BraniPlaylist p ON(s.IdBrano = p.IdBrano) INNER JOIN Playlist pl ON(pl.IdPlaylist = p.IdPlaylist) INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum) WHERE pl.IdPlaylist = :id');
+		$req = $db->prepare('SELECT pl.IdPlaylist, pl.Nome, pl.Privata, p.Posizione, s.*, a.Autore, a.Titolo as AlbumTitle FROM Brani s INNER JOIN BraniPlaylist p ON(s.IdBrano = p.IdBrano) INNER JOIN Playlist pl ON(pl.IdPlaylist = p.IdPlaylist) INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum) WHERE pl.IdPlaylist = :id ORDER BY p.Posizione');
 		$req->execute(array('id' => $id));
 		foreach($req->fetchAll() as $song) {
-			$songlist[] = new Song($song['IdBrano'], $song['Titolo'], $song['Genere'], $song['Durata'], $song['Autore'], $song['IdAlbum'], $song['AlbumTitle']);
+			$songlist[$song['Posizione']] = new Song($song['IdBrano'], $song['Titolo'], $song['Genere'], $song['Durata'], $song['Autore'], $song['IdAlbum'], $song['AlbumTitle']);
 		}
 		return new Playlist($song['IdPlaylist'], $song['Nome'], array(), $songlist, $song['Privata']);
 	}
@@ -86,6 +86,12 @@ class Playlist {
             $list[] = new Playlist($playlist['IdPlaylist'], $playlist['Nome'], array('IdUser' => $id, 'Username' => ''), array(), $playlist['Privata']);
         }
         return $list;
+    }
+    // swap position of two songs in the playlist
+    public static function swap($a, $b, $id) {
+        $db = Db::getInstance();
+        $req = $db->prepare("CALL SWAP_POSITION(:a, :b, :id, 2)");
+        $req->execute(array("a" => $a, "b" => $b, "id" => $id));
     }
 }
 ?>

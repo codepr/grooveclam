@@ -42,9 +42,9 @@ $controllers = array(
 	'pages' => array('home', 'error', 'login', 'checkuser', 'logout', 'registration'),
 	'songs' => array('index', 'show', 'addnew', 'addheard'),
 	'albums' => array('index', 'show', 'add', 'addalbum'),
-	'playlist' => array('index', 'show', 'newplaylist'),
+	'playlist' => array('index', 'show', 'newplaylist', 'swap'),
 	'collection' => array('index', 'addsong', 'remove'),
-	'queue' => array('index', 'addsong'),
+	'queue' => array('index', 'addsong', 'swap'),
 	'user' => array('show', 'follow', 'unfollow')
 );
 if(array_key_exists($controller, $controllers)) {

@@ -16,10 +16,10 @@ class Queue {
 		$tstamps = array();
 		$db = Db::getInstance();
 		$id = intval($id);
-		$req = $db->prepare('SELECT s.*, qs.Timestamp, a.Autore, a.Titolo as AlbumTitle FROM Brani s INNER JOIN Code qs ON(s.IdBrano = qs.IdBrano) INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum) WHERE qs.IdUtente = :id');
+		$req = $db->prepare('SELECT s.*, qs.Posizione, a.Autore, a.Titolo as AlbumTitle FROM Brani s INNER JOIN Code qs ON(s.IdBrano = qs.IdBrano) INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum) WHERE qs.IdUtente = :id ORDER BY qs.Posizione');
 		$req->execute(array('id' => $id));
 		foreach($req->fetchAll() as $song) {
-			$list[$song['Timestamp']] = new Song($song['IdBrano'], $song['Titolo'], $song['Genere'], $song['Durata'], $song['Autore'], $song['IdAlbum'], $song['AlbumTitle']);
+			$list[$song['Posizione']] = new Song($song['IdBrano'], $song['Titolo'], $song['Genere'], $song['Durata'], $song['Autore'], $song['IdAlbum'], $song['AlbumTitle']);
 		}
 		return new Queue($list);
 	}
@@ -31,5 +31,11 @@ class Queue {
 		$req = $db->prepare('INSERT INTO Code VALUES(:uid, :id, NOW())');
 		$req->execute(array('uid' => $uid, 'id' => $id));
 	}
+    // swap two song position for a give uid
+    public static function swap($a, $b, $id) {
+        $db = Db::getInstance();
+        $req = $db->prepare("CALL SWAP_POSITION(:a, :b, :id, 1)");
+        $req->execute(array("a" => $a, "b" => $b, "id" => $id));
+    }
 }
 ?>

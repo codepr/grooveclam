@@ -31,3 +31,17 @@ FROM Song s INNER JOIN Heard h ON(s.IdSong = h.IdSong)
             INNER JOIN User u ON(f.IdFellow = u.IdUser) 
 WHERE f.IdUser = 1 GROUP BY s.Title ORDER BY Conto DESC;
 
+* username e numero brani nella collezione dell'utente con più canzoni di tipo orchestra
+DROP VIEW IF EXISTS ContoBrani;
+CREATE VIEW ContoBrani AS
+SELECT u.Username, COUNT(b.Genere) as Conteggio
+FROM Brani b INNER JOIN BraniCollezione bc ON(b.IdBrano = bc.IdBrano)
+             INNER JOIN Collezioni c ON(bc.IdCollezione = c.IdCollezione)
+             INNER JOIN Utenti u ON(c.IdUtente = u.IdUtente)
+WHERE b.Genere = 'Orchestra' GROUP BY c.IdUtente;
+SELECT * FROM ContoBrani HAVING MAX(Conteggio);
+* username e totale minuti degli utenti che hanno ascoltato canzoni di un certo genere per un totale di minuti >= tot
+SELECT u.Username, SUM(b.Durata) AS Totale
+FROM Ascoltate a INNER JOIN Utenti u ON(a.IdUtente = u.IdUtente)
+                 INNER JOIN Brani b ON(a.IdBrano = b.IdBrano)
+WHERE b.Genere = 'Orchestra' GROUP BY a.IdUtente HAVING Total > 300;

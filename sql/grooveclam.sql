@@ -24,8 +24,8 @@ CREATE TABLE IF NOT EXISTS `Album` (
 	`Titolo` VARCHAR(140) NOT NULL,
 	`Autore` VARCHAR(140) NOT NULL,
 	`Info` VARCHAR(300) DEFAULT NULL,
-	`Anno` DATE NOT NULL,
-	`Live` BOOLEAN NOT NULL,
+	`Anno` YEAR DEFAULT NULL,
+	`Live` BOOLEAN DEFAULT FALSE,
 	`Locazione` VARCHAR(40) DEFAULT NULL,
 	PRIMARY KEY(`IdAlbum`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -105,6 +105,7 @@ CREATE TABLE IF NOT EXISTS `Playlist` (
 CREATE TABLE IF NOT EXISTS `BraniPlaylist` (
 	`IdPlaylist` INT(11) NOT NULL,
 	`IdBrano` INT(11) NOT NULL,
+    `Posizione` INT(11) NOT NULL,
 	CONSTRAINT PRIMARY KEY pk(`IdPlaylist`, `IdBrano`),
 	FOREIGN KEY(`IdPlaylist`) REFERENCES Playlist(`IdPlaylist`) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY(`IdBrano`) REFERENCES Brani(`IdBrano`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -113,8 +114,8 @@ CREATE TABLE IF NOT EXISTS `BraniPlaylist` (
 CREATE TABLE IF NOT EXISTS `Code` (
 	`IdUtente` INT(11) NOT NULL,
 	`IdBrano` INT(11) NOT NULL,
-	`Timestamp` TIMESTAMP NOT NULL,
-	CONSTRAINT PRIMARY KEY pk(`IdUtente`, `IdBrano`, `Timestamp`),
+    `Posizione` INT(11) NOT NULL,
+	CONSTRAINT PRIMARY KEY pk(`IdUtente`, `IdBrano`, `Posizione`),
 	FOREIGN KEY(`IdUtente`) REFERENCES Utenti(`IdUtente`) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY(`IdBrano`) REFERENCES Brani(`IdBrano`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -139,12 +140,12 @@ INSERT INTO Utenti(`Nome`, `Cognome`, `Email`, `Amministratore`, `Username`, `Pa
 INSERT INTO Iscrizioni(`IdUtente`, `Tipo`) VALUES(1, 'Free'), (2, 'Free');
 -- Insert into Album
 INSERT INTO Album(`Titolo`, `Autore`, `Info`, `Anno`, `Live`, `Locazione`)
-       VALUES('Inception Suite', 'Hans Zimmer', 'Inception movie soundtrack, composed by the Great Compositor Hans Zimmer', '2010-07-13', 0, NULL),
-             ('The Good, the Bad and the Ugly: Original Motion Picture Soundtrack', 'Ennio Morricone', 'Homonym movie soundtrack, created by the Legendary composer The Master Ennio Morricone', '1966-12-29', 0, NULL),
-             ('Hollywood in Vienna 2014', 'Randy Newman - David Newman', 'Annual cinematographic review hosted in Vienna', '2014-09-23', 1, 'Vienna'),
-             ('The Fragile', 'Nine Inch Nails', 'The Fragile is the third album and a double album by American industrial rock band Nine Inch Nails, released on September 21, 1999, by Interscope Records.', '1999-09-21', 0, NULL),
-             ('American IV: The Man Comes Around', 'Johnny Cash', 'American IV: The Man Comes Around is the fourth album in the American series by Johnny Cash(and his 87th overall), released in 2002. The majority of songs are covers which Cash performs in his own spare style, with help from producer Rick Rubin.', '2002-06-19', 0, NULL),
-             ('Greatest Hits', 'Neil Young', 'Rock & Folk Rock greatest success songs by Neil Young', '2004-06-21', 0, NULL);
+       VALUES('Inception Suite', 'Hans Zimmer', 'Inception movie soundtrack, composed by the Great Compositor Hans Zimmer', '2010', 0, NULL),
+             ('The Good, the Bad and the Ugly: Original Motion Picture Soundtrack', 'Ennio Morricone', 'Homonym movie soundtrack, created by the Legendary composer The Master Ennio Morricone', '1966', 0, NULL),
+             ('Hollywood in Vienna 2014', 'Randy Newman - David Newman', 'Annual cinematographic review hosted in Vienna', '2014', 1, 'Vienna'),
+             ('The Fragile', 'Nine Inch Nails', 'The Fragile is the third album and a double album by American industrial rock band Nine Inch Nails, released on September 21, 1999, by Interscope Records.', '1999', 0, NULL),
+             ('American IV: The Man Comes Around', 'Johnny Cash', 'American IV: The Man Comes Around is the fourth album in the American series by Johnny Cash(and his 87th overall), released in 2002. The majority of songs are covers which Cash performs in his own spare style, with help from producer Rick Rubin.', '2002', 0, NULL),
+             ('Greatest Hits', 'Neil Young', 'Rock & Folk Rock greatest success songs by Neil Young', '2004', 0, NULL);
 -- Insert into Brani
 INSERT INTO Brani(`IdAlbum`, `Titolo`, `Genere`, `Durata`, `IdImm`)
        VALUES(1, 'Mind Heist', 'Orchestra', 203, 1),
@@ -184,12 +185,15 @@ INSERT INTO BraniCollezione(`IdBrano`, `IdCollezione`) VALUES(1, 1), (2, 1), (3,
 -- Insert into Playlist
 INSERT INTO Playlist(`IdUtente`, `Nome`, `Privata`) VALUES(1, 'Score & Soundtracks', 0), (1, 'Southern Rock', 0), (2, 'Colonne sonore western', 0);
 -- Insert into BraniPlaylist
-INSERT INTO BraniPlaylist(`IdPlaylist`, `IdBrano`) VALUES(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (2, 21), (2, 22), (3, 5), (3, 7), (3, 4);
+INSERT INTO BraniPlaylist(`IdPlaylist`, `IdBrano`, `Posizione`) VALUES(1, 1, 1), (1, 2, 2), (1, 3, 3), (1, 4, 4), (1, 5, 5), (2, 21, 1), (2, 22, 2), (3, 5, 1), (3, 7, 2), (3, 4, 3);
 -- Insert into Code
-INSERT INTO Code(`IdUtente`, `IdBrano`, `Timestamp`)
-       VALUES(1, 1, '2015-04-28 18:50:03'),
-       (1, 5, '2015-04-28 18:54:06'),
-       (1, 1, '2015-04-28 19:01:43');
+INSERT INTO Code(`IdUtente`, `IdBrano`, `Posizione`)
+       VALUES(1, 1, 1),
+       (1, 5, 2),
+       (1, 1, 3),
+       (1, 12, 4),
+       (1, 10, 5),
+       (2, 1, 1);
 -- Insert into Ascoltate
 INSERT INTO Ascoltate(`IdUtente`, `IdBrano`, `Timestamp`)
        VALUES(1, 1, '2015-04-28 18:50:03'),

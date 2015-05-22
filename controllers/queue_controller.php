@@ -24,5 +24,17 @@ class QueueController {
 			}
 		}
 	}
+    public function swap() {
+        if(!isset($_SESSION['logged'])) {
+            return call('pages', 'login');
+        } else {
+            if(!isset($_GET['a']) || !isset($_GET['b'])) {
+                return call('pages', 'error');
+            } else {
+                Queue::swap($_GET['a'], $_GET['b'], $_SESSION['uid']);
+                header("Location:/basidati/~abaldan/?controller=queue&action=index&id=".$_SESSION['uid']);
+            }
+        }
+    }
 }
 ?>

@@ -6,15 +6,17 @@ class Album {
 	private $title;
 	private $author;
 	private $info;
+    private $year;
 	private $live;
 	private $songs;
 	private $path;
 
-	public function __construct($id, $title, $author, $info, $live, $songs, $path) {
+	public function __construct($id, $title, $author, $info, $year, $live, $songs, $path) {
 		$this->id = $id;
 		$this->title = $title;
 		$this->author = $author;
 		$this->info = $info;
+        $this->year = $year;
 		$this->live = $live;
 		$this->songs = $songs;
 		$this->path = $path;
@@ -35,6 +37,10 @@ class Album {
 	public function info() {
 		return $this->info;
 	}
+
+    public function year() {
+        return $this->year;
+    }
 
 	public function live() {
 		return $this->live;
@@ -82,7 +88,7 @@ class Album {
 			} else {
 				$live = false;
 			}
-			$list[] = new Album($album['IdAlbum'], $album['Titolo'], $album['Autore'], $album['Info'], $live, array(), '');
+			$list[] = new Album($album['IdAlbum'], $album['Titolo'], $album['Autore'], $album['Info'], $album['Anno'], $live, array(), '');
 		}
 		return $list;
 	}
@@ -93,7 +99,7 @@ class Album {
 		$songs = array();
 		$id = intval($id);
 		$db = Db::getInstance();
-		$req = $db->prepare('SELECT a.IdAlbum, a.Live, a.Locazione, a.Info, a.Titolo as AlbumTitle, a.Autore, s.*, c.Path FROM Album a INNER JOIN Brani s ON(a.IdAlbum = s.IdAlbum) INNER JOIN Copertine c ON(a.IdAlbum = c.IdAlbum) WHERE a.IdAlbum = :id');
+		$req = $db->prepare('SELECT a.IdAlbum, a.Live, a.Locazione, a.Info, a.Anno, a.Titolo as AlbumTitle, a.Autore, s.*, c.Path FROM Album a INNER JOIN Brani s ON(a.IdAlbum = s.IdAlbum) INNER JOIN Copertine c ON(a.IdAlbum = c.IdAlbum) WHERE a.IdAlbum = :id');
 		$req->execute(array('id' => $id));
 		foreach($req->fetchAll() as $song) {
 			$songs[] = new Song($song['IdBrano'], $song['Titolo'], $song['Genere'], $song['Durata'], $song['Autore'], $song['IdAlbum'], $song['AlbumTitle']);
@@ -109,7 +115,7 @@ class Album {
 		} else {
 			$live = false;
 		}
-		return new Album($song['IdAlbum'], $song['AlbumTitle'], $song['Autore'], $song['Info'], $live, $songs, $song['Path']);
+		return new Album($song['IdAlbum'], $song['AlbumTitle'], $song['Autore'], $song['Info'], $song['Anno'], $live, $songs, $song['Path']);
 	}
     // add a new album into the database
     public static function addalbum($newalbum) {

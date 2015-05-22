@@ -2,6 +2,8 @@
 <h3><?php echo $album->title(); ?> - <?php echo $album->author(); ?></h3>
 <p><?php echo $album->info(); ?></p>
 <p><?php if(is_array($album->live())) { $location = $album->live();echo "Live at " . $location['Location']; } ?></p>
+<h5>Published</h5>
+<p><?php echo $album->year(); ?></p>
 <h5>Genre</h5>
 <p>
 <?php
