@@ -45,3 +45,11 @@ SELECT u.Username, SUM(b.Durata) AS Totale
 FROM Ascoltate a INNER JOIN Utenti u ON(a.IdUtente = u.IdUtente)
                  INNER JOIN Brani b ON(a.IdBrano = b.IdBrano)
 WHERE b.Genere = 'Orchestra' GROUP BY a.IdUtente HAVING Total > 300;
+* i 3 utenti che ascoltano più musica orchestra
+DROP VIEW IF EXISTS UtentiGenere;
+CREATE VIEW UtentiGenere AS
+SELECT u.Username, b.Genere, SUM(b.Durata) AS DurataTotale
+FROM Ascoltate a INNER JOIN Utenti u ON(a.IdUtente = u.IdUtente)
+                 INNER JOIN Brani b ON(a.IdBrano = b.IdBrano)
+WHERE b.Genere = 'Orchestra' GROUP BY a.IdUtente ORDER BY DurataTotale DESC;
+SELECT * FROM UtentiGenere LIMIT 3;
