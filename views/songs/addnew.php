@@ -1,5 +1,5 @@
 <h3>Add new song to the platform</h3>
-<form class="loginform" method="post" action="?controller=songs&action=addsong">
+<form class="loginform" method="post" action="?controller=songs&action=addsong" enctype="multipart/form-data">
     <fieldset>
         <label for="Title">Title</label>
         <input type="text" id="Title" placeholder="Song title">
@@ -16,6 +16,7 @@
             }
             ?>
         </select>
+        <input type="file" name="uploadedMp3" id="uploadedMp3">
         <input type="submit" value="submit">
     </fieldset>
 </form>

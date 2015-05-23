@@ -73,6 +73,8 @@
      com_2.addEventListener("click", stop);
      // simulate song play
      function play(end, title, id) {
+         var audio = new Audio("mp3/mad_max.mp3");
+         audio.play();
          com_2.click(); // better reset triggering click stop()
          min.innerHTML = "00";
          sec.innerHTML = "00";
