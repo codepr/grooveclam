@@ -16,7 +16,7 @@ class PagesController {
 		}
 	}
 	// redirect to error in case of bad inputs
-	public function error() {
+	public function error($code) {
 		require_once('views/pages/error.php');
 	}
 	// redirect to login form

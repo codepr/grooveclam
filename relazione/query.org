@@ -41,7 +41,7 @@ FROM Brani b INNER JOIN BraniCollezione bc ON(b.IdBrano = bc.IdBrano)
 WHERE b.Genere = 'Orchestra' GROUP BY c.IdUtente;
 SELECT * FROM ContoBrani HAVING MAX(Conteggio);
 * username e totale minuti degli utenti che hanno ascoltato canzoni di un certo genere per un totale di minuti >= tot
-SELECT u.Username, SUM(b.Durata) AS Totale
+SELECT u.Username, CONCAT(FLOOR(SUM(b.Durata) / 60), ":", (SUM(b.Durata) % 60)) AS Minuti
 FROM Ascoltate a INNER JOIN Utenti u ON(a.IdUtente = u.IdUtente)
                  INNER JOIN Brani b ON(a.IdBrano = b.IdBrano)
 WHERE b.Genere = 'Orchestra' GROUP BY a.IdUtente HAVING Total > 300;

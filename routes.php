@@ -1,6 +1,6 @@
 <?php
 // routing system
-function call($controller, $action) {
+function call($controller, $action, $code = 0) {
 	require_once('controllers/' . $controller . '_controller.php');
 	switch($controller) {
 		case 'pages':
@@ -35,7 +35,7 @@ function call($controller, $action) {
 			$controller = new UserController();
 		break;
 	}
-	$controller->{$action}();
+	$controller->{$action}($code);
 }
 // array containing all action for every controller
 $controllers = array(
