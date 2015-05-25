@@ -145,7 +145,7 @@ free o utilizzare un piano premium.
   - Parziale verso *Collezioni*, parziale verso *Brani*.
 ** Schema E/R
 #+CAPTION: Schema entity-relationship
-#+ATTR_LATEX: :width 18cm :float nil
+#+ATTR_LATEX: :width 19cm :float nil
 [[~/Basi/progetto2015/grooveclam/relazione/img/concettuale.png]]
 * Progettazione Logica
 ** Gerarchie
@@ -650,6 +650,29 @@ Alcune query significative.
   WHERE ca.Conto > (SELECT AVG(ce.Conto) FROM CanzoniAscoltate ce) ORDER BY ca.Conto DESC;
   \end{lstlisting}
   #+END_LaTeX
+7. Trova gli utenti e il numero di brani di genere 'Country' nella sua collezione
+ #+BEGIN_LaTeX
+\begin{lstlisting}[language=SQL]
+CREATE VIEW Conteggi AS
+SELECT u.Username, b.Genere, COUNT(b.IdBrano) AS Conteggio 
+FROM BraniCollezione c INNER JOIN Brani b ON(c.IdBrano = b.IdBrano) 
+                       INNER JOIN Collezioni cn ON(c.IdCollezione = cn.IdCollezione)
+                       INNER JOIN Utenti u ON(cn.IdUtente = u.IdUtente)
+GROUP BY b.Genere, c.IdCollezione;
+SELECT Username, MAX(Conteggio) 
+FROM Conteggi
+WHERE Genere = 'Country';
+DROP VIEW IF EXISTS Conteggi;
+\end{lstlisting}
+Output:
+\begin{verbatim}
+
+| Username | Genere  | max(Conteggio) |
+| codep    | Country |              2 |
+
+1 row in set (0.00 sec)
+\end{verbatim}
+#+END_LaTeX
 * Interfaccia Web
 Per l'interfaccia web è stato seguito un pattern MVC molto rudimentale, che tuttavia ha permesso di semplificarne la realizzazione modularizzando
 le operazione da effettuare sulla base di dati mediante le pagine.
