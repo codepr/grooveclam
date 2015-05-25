@@ -64,3 +64,9 @@ GROUP BY a.IdUtente;
 SELECT ca.* 
 FROM CanzoniUtente ca 
 WHERE ca.Conto > (SELECT AVG(ce.Conto) FROM CanzoniAscoltate ce) ORDER BY ca.Conto DESC;
+* trova gli utenti e il numero di brani per genere nella loro collezione
+select u.Username, b.Genere, count(b.IdBrano) as Conteggio 
+from BraniCollezione c inner join Brani b on(c.IdBrano = b.IdBrano) 
+                       inner join Collezioni cn on(c.IdCollezione = cn.IdCollezione)
+                       inner join Utenti u on(cn.IdUtente = u.IdUtente)
+group by b.Genere, c.IdCollezione;

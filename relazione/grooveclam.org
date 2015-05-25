@@ -89,6 +89,9 @@ free o utilizzare un piano premium.
   - Path: /String/
 - *Playlist:* Modella una playlist.
   - Nome: /String/
+  Sono definite le seguenti sottoclassi disgiunte con vincolo di partizionamento.
+  - *Pubblica:* Rappresenta una playlist pubblica, a cui tutti gli utenti possono accedere all'ascolto.
+  - *Privata:* Rappresenta una playlist privata, solo il creatore può accedervi all'ascolto
 - *Collezioni:* Rappresenta una collezione di brani preferiti dall'utente.
   - IdCollezione: /Int/ =<<PK>>=
 ** Associazioni
@@ -129,13 +132,17 @@ free o utilizzare un piano premium.
   - Molteplicità 1 : N
   - Parziale verso *Brani*, totale verso *Album*.
 - *Album-Copertine:* "Possiede"
-  - Ogni album possiede zero o una cover, ogni cover è posseduta da un solo album.
+  - Ogni album possiede zero o una copertina, ogni copertina è posseduta da un solo album.
   - Molteplicità 1 : 1
   - Parziale verso *Album*, totale verso *Copertine*.
 - *Brani-Copertine:* "Possiede"
-  - Ogni brano possiede una cover, ogni cover è posseduta da una o più canzoni.
+  - Ogni brano possiede zero o una cover, ogni cover è posseduta da una o più brani.
   - Molteplicità 1 : N
   - Totale verso *Brani*, totale verso *Copertine*.
+- *Collezioni-Brani:* "PopolateDa"
+  - Ogni collezione è popolata da zero o più brani, ogni brano popola zero o più collezioni.
+  - Molteplicità N : N
+  - Parziale verso *Collezioni*, parziale verso *Brani*.
 ** Schema E/R
 #+CAPTION: Schema entity-relationship
 #+ATTR_LATEX: :width 18cm :float nil
@@ -194,7 +201,7 @@ Sono state create alcune chiavi primarie per identificare le istanze di alcune t
   - Ogni playlist è popolata da zero o più brani, ogni brano popola zero o più playlist.
   - Molteplicità N : N
   - Parziale verso *Playlist*, parziale verso *Brani*.
-  - Nuova tabella *PlaylistBrani*, attributi:
+  - Nuova tabella *BraniPlaylist*, attributi:
     - IdPlaylist: /Int/ =<<PK>> <<FK(Playlist)>>=
     - IdBrano: /Int/ =<<PK>> <<FK(Brani)>>=
 - *Brani-Album:* "AppartieneA"
@@ -208,10 +215,17 @@ Sono state create alcune chiavi primarie per identificare le istanze di alcune t
   - Parziale verso *Album*, totale verso *Copertine*.
   - Chiave esterna non-nulla in *Copertine* verso *Album*.
 - *Brani-Copertine:* "Possiede"
-  - Ogni brano possiede una cover, ogni cover è posseduta da una o più canzoni.
+  - Ogni brano possiede zero o una copertina, ogni copertina è posseduta da una o più brani.
   - Molteplicità 1 : N
   - Totale verso *Brani*, totale verso *Copertine*.
   - Chiave esterna non-nulla in *Brani* verso *Copertine*.
+- *Collezioni-Brani:* "PopolateDa"
+  - Ogni collezione è popolata da zero o più brani, ogni brano popola zero o più collezioni.
+  - Molteplicità N : N
+  - Parziale verso *Collezioni*, parziale verso *Brani*.
+  - Nuova tabella *BraniCollezione*, attributi:
+    - IdBrano: /int/ =<<PK>> <<FK(Brani)>>=
+    - IdCollezione: /int/ =<<PK <<FK(Collezioni)>>=
 * Implementazione Fisica
 Query di implementazione DDL SQL della base di dati. Sorgente in /genera.sql/, popolamento in /popola.sql/.
 E' stata implementata una tabella *Errori*, riempita mediante procedura a sua volta richiamata dai trigger che ne fanno uso, 
