@@ -49,6 +49,9 @@ class Collection {
 		foreach ($req->fetchAll() as $song) {
 			$list[]	 = new Song($song['IdBrano'], $song['Titolo'], $song['Genere'], $song['Durata'], $song['Autore'], $song['IdAlbum'], $song['AlbumTitle']);
 		}
+        if(!isset($song)) {
+            $song = NULL;
+        }
 		return new Collection($song['IdCollezione'], $list);
 	}
 	// add a song to collection by a given id
