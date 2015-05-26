@@ -36,8 +36,8 @@
 		</nav>
 		<?php if(isset($_SESSION['logged'])) {?>
 			<div class="logout">
-                <button class="exit"><a href="/basidati/~abaldan/?controller=user&action=show&id=<?php echo $_SESSION['uid']; ?>">Settings &#9881;</a></button>
-                <button class="exit"><a href="/basidati/~abaldan/?controller=pages&action=logout">Logout &#10144;</a></button>
+                <a href="/basidati/~abaldan/?controller=user&action=show&id=<?php echo $_SESSION['uid']; ?>"><button class="exit">Settings &#9881;</button></a>
+                <a href="/basidati/~abaldan/?controller=pages&action=logout"><button class="exit">Logout &#10144;</button></a>
             </div>
 		<?php } ?>
 		<main>
