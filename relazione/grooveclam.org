@@ -604,7 +604,7 @@ REPEAT
         END IF;
 UNTIL Done END REPEAT;
 CLOSE D_CURSOR;
-SELECT * FROM `Distribution` ORDER BY Percentuale;
+SELECT * FROM `Distribution` ORDER BY Percentuale DESC;
 DROP TABLE `Distribution`;      
 END $$
 

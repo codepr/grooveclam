@@ -1,7 +1,28 @@
 <h2>&#9881; USER SETTINGS</h2>
-<h3><?php echo $user->username(); ?></h3>
-<p>Name: <?php echo $user->name(); ?></p>
-<p>E-Mail: <?php echo $user->email(); ?></p>
+<dl>
+    <dt>Username</dt>
+    <dd><?php echo $user->username(); ?></dd>
+    <dt>Name</dt>
+    <dd><?php echo $user->name(); ?></dd>
+    <dt>E-mail</dt>
+    <dd><?php echo $user->email(); ?></dd>
+    <dt>Following</dt>
+    <dd><?php echo count($fellows); ?></dd>
+</dl>
+<table class="table" style="width: 20%;">
+    <thead>
+        <th>Genre</th>
+        <th>Distribution</th>
+    </thead>
+    <tbody>
+        <?php foreach($stats as $key => $val) { ?>
+            <tr>
+                <td><?php echo $key; ?></td>
+                <td><?php echo $val; ?></td>
+            </tr>
+        <?php }?>
+    </tbody>
+</table>
 <?php
 if(isset($_SESSION['logged'])) {
 	if($_SESSION['uid'] != $_GET['id']) {

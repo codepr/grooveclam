@@ -7,7 +7,7 @@ class AlbumController {
     // show
 	public function show() {
 		if(!isset($_GET['id'])) {
-			return call('pages', 'error');
+			return call('pages', 'error', 2);
 		}
 		$album = Album::find($_GET['id']);
 		require_once('views/albums/show.php');

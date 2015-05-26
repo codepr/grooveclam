@@ -10,7 +10,7 @@ class SongsController {
 	}
 	public function show() {
 		if(!isset($_GET['id'])) {
-			return call('pages', 'error');
+			return call('pages', 'error', 2);
 		}
 		$got = array();
 		if(isset($_SESSION['logged'])) {
@@ -61,7 +61,7 @@ class SongsController {
     public function addheard() {
         if(isset($_SESSION['logged'])) {
             if(!isset($_GET['id'])){ 
-                return call('pages', 'error');
+                return call('pages', 'error', 2);
             } else {
                 Song::addheard($_GET['id'], $_SESSION['uid']);
                 exit;

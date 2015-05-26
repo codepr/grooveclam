@@ -17,6 +17,12 @@ class PagesController {
 	}
 	// redirect to error in case of bad inputs
 	public function error($code) {
+        $errors = array(
+            0 => '',
+            1 => '404 page does not exists',
+            2 => 'Missing get or post parameters'
+        );
+        $message = $errors{$code};
 		require_once('views/pages/error.php');
 	}
 	// redirect to login form
@@ -41,7 +47,6 @@ class PagesController {
 	public function logout() {
 		$session = GrooveSession::getInstance();
 		$session->destroy();
-		// $this->home();
 		header('Location:/basidati/~abaldan/');
 	}
 	// registration form

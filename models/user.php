@@ -59,6 +59,17 @@ class User {
 		}
 		return $list;
 	}
+    // retrieve listening stats
+    public function stats() {
+        $list = array();
+        $db = Db::getInstance();
+        $req = $db->prepare('CALL USER_GENRE_DISTRIBUTION(:id)');
+        $req->execute(array('id' => $this->id()));
+        foreach($req->fetchAll() as $result) {
+            $list[$result['Genere']] = $result['Percentuale'];
+        }
+        return $list;
+    }
 	// insert new user
 	public static function insert($data) {
 		$name = '';
