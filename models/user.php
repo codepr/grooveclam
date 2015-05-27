@@ -33,7 +33,7 @@ class User {
 	// check if the user exists and return it by given credentials
 	public static function checkuser($uname, $passw) {
 		$db = Db::getInstance();
-		$req = $db->prepare('SELECT * FROM Utenti WHERE Username = :username AND Password = :password');
+		$req = $db->prepare('SELECT u.*, l.Username, l.Password FROM Utenti u INNER JOIN Login l ON(u.IdUtente = l.IdUtente) WHERE l.Username = :username AND l.Password = :password');
 		$req->execute(array('username' => $uname, 'password' => md5($passw)));
 		$u = $req->fetch();
 		if($u) {
@@ -43,7 +43,7 @@ class User {
 	// return a complete user by a given id
 	public static function find($id) {
 		$db = Db::getInstance();
-		$req = $db->prepare('SELECT * FROM Utenti WHERE IdUtente = :id');
+		$req = $db->prepare('SELECT u.*, l.Username, l.Password FROM Utenti u INNER JOIN Login l ON(u.IdUtente = l.IdUtente) WHERE u.IdUtente = :id');
 		$req->execute(array('id' => $id));
 		$u = $req->fetch();
 		return new User($u['IdUtente'], $u['Nome']." ".$u['Cognome'], $u['Email'], $u['Username'], $u['Password']);
@@ -81,13 +81,11 @@ class User {
 			$surname = $data['Surname'];
 		}
 		$db = Db::getInstance();
-		$req = $db->prepare('INSERT INTO Utenti (Nome, Cognome, Email, Username, Password, Amministratore) VALUES(:name, :surname, :email, :username, :password, 0)');
+		$req = $db->prepare('INSERT INTO Utenti (Nome, Cognome, Email) VALUES(:name, :surname, :email)');
 		$req->execute(array(
 			'name' => $data['Name'],
 			'surname' => $data['Surname'],
-			'email' => $data['Email'],
-			'username' => $data['Username'],
-			'password' => $data['Password']
+			'email' => $data['Email']
 		));
 	}
     // follow an User

@@ -42,7 +42,7 @@ class Playlist {
 		$seconds = 0;
 		$id = intval($id);
 		$db = Db::getInstance();
-		$req = $db->prepare('SELECT s.Durata FROM Brani s INNER JOIN BraniPlaylist p ON(s.IdBrano = p.IdBrano) WHERE p.IdPlaylist = :id');
+		$req = $db->prepare('SELECT b.Durata FROM Brani b INNER JOIN BraniPlaylist bp ON(b.IdBrano = bp.IdBrano) WHERE bp.IdPlaylist = :id');
 		$req->execute(array('id' => $id));
 		$res = $req->fetchAll();
 		foreach ($res as $duration) {
@@ -55,7 +55,7 @@ class Playlist {
 	public static function all() {
 		$list = array();
 		$db = Db::getInstance();
-		$req = $db->query('SELECT p.*, u.Username FROM Playlist p INNER JOIN Utenti u ON(p.IdUtente = u.IdUtente) WHERE p.Privata = FALSE');
+		$req = $db->query('SELECT p.*, l.Username FROM Playlist p INNER JOIN Login l ON(p.IdUtente = l.IdUtente) WHERE p.Privata = FALSE');
 		foreach($req->fetchAll() as $playlist) {
 			$list[] = new Playlist($playlist['IdPlaylist'], $playlist['Nome'], array('IdUtente' => $playlist['IdUtente'], 'Username' => $playlist['Username']), array(), 0);
 		}
@@ -68,7 +68,7 @@ class Playlist {
 		$song;
 		$db = Db::getInstance();
 		$id = intval($id);
-		$req = $db->prepare('SELECT pl.IdPlaylist, pl.Nome, pl.Privata, p.Posizione, s.*, a.Autore, a.Titolo as AlbumTitle FROM Brani s INNER JOIN BraniPlaylist p ON(s.IdBrano = p.IdBrano) INNER JOIN Playlist pl ON(pl.IdPlaylist = p.IdPlaylist) INNER JOIN Album a ON(s.IdAlbum = a.IdAlbum) WHERE pl.IdPlaylist = :id ORDER BY p.Posizione');
+		$req = $db->prepare('SELECT pl.IdPlaylist, pl.Nome, pl.Privata, p.Posizione, b.*, a.Autore, a.Titolo as AlbumTitle FROM Brani b INNER JOIN BraniPlaylist p ON(b.IdBrano = p.IdBrano) INNER JOIN Playlist pl ON(pl.IdPlaylist = p.IdPlaylist) INNER JOIN Album a ON(b.IdAlbum = a.IdAlbum) WHERE pl.IdPlaylist = :id ORDER BY p.Posizione');
 		$req->execute(array('id' => $id));
 		foreach($req->fetchAll() as $song) {
 			$songlist[$song['Posizione']] = new Song($song['IdBrano'], $song['Titolo'], $song['Genere'], $song['Durata'], $song['Autore'], $song['IdAlbum'], $song['AlbumTitle']);
