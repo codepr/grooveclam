@@ -7,7 +7,7 @@
 #+LaTeX_HEADER: \usepackage{libertine}
 #+LaTeX_HEADER: \renewcommand*\oldstylenums[1]{{\fontfamily{fxlj}\selectfont #1}}
 #+LaTeX_HEADER: \usepackage{lmodern}
-#+LaTeX_HEADER: \lstset{basicstyle=\normalfont\ttfamily\scriptsize,numberstyle=\scriptsize,breaklines=true,frame=tb,tabsize=1,showstringspaces=false,numbers=left,commentstyle=\color{grey},keywordstyle=\color{black}\bfseries,stringstyle=\color{red}}
+#+LaTeX_HEADER: \lstset{basicstyle=\normalfont\ttfamily\small,numberstyle=\small,breaklines=true,frame=tb,tabsize=1,showstringspaces=false,numbers=left,commentstyle=\color{grey},keywordstyle=\color{black}\bfseries,stringstyle=\color{red}}
 #+LaTeX_HEADER: \newenvironment{changemargin}[2]{\list{}{\rightmargin#2\leftmargin#1\parsep=0pt\topsep=0pt\partopsep=0pt}\item[]}{\endlist}
 #+LaTeX_HEADER: \newenvironment{indentmore}{\begin{changemargin}{1cm}{0cm}}{\end{changemargin}}
 #+BEGIN_ABSTRACT
@@ -678,9 +678,19 @@ Alcune query significative.
   SELECT COUNT(b.IdBrano) AS Conto, u.Username 
   FROM Brani b INNER JOIN Ascoltate h ON(b.IdBrano = h.IdBrano) 
                INNER JOIN Seguaci f ON(h.IdUtente = f.IdSeguace)
-               INNER JOIN Utente u ON(f.IdSeguace = u.IdUtente) 
+               INNER JOIN Utenti u ON(f.IdSeguace = u.IdUtente) 
   WHERE b.Titolo = 'Paradox' AND f.IdUtente = 1 GROUP BY u.Username ORDER BY Conto DESC;
   \end{lstlisting}
+   \begin{verbatim}
+   Output:
++-------+----------+
+| Conto | Username |
++-------+----------+
+|     1 | keepcalm |
+|     1 | rossi    |
++-------+----------+
+2 rows in set (0.00 sec)
+   \end{verbatim}
   #+END_LaTeX
 3. Username, titolo e conto delle canzoni piu ascoltate dai follower dell'user id 1
    #+BEGIN_LaTeX
@@ -691,6 +701,21 @@ Alcune query significative.
                INNER JOIN Utenti u ON(f.IdSeguace = u.IdUtente) 
   WHERE f.IdUtente = 1 GROUP BY b.Titolo ORDER BY Conto DESC;
   \end{lstlisting}
+   \begin{verbatim}
+   Output:
++----------+-----------------------------------+-------+
+| Username | Titolo                            | Conto |
++----------+-----------------------------------+-------+
+| keepcalm | Paradox                           |     2 |
+| keepcalm | We Built Our Own World            |     1 |
+| keepcalm | The Day The Whole World Went Away |     1 |
+| keepcalm | Mind Heist                        |     1 |
+| keepcalm | The Simpsons                      |     1 |
+| keepcalm | L'estasi dell'oro                 |     1 |
+| rossi    | Il Triello                        |     1 |
++----------+-----------------------------------+-------+
+7 rows in set (0.00 sec)
+\end{verbatim}
   #+END_LaTeX
 4. Username e numero brani nella collezione dell'utente con più canzoni di genere 'Orchestra'
    #+BEGIN_LaTeX
@@ -703,7 +728,17 @@ Alcune query significative.
                INNER JOIN Utenti u ON(c.IdUtente = u.IdUtente)
   WHERE b.Genere = 'Orchestra' GROUP BY c.IdUtente;
   SELECT * FROM ContoBrani HAVING MAX(Conteggio);
+  DROP VIEW IF EXISTS ContoBrani;
   \end{lstlisting}
+   \begin{verbatim}
+   Output:
++----------+-----------+
+| Username | Conteggio |
++----------+-----------+
+| codep    |         6 |
++----------+-----------+
+1 row in set (0.00 sec)
+   \end{verbatim}
   #+END_LaTeX
 5. Username e secondi di ascolto dei 3 utenti che ascolta più musica di genere 'Orchestra'
    #+BEGIN_LaTeX
@@ -715,7 +750,21 @@ Alcune query significative.
                    INNER JOIN Brani b ON(a.IdBrano = b.IdBrano)
   WHERE b.Genere = 'Orchestra' GROUP BY a.IdUtente ORDER BY DurataTotale DESC;
   SELECT * FROM UtentiGenere LIMIT 3;
+  DROP VIEW IF EXISTS UtentiGenere;
   \end{lstlisting}
+  \begin{verbatim}
+   Output:
++----------+-----------+--------------+
+| Username | Genere    | DurataTotale |
++----------+-----------+--------------+
+| verdi    | Orchestra |         1753 |
+| codep    | Orchestra |         1242 |
+| keepcalm | Orchestra |          897 |
++----------+-----------+--------------+
+3 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+  \end{verbatim} 
     #+END_LaTeX
 6. Trova gli utenti che hanno ascoltato un numero di canzoni sopra alla media nell'ultimo mese
   #+BEGIN_LaTeX
@@ -723,14 +772,27 @@ Alcune query significative.
  DROP VIEW IF EXISTS CanzoniAscoltate;
  CREATE VIEW CanzoniAscoltate AS
  SELECT u.Username, COUNT(a.IdBrano) as Conto
- FROM Ascolte a INNER JOIN Brani b ON(a.IdBrano = b.IdBrano)
+ FROM Ascoltate a INNER JOIN Brani b ON(a.IdBrano = b.IdBrano)
                 INNER JOIN Utenti u ON(a.IdUtente = u.IdUtente)
- WHERE a.Timestamp BETWEEN ADDDATE(CURDATE(), -30) AND NOW()
+ WHERE a.Timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND NOW()
  GROUP BY a.IdUtente;
  SELECT ca.* 
  FROM CanzoniUtente ca 
  WHERE ca.Conto > (SELECT AVG(ce.Conto) FROM CanzoniAscoltate ce) ORDER BY ca.Conto DESC;
+ DROP VIEW IF EXISTS CanzoniAscoltate;
  \end{lstlisting}
+ \begin{verbatim}
+  Output:
++----------+-------+
+| Username | Conto |
++----------+-------+
+| verdi    |    10 |
+| codep    |    10 |
++----------+-------+
+2 rows in set (0.02 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+ \end{verbatim}
  #+END_LaTeX
 7. Trova gli utenti e il numero di brani di genere 'Country' nella propria collezione
   #+BEGIN_LaTeX
@@ -741,11 +803,20 @@ Alcune query significative.
                         INNER JOIN Collezioni cn ON(c.IdCollezione = cn.IdCollezione)
                         INNER JOIN Utenti u ON(cn.IdUtente = u.IdUtente)
  GROUP BY b.Genere, c.IdCollezione;
- SELECT Username, MAX(Conteggio) 
+ SELECT Username, Conteggio 
  FROM Conteggi
- WHERE Genere = 'Country';
+ WHERE Genere = 'Country' HAVING Conteggio = (SELECT MAX(Conteggio) FROM Conteggi WHERE Genere = 'Country');
  DROP VIEW IF EXISTS Conteggi;
  \end{lstlisting}
+ \begin{verbatim}
+  Output:
++----------+-----------+
+| Username | Conteggio |
++----------+-----------+
+| keepcalm |         2 |
++----------+-----------+
+1 row in set (0.00 sec)
+ \end{verbatim}
  #+END_LaTeX
 8. Trova gli utenti con più di 5 brani nella propria collezione che non hanno mai ascoltato brani country nell'ultimo mese
     #+BEGIN_LaTeX
@@ -763,6 +834,16 @@ Alcune query significative.
                     GROUP BY a2.IdUtente 
                     HAVING COUNT(a2.IdBrano) > 5);
  \end{lstlisting}
+ \begin{verbatim}
+  Output:
++----------+
+| Username |
++----------+
+| keepcalm |
+| verdi    |
++----------+
+2 rows in set (0.02 sec)
+ \end{verbatim}
    #+END_LaTeX
 * Interfaccia Web
 Per l'interfaccia web è stato seguito un pattern MVC molto rudimentale, che tuttavia ha permesso di semplificarne la realizzazione modularizzando

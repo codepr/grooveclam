@@ -28,8 +28,12 @@ class Queue {
 		$db = Db::getInstance();
 		$id = intval($id);
 		$uid = intval($uid);
-		$req = $db->prepare('INSERT INTO Code VALUES(:uid, :id, NOW())');
-		$req->execute(array('uid' => $uid, 'id' => $id));
+        $req = $db->prepare('SELECT COUNT(*) AS C FROM Code WHERE IdUtente = :UID');
+        $req->execute(array('UID' => $uid));
+        $len = $req->fetch();
+        $len = $len['C'] + 1;
+		$req = $db->prepare('INSERT INTO Code VALUES(:uid, :id,  :pos)');
+		$req->execute(array('uid' => $uid, 'id' => $id, 'pos' => $len));
 	}
     // swap two song position for a give uid
     public static function swap($a, $b, $id) {
