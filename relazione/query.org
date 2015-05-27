@@ -71,9 +71,9 @@ FROM BraniCollezione c INNER JOIN Brani b ON(c.IdBrano = b.IdBrano)
                        INNER JOIN Collezioni cn ON(c.IdCollezione = cn.IdCollezione)
                        INNER JOIN Utenti u ON(cn.IdUtente = u.IdUtente)
 GROUP BY b.Genere, c.IdCollezione;
-SELECT Username, MAX(Conteggio) 
+SELECT Username, Conteggio 
 FROM Conteggi
-WHERE Genere = 'Country';
+WHERE Genere = 'Country' HAVING Conteggio = (SELECT MAX(Conteggio) FROM Conteggi WHERE Genere = 'Country');
 DROP VIEW IF EXISTS Conteggi;
 * trova gli utenti con più di 5 brani nella propria collezione che non hanno mai ascoltato una canzone country nell'ultimo mese
 SELECT DISTINCT u.Username

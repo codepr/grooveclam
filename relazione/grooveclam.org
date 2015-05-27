@@ -658,8 +658,10 @@ Alcune query significative.
 			   INNER JOIN Seguaci f ON(f.IdSeguace = h.IdUtente)
                INNER JOIN Utenti u ON(u.IdUtente = f.IdSeguace)
   WHERE h.Timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 7 DAY) AND CURDATE()
-	  AND u.IdUtente IN (SELECT u.IdUtente FROM Utenti u INNER JOIN Seguaci f ON(f.IdSeguace = u.IdUtente) WHERE f.IdUtente = 1)
-	  ORDER BY h.Timestamp DESC LIMIT 10;
+  AND u.IdUtente IN (SELECT u.IdUtente
+                     FROM Utenti u INNER JOIN Seguaci f ON(f.IdSeguace = u.IdUtente) 
+                     WHERE f.IdUtente = 1)
+  ORDER BY h.Timestamp DESC LIMIT 10;
   \end{lstlisting}
    \begin{verbatim}
    Output:
@@ -740,12 +742,12 @@ Alcune query significative.
 1 row in set (0.00 sec)
    \end{verbatim}
   #+END_LaTeX
-5. Username e secondi di ascolto dei 3 utenti che ascolta più musica di genere 'Orchestra'
-   #+BEGIN_LaTeX
+5. Username e minuti di ascolto dei 3 utenti che ascolta più musica di genere 'Orchestra'
+  #+BEGIN_LaTeX
   \begin{lstlisting}[language=SQL]
   DROP VIEW IF EXISTS UtentiGenere;
   CREATE VIEW UtentiGenere AS
-  SELECT u.Username, b.Genere, SUM(b.Durata) AS DurataTotale
+  SELECT u.Username, b.Genere, CONCAT(FLOOR(SUM(b.Durata) / 60), ":", (SUM(b.Durata) % 60)) AS DurataTotale
   FROM Ascoltate a INNER JOIN Utenti u ON(a.IdUtente = u.IdUtente)
                    INNER JOIN Brani b ON(a.IdBrano = b.IdBrano)
   WHERE b.Genere = 'Orchestra' GROUP BY a.IdUtente ORDER BY DurataTotale DESC;
@@ -754,14 +756,20 @@ Alcune query significative.
   \end{lstlisting}
   \begin{verbatim}
    Output:
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
 +----------+-----------+--------------+
 | Username | Genere    | DurataTotale |
 +----------+-----------+--------------+
-| verdi    | Orchestra |         1753 |
-| codep    | Orchestra |         1242 |
-| keepcalm | Orchestra |          897 |
+| verdi    | Orchestra | 29:13        |
+| codep    | Orchestra | 20:42        |
+| keepcalm | Orchestra | 14:57        |
 +----------+-----------+--------------+
-3 rows in set (0.00 sec)
+3 rows in set (0.03 sec)
+
+Query OK, 0 rows affected (0.02 sec)
 
 Query OK, 0 rows affected (0.00 sec)
   \end{verbatim} 
@@ -773,12 +781,14 @@ Query OK, 0 rows affected (0.00 sec)
  CREATE VIEW CanzoniAscoltate AS
  SELECT u.Username, COUNT(a.IdBrano) as Conto
  FROM Ascoltate a INNER JOIN Brani b ON(a.IdBrano = b.IdBrano)
-                INNER JOIN Utenti u ON(a.IdUtente = u.IdUtente)
+                  INNER JOIN Utenti u ON(a.IdUtente = u.IdUtente)
  WHERE a.Timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND NOW()
  GROUP BY a.IdUtente;
  SELECT ca.* 
  FROM CanzoniUtente ca 
- WHERE ca.Conto > (SELECT AVG(ce.Conto) FROM CanzoniAscoltate ce) ORDER BY ca.Conto DESC;
+ WHERE ca.Conto > (SELECT AVG(ce.Conto) 
+                   FROM CanzoniAscoltate ce)
+ ORDER BY ca.Conto DESC;
  DROP VIEW IF EXISTS CanzoniAscoltate;
  \end{lstlisting}
  \begin{verbatim}
@@ -795,8 +805,8 @@ Query OK, 0 rows affected (0.00 sec)
  \end{verbatim}
  #+END_LaTeX
 7. Trova gli utenti e il numero di brani di genere 'Country' nella propria collezione
-  #+BEGIN_LaTeX
-  \begin{lstlisting}[language=SQL]
+ #+BEGIN_LaTeX
+ \begin{lstlisting}[language=SQL]
  CREATE VIEW Conteggi AS
  SELECT u.Username, b.Genere, COUNT(b.IdBrano) AS Conteggio 
  FROM BraniCollezione c INNER JOIN Brani b ON(c.IdBrano = b.IdBrano) 
@@ -805,7 +815,9 @@ Query OK, 0 rows affected (0.00 sec)
  GROUP BY b.Genere, c.IdCollezione;
  SELECT Username, Conteggio 
  FROM Conteggi
- WHERE Genere = 'Country' HAVING Conteggio = (SELECT MAX(Conteggio) FROM Conteggi WHERE Genere = 'Country');
+ WHERE Genere = 'Country' HAVING Conteggio = (SELECT MAX(Conteggio)
+                                              FROM Conteggi 
+                                              WHERE Genere = 'Country');
  DROP VIEW IF EXISTS Conteggi;
  \end{lstlisting}
  \begin{verbatim}
@@ -819,7 +831,7 @@ Query OK, 0 rows affected (0.00 sec)
  \end{verbatim}
  #+END_LaTeX
 8. Trova gli utenti con più di 5 brani nella propria collezione che non hanno mai ascoltato brani country nell'ultimo mese
-    #+BEGIN_LaTeX
+ #+BEGIN_LaTeX
  \begin{lstlisting}[language=SQL]
  SELECT DISTINCT u.Username
  FROM Utenti u INNER JOIN Ascoltate a ON(u.IdUtente = a.IdUtente)
