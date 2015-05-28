@@ -23,9 +23,7 @@ propone di offrire un servizio di condivisione musicale tra utenti,
 permettendo di selezionare brani MP3 per l'ascolto, organizzarli in
 playlist che possono essere condivise tra utenti connessi tra di loro o in 
 semplici code di riproduzione anonime. Offre in più la possibilità di generare
-e popolare la propria libreria personale di brani e di contribuire al
-popolamento della base di dati su cui poggia la piattaforma aggiungendo le
-proprie canzoni, rendendole così disponibili per l'ascolto a tutti gli utenti.
+e popolare la propria collezione personale di brani.
 #+END_ABSTRACT
 * Analisi Dei Requisiti
 Si vuole realizzare una base di dati per la gestione di una libreria musicale
@@ -41,15 +39,15 @@ breve storia sulla realizzazione dell'album). Infine ogni album può avere una
 copertina, a cui fanno riferimento anche tutti i brani che contiene.\\ 
 Un album contiene più brani musicali. Ogni brano contenuto nell'album è
 identificato da un codice, ed è formato da alcuni metadati quali titolo,
-genere, durata.
-Esistono due tipi di utenti che possono accedere alla libreria, ordinari e
-amministratori, di entrambi interessano l'indirizzo e-mail, uno username e una
-password, sono opzionali i dati anagrafici quali nome e cognome. Gli utenti
-odinari possono decidere di seguire altri utenti ordinari, eccetto se stessi. 
-Ogni utente ordinario ha la possibilità di creare una propria collezione di brani 
-preferiti selezionandoli dalla libreria, può creare una coda di riproduzione 
-anonima, o creare delle playlist delle quali interessa sapere il nome. Interessa
-inoltre sapere se si tratta di playlist pubbliche o private.\\
+genere, durata.\\
+Degli utenti che possono accedere alla libreria, interessano l'indirizzo e-mail
+e i dati anagrafici quali nome e cognome (opzionali). Ogni utente possiede una 
+login, formata da username e password.\\
+Gli utenti possono decidere di seguire altri utenti, eccetto se stessi. 
+Ogni utente ha la possibilità di creare una propria collezione di brani 
+preferiti selezionandoli tra quelli disponibili nella libreria, può creare una coda
+di riproduzione anonima, o creare delle playlist delle quali interessa sapere il nome. 
+Interessa inoltre sapere se si tratta di playlist pubbliche o private.\\
 All'interno della collezione i brani non possono ripetersi mentre nelle code di
 riproduzione o nelle playlist uno stesso brano può comparire più volte.
 All'atto di registrazione un utente può decidere se attivare un abbonamento
@@ -61,9 +59,6 @@ free o utilizzare un piano premium.
   - Nome: /String/
   - Cognome: /String/
   - Email: /String/
-  Sono definite le seguenti sottoclassi disgiunte:
-  - *Amministratore:* Rappresenta un utente con privilegi amministrativi.
-  - *Ordinario:* Rappresenta un utente ordinario.
 - *Login:* Rappresenta delle credenziali d'accesso per un utente.
   - Username: /String/ =<<PK>>=
   - Password: /String/
@@ -84,9 +79,6 @@ free o utilizzare un piano premium.
   - *Live:* Rappresenta un album registrato durante una performance live.
     - Locazione: /String/
   - *Studio:* Rappresenta un album registrato in studio.
-- *Copertine:* Rappresenta una generica cover di album.
-  - IdImm: /Int/ =<<PK>>=
-  - Path: /String/
 - *Playlist:* Modella una playlist.
   - Nome: /String/
   Sono definite le seguenti sottoclassi disgiunte con vincolo di partizionamento.
@@ -95,6 +87,10 @@ free o utilizzare un piano premium.
 - *Collezioni:* Rappresenta una collezione di brani preferiti dall'utente.
   - IdCollezione: /Int/ =<<PK>>=
 ** Associazioni
+- *Utenti-Login:* "Posside"
+  - Ogni utente possiede una login, ogni login e' posseduta da un utente.
+  - Molteplicità 1 : 1
+  - Totale verso *Utenti*, totale verso *Login*.
 - *Utenti-Collezioni:* "Crea"
   - Ogni utente può creare zero o una collezione, ogni collezione può essere creata da un solo utente.
   - Molteplicità 1 : 1
@@ -131,14 +127,6 @@ free o utilizzare un piano premium.
   - Ogni brano appartiene a zero o un brano, ogni brano contiene uno o più brani.
   - Molteplicità 1 : N
   - Parziale verso *Brani*, totale verso *Album*.
-- *Album-Copertine:* "Possiede"
-  - Ogni album possiede zero o una copertina, ogni copertina è posseduta da un solo album.
-  - Molteplicità 1 : 1
-  - Parziale verso *Album*, totale verso *Copertine*.
-- *Brani-Copertine:* "Possiede"
-  - Ogni brano possiede zero o una cover, ogni cover è posseduta da una o più brani.
-  - Molteplicità 1 : N
-  - Totale verso *Brani*, totale verso *Copertine*.
 - *Collezioni-Brani:* "PopolateDa"
   - Ogni collezione è popolata da zero o più brani, ogni brano popola zero o più collezioni.
   - Molteplicità N : N
@@ -155,6 +143,11 @@ di qualche genere.
 ** Chiavi Primarie
 Sono state create alcune chiavi primarie per identificare le istanze di alcune tabelle, quali /IdPlaylist/ a *Playlist*. 
 ** Associazioni
+- *Utenti-Login:* "Possiede"
+  - Ogni utente possiede una login, ogni login e' posseduta da un utente.
+  - Molteplicità 1 : 1
+  - Totale verso *Utenti*, totale verso *Login*.
+  - Chiave esterna non-nulla in *Login* verso *Utenti*.
 - *Utenti-Collezioni:* "Crea"
   - Ogni utente può creare zero o una collezione, ogni collezione può essere creata da un solo utente.
   - Molteplicità 1 : 1
@@ -209,16 +202,6 @@ Sono state create alcune chiavi primarie per identificare le istanze di alcune t
   - Molteplicità 1 : N
   - Parziale verso *Brani*, totale verso *Album*.
   - Chiave esterna non-nulla in *Brani* verso *Album*.
-- *Album-Copertine:* "Possiede"
-  - Ogni album possiede zero o una cover, ogni cover è posseduta da un solo album.
-  - Molteplicità 1 : 1
-  - Parziale verso *Album*, totale verso *Copertine*.
-  - Chiave esterna non-nulla in *Copertine* verso *Album*.
-- *Brani-Copertine:* "Possiede"
-  - Ogni brano possiede zero o una copertina, ogni copertina è posseduta da una o più brani.
-  - Molteplicità 1 : N
-  - Totale verso *Brani*, totale verso *Copertine*.
-  - Chiave esterna non-nulla in *Brani* verso *Copertine*.
 - *Collezioni-Brani:* "PopolateDa"
   - Ogni collezione è popolata da zero o più brani, ogni brano popola zero o più collezioni.
   - Molteplicità N : N
@@ -238,7 +221,6 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `Errori`;
 DROP TABLE IF EXISTS `Album`;
 DROP TABLE IF EXISTS `Brani`;
-DROP TABLE IF EXISTS `Copertine`;
 DROP TABLE IF EXISTS `Utenti`;
 DROP TABLE IF EXISTS `Seguaci`;
 DROP TABLE IF EXISTS `Iscrizioni`;
@@ -248,40 +230,32 @@ DROP TABLE IF EXISTS `Playlist`;
 DROP TABLE IF EXISTS `BraniPlaylist`;
 DROP TABLE IF EXISTS `Code`;
 DROP TABLE IF EXISTS `Ascoltate`;
+DROP TABLE IF EXISTS `Login`;
 
 -- Table di supporto Errori
 CREATE TABLE IF NOT EXISTS `Errori` (
-       `Errore` VARCHAR(256) DEFAULT NULL
+    `Errore` VARCHAR(256) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=Latin1;
 -- Table Album
 CREATE TABLE IF NOT EXISTS `Album` (
 	`IdAlbum` INT(11) NOT NULL AUTO_INCREMENT,
-	`Titolo` VARCHAR(140) NOT NULL,
-	`Autore` VARCHAR(140) NOT NULL,
+	`Titolo` VARCHAR(200) NOT NULL,
+	`Autore` VARCHAR(200) NOT NULL,
 	`Info` VARCHAR(300) DEFAULT NULL,
 	`Anno` YEAR DEFAULT NULL,
 	`Live` BOOLEAN DEFAULT FALSE,
-	`Locazione` VARCHAR(40) DEFAULT NULL,
+	`Locazione` VARCHAR(100) DEFAULT NULL,
+    `PathCopertina` VARCHAR(100) NOT NULL DEFAULT "img/covers/nocover.jpg",
 	PRIMARY KEY(`IdAlbum`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 -- Table Brani
 CREATE TABLE IF NOT EXISTS `Brani` (
 	`IdBrano` INT(11) NOT NULL AUTO_INCREMENT,
 	`IdAlbum` INT(11) NOT NULL,
-	`Titolo` VARCHAR(140) NOT NULL,
+	`Titolo` VARCHAR(200) NOT NULL,
 	`Genere` VARCHAR(40) NOT NULL,
 	`Durata` INT(11),
-	`IdImm` INT(11) NOT NULL,
 	PRIMARY KEY(`IdBrano`),
-	FOREIGN KEY(`IdAlbum`) REFERENCES Album(`IdAlbum`) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY(`IdImm`) REFERENCES Copertine(`IdImm`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
--- Table Copertine
-CREATE TABLE IF NOT EXISTS `Copertine` (
-	`IdImm` INT(11) NOT NULL AUTO_INCREMENT,
-	`IdAlbum` INT(11) NOT NULL,
-	`Path` VARCHAR (40) NOT NULL DEFAULT "img/covers/nocover.jpg",
-	PRIMARY KEY(`IdImm`),
 	FOREIGN KEY(`IdAlbum`) REFERENCES Album(`IdAlbum`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 -- Table Utenti
@@ -290,11 +264,15 @@ CREATE TABLE IF NOT EXISTS `Utenti` (
 	`Nome` VARCHAR(40) DEFAULT NULL,
 	`Cognome` VARCHAR(40) DEFAULT NULL,
 	`Email` VARCHAR(40) NOT NULL,
-	`Amministratore` BOOLEAN NOT NULL,
-	`Username` VARCHAR(40) NOT NULL,
+	PRIMARY KEY(`IdUtente`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Table Login
+CREATE TABLE IF NOT EXISTS `Login` (
+    `Username` VARCHAR(40) NOT NULL,
 	`Password` VARCHAR(40) NOT NULL,
-	PRIMARY KEY(`IdUtente`),
-	UNIQUE(`Username`)
+    `IdUtente` INT(11) NOT NULL,
+    PRIMARY KEY(`Username`),
+    FOREIGN KEY(`IdUtente`) REFERENCES Utenti(`IdUtente`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 -- Table Seguaci
 CREATE TABLE IF NOT EXISTS `Seguaci` (
@@ -363,60 +341,55 @@ CREATE TABLE IF NOT EXISTS `Ascoltate` (
 	FOREIGN KEY(`IdUtente`) REFERENCES Utenti(`IdUtente`) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY(`IdBrano`) REFERENCES Brani(`IdBrano`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
--- INSERT POPULATION
 -- Insert into Utente
-INSERT INTO Utenti(`Nome`, `Cognome`, `Email`, `Amministratore`, `Username`, `Password`)
-       VALUES('Andrea', 'Baldan', 'a.g.baldan@gmail.com', 0, 'codep', MD5('ciao')),
-	         ('Federico', 'Angi', 'angiracing@gmail.com', 0, 'keepcalm', MD5('calm')),
-	         ('Marco', 'Rossi', 'rossi@gmail.com', 0, 'rossi', MD5('marco')),
-             ('Luca', 'Verdi', 'verdi@yahoo.it', 0, 'verdi', MD5('luca')),
-             ('Alessia', 'Neri', 'neri@gmail.com', 0, 'neri', MD5('alessia'));
+INSERT INTO Utenti(`Nome`, `Cognome`, `Email`)
+       VALUES('Andrea', 'Baldan', 'a.g.baldan@gmail.com'),
+	         ('Federico', 'Angi', 'angiracing@gmail.com'),
+	         ('Marco', 'Rossi', 'rossi@gmail.com'),
+             ('Luca', 'Verdi', 'verdi@yahoo.it'),
+             ('Alessia', 'Neri', 'neri@gmail.com');
+INSERT INTO Login(`Username`, `Password`, `IdUtente`)
+       VALUES('codep', MD5('ciao'), 1),
+             ('keepcalm', MD5('calm'), 2),
+             ('rossi', MD5('marco'), 3),
+             ('verdi', MD5('luca'), 4),
+             ('neri', MD5('Alessia'), 5);
 -- Insert into Subscrition
 INSERT INTO Iscrizioni(`IdUtente`, `Tipo`) VALUES(1, 'Free'), (2, 'Free');
 -- Insert into Album
-INSERT INTO Album(`Titolo`, `Autore`, `Info`, `Anno`, `Live`, `Locazione`)
-       VALUES('Inception Suite', 'Hans Zimmer', 'Inception movie soundtrack, composed by the Great Compositor Hans Zimmer', '2010', 0, NULL),
-             ('The Good, the Bad and the Ugly: Original Motion Picture Soundtrack', 'Ennio Morricone', 'Homonym movie soundtrack, created by the Legendary composer The Master Ennio Morricone', '1966', 0, NULL),
-             ('Hollywood in Vienna 2014', 'Randy Newman - David Newman', 'Annual cinematographic review hosted in Vienna', '2014', 1, 'Vienna'),
-             ('The Fragile', 'Nine Inch Nails', 'The Fragile is the third album and a double album by American industrial rock band Nine Inch Nails, released on September 21, 1999, by Interscope Records.', '1999', 0, NULL),
-             ('American IV: The Man Comes Around', 'Johnny Cash', 'American IV: The Man Comes Around is the fourth album in the American series by Johnny Cash(and his 87th overall), released in 2002. The majority of songs are covers which Cash performs in his own spare style, with help from producer Rick Rubin.', '2002', 0, NULL),
-             ('Greatest Hits', 'Neil Young', 'Rock & Folk Rock greatest success songs by Neil Young', '2004', 0, NULL);
+INSERT INTO Album(`Titolo`, `Autore`, `Info`, `Anno`, `Live`, `Locazione`, `PathCopertina`)
+       VALUES('Inception Suite', 'Hans Zimmer', 'Inception movie soundtrack, composed by the Great Compositor Hans Zimmer', '2010', 0, NULL, 'img/covers/inception.png'),
+             ('The Good, the Bad and the Ugly: Original Motion Picture Soundtrack', 'Ennio Morricone', 'Homonym movie soundtrack, created by the Legendary composer The Master Ennio Morricone', '1966', 0, NULL, 'img/covers/morricone.jpg'),
+             ('Hollywood in Vienna 2014', 'Randy Newman - David Newman', 'Annual cinematographic review hosted in Vienna', '2014', 1, 'Vienna', 'img/covers/hivlogo.jpg'),
+             ('The Fragile', 'Nine Inch Nails', 'The Fragile is the third album and a double album by American industrial rock band Nine Inch Nails, released on September 21, 1999, by Interscope Records.', '1999', 0, NULL, 'img/covers/fragile.jpg'),
+             ('American IV: The Man Comes Around', 'Johnny Cash', 'American IV: The Man Comes Around is the fourth album in the American series by Johnny Cash(and his 87th overall), released in 2002. The majority of songs are covers which Cash performs in his own spare style, with help from producer Rick Rubin.', '2002', 0, NULL, 'img/covers/nocover.jpg'),
+             ('Greatest Hits', 'Neil Young', 'Rock & Folk Rock greatest success songs by Neil Young', '2004', 0, NULL, 'img/covers/nocover.jpg');
 -- Insert into Brani
-INSERT INTO Brani(`IdAlbum`, `Titolo`, `Genere`, `Durata`, `IdImm`)
-       VALUES(1, 'Mind Heist', 'Orchestra', 203, 1),
-             (1, 'Dream is collapsing', 'Orchestra', 281, 1),
-             (1, 'Time', 'Orchestra', 215, 1),
-             (1, 'Half Remembered Dream', 'Orchestra', 71, 1),
-             (1, 'We Built Our Own World', 'Orchestra', 115, 1),
-             (1, 'Radical Notion', 'Orchestra', 222, 1),
-             (1, 'Paradox', 'Orchestra', 205, 1),
-             (2, 'Il Tramonto', 'Orchestra', 72, 2),
-             (2, 'L\'estasi dell\'oro', 'Orchestra', 202, 2),
-             (2, 'Morte di un soldato', 'Orchestra', 185, 2),
-             (2, 'Il Triello', 'Orchestra', 434, 2),
-             (3, 'The Simpsons', 'Orchestra', 172, 3),
-             (3, 'The war of the Roses', 'Orchestra', 272, 3),
-             (4, 'Somewhat Damaged', 'Industrial Metal', 271, 4),
-             (4, 'The Day The Whole World Went Away', 'Industrial Metal', 273, 4),
-             (4, 'We\'re In This Together', 'Industrial Metal', 436, 4),
-             (4, 'Just Like You Imagined', 'Industrial Metal', 229, 4),
-             (4, 'The Great Below', 'Industrial Metal', 317, 4),
-             (5, 'Hurt', 'Country', 218, 5),
-             (5, 'Danny Boy', 'Country', 199, 5),
-             (6, 'Old Man', 'Rock', 203, 6),
-             (6, 'Southern Man', 'Rock', 331, 6);
--- Insert into Copertine
-INSERT INTO Copertine(`IdImm`, `IdAlbum`, `Path`)
-       VALUES(1, 1, 'img/covers/inception.png'),
-       (2, 2, 'img/covers/morricone.jpg'),
-       (3, 3, 'img/covers/hivlogo.jpg'),
-       (4, 4, 'img/covers/fragile.jpg'),
-       (5, 5, 'img/covers/nocover.jpg'),
-       (6, 6, 'img/covers/nocover.jpg');
--- Insert into Collezioni
-INSERT INTO Collezioni(`IdUtente`) VALUES(1), (2);
+INSERT INTO Brani(`IdAlbum`, `Titolo`, `Genere`, `Durata`)
+       VALUES(1, 'Mind Heist', 'Orchestra', 203),
+             (1, 'Dream is collapsing', 'Orchestra', 281),
+             (1, 'Time', 'Orchestra', 215),
+             (1, 'Half Remembered Dream', 'Orchestra', 71),
+             (1, 'We Built Our Own World', 'Orchestra', 115),
+             (1, 'Radical Notion', 'Orchestra', 222),
+             (1, 'Paradox', 'Orchestra', 205),
+             (2, 'Il Tramonto', 'Orchestra', 72),
+             (2, 'L\'estasi dell\'oro', 'Orchestra', 202),
+             (2, 'Morte di un soldato', 'Orchestra', 185),
+             (2, 'Il Triello', 'Orchestra', 434),
+             (3, 'The Simpsons', 'Orchestra', 172),
+             (3, 'The war of the Roses', 'Orchestra', 272),
+             (4, 'Somewhat Damaged', 'Industrial Metal', 271),
+             (4, 'The Day The Whole World Went Away', 'Industrial Metal', 273),
+             (4, 'We\'re In This Together', 'Industrial Metal', 436),
+             (4, 'Just Like You Imagined', 'Industrial Metal', 229),
+             (4, 'The Great Below', 'Industrial Metal', 317),
+             (5, 'Hurt', 'Country', 218),
+             (5, 'Danny Boy', 'Country', 199),
+             (6, 'Old Man', 'Rock', 203),
+             (6, 'Southern Man', 'Rock', 331);
 -- Insert into BraniCollezione
-INSERT INTO BraniCollezione(`IdBrano`, `IdCollezione`) VALUES(1, 1), (2, 1), (3, 1), (2, 2);
+INSERT INTO BraniCollezione(`IdBrano`, `IdCollezione`) VALUES(1, 1), (2, 1), (3, 1), (7, 1), (14, 1), (12, 1), (17, 1), (18, 1), (2, 2);
 -- Insert into Playlist
 INSERT INTO Playlist(`IdUtente`, `Nome`, `Privata`) VALUES(1, 'Score & Soundtracks', 0), (1, 'Southern Rock', 0), (2, 'Colonne sonore western', 0);
 -- Insert into BraniPlaylist
@@ -424,20 +397,20 @@ INSERT INTO BraniPlaylist(`IdPlaylist`, `IdBrano`, `Posizione`) VALUES(1, 1, 1),
 -- Insert into Code
 INSERT INTO Code(`IdUtente`, `IdBrano`, `Posizione`)
        VALUES(1, 1, 1),
-       (1, 5, 2),
-       (1, 1, 3),
-       (1, 12, 4),
-       (1, 10, 5),
-       (2, 1, 1);
+             (1, 5, 2),
+             (1, 1, 3),
+             (1, 12, 4),
+             (1, 10, 5),
+             (2, 1, 1);
 -- Insert into Ascoltate
 INSERT INTO Ascoltate(`IdUtente`, `IdBrano`, `Timestamp`)
        VALUES(1, 1, '2015-04-28 18:50:03'),
-       (1, 5, '2015-04-28 18:54:06'),
-       (1, 1, '2015-04-28 19:01:43'),
-       (3, 7, '2015-04-29 18:51:02'),
-       (3, 11, '2015-04-29 17:23:15'),
-       (2, 9, '2015-04-30 21:12:52'),
-       (2, 1, '2015-05-02 22:21:22');
+             (1, 5, '2015-04-28 18:54:06'),
+             (1, 1, '2015-04-28 19:01:43'),
+             (3, 7, '2015-04-29 18:51:02'),
+             (3, 11, '2015-04-29 17:23:15'),
+             (2, 9, '2015-04-30 21:12:52'),
+             (2, 1, '2015-05-02 22:21:22');
 -- Insert into Seguaci
 INSERT INTO Seguaci(`IdUtente`, `IdSeguace`) VALUES(1, 2), (1, 3), (2, 1), (3, 1);
 SET FOREIGN_KEY_CHECKS = 1;
