@@ -22,14 +22,15 @@ while(my $r = <$fh>) {
             $response = $ua->get('http://en.wikipedia.org/wiki/'.$cols[1].'_(album)#Track_listing');
         }
         my $url = "";
-        if($response->decoded_content =~ m{src="(.*?jpg)"}g) {
+        if($response->decoded_content =~ m{src="(.*?(jpg|png|gif))"}g) {
             $url = $1;
         }
         my $te = HTML::TableExtract->new(headers => ['No.', 'Title', 'Length']);
         $te->parse($response->decoded_content);
-        print "\n\t------------------------------------------------------------\n";
-        print "\t Album: $cols[1]\tArtist: $cols[2]";
-        print "\n\t------------------------------------------------------------\n";
+        print "\n\t---------------------------------------------------------------\n";
+        print "\t Album: $cols[1]\t Artist: $cols[2]";
+        print "\n\t---------------------------------------------------------------\n";
+        print "\t Cover:\n\t $url\n";
         print "\t Tracks:\n\n";
         foreach my $ts ($te->table_states) {
             foreach my $row ($ts->rows) {
