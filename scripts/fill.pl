@@ -25,7 +25,7 @@ while(my $row = <$ah>) {
     if(defined($fields[7])) {
         $location = $fields[7];
     }
-    my $sth = $dbh->do('INSERT INTO Album (IdAlbum, Titolo, Autore, Info, Anno, Live, Locazione, PathCopertina) VALUES(?,?,?,?,?,?,?,?)', undef, $fields[0], $fields[1], $fields[2], $fields[3], $fields[4], $fields[5], $fields[6], $location, "NULL");
+    my $sth = $dbh->do('INSERT INTO Album (IdAlbum, Titolo, Autore, Info, Anno, Live, Locazione) VALUES(?,?,?,?,?,?,?)', undef, $fields[0], $fields[1], $fields[2], $fields[3], $fields[4], $fields[5], $fields[6], $location);
 }
 open(my $sh, '<:encoding(UTF-8)', $file2);
 while(my $row = <$sh>) {

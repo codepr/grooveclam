@@ -39,13 +39,13 @@ function call($controller, $action, $code = 0) {
 }
 // array containing all action for every controller
 $controllers = array(
-	'pages' => array('home', 'error', 'login', 'checkuser', 'logout', 'registration'),
+	'pages' => array('home', 'error', 'login', 'checkuser', 'logout', 'registration', 'search'),
 	'songs' => array('index', 'show', 'addnew', 'addheard', 'addsong'),
 	'albums' => array('index', 'show', 'add', 'addalbum'),
 	'playlist' => array('index', 'show', 'newplaylist', 'swap'),
 	'collection' => array('index', 'addsong', 'remove'),
 	'queue' => array('index', 'addsong', 'swap'),
-	'user' => array('show', 'follow', 'unfollow')
+	'user' => array('show', 'follow', 'unfollow', 'manage')
 );
 if(array_key_exists($controller, $controllers)) {
 	if(in_array($action, $controllers[$controller])) {

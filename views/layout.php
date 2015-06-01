@@ -27,21 +27,35 @@
 					<a href='?controller=collection&action=index&id=<?php echo isset($_SESSION['uid']) ? $_SESSION['uid'] : '-1'; ?>'><img src="img/music-icon.png" alt="">Collection</a>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=playlist/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
-					<a href='?controller=playlist&action=index'><img src="img/poweramp-icon.png" alt="">Playlist</a>
+					<a href='?controller=playlist&action=index'><img src="img/poweramp-icon.png" alt="">Playlists</a>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=queue/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
 					<a href='?controller=queue&action=index&id=<?php echo isset($_SESSION['uid']) ? $_SESSION['uid'] : '-1'; ?>'><img src="img/mic-icon.png" alt="">Queue</a>
 				</li>
 			</ul>
 		</nav>
-		<?php if(isset($_SESSION['logged'])) {?>
-			<div class="logout">
+        <div class="logout">
+            <?php if('/basidati/~abaldan/' == $_SERVER['REQUEST_URI']) { ?>
+                <a href="/basidati/~abaldan/?controller=pages&action=search"><button class="exit" style="padding: 2px 10px 3px 10px;">&#128269; Search</button></a>
+            <?php } ?>
+		    <?php if(isset($_SESSION['logged'])) { ?>
+                <?php if(preg_match('/\/\?controller=user&action=show/i', $_SERVER['REQUEST_URI'])) { ?>
+                    <a href="/basidati/~abaldan/"><button class="exit">&larr; back to home</button></a>
+                <?php } else if(preg_match('/\/\?controller=user&action=manage/i', $_SERVER['REQUEST_URI'])) { ?>
+                    <button class="exit" onclick="javascript:window.history.back();">&larr; Back</button>
+                <?php } else if(preg_match('/\/\?controller=songs&action=show/i', $_SERVER['REQUEST_URI'])) { ?>
+                    <a href="/basidati/~abaldan/?controller=songs&action=index"><button class="exit">&larr; Back to songs</button></a>
+                <?php } else if(preg_match('/\/\?controller=albums&action=show/i', $_SERVER['REQUEST_URI'])) { ?>
+                    <a href="/basidati/~abaldan/?controller=albums&action=index"><button class="exit">&larr; Back to albums</button></a>
+                <?php } else if(preg_match('/\/\?controller=playlist&action=show/i', $_SERVER['REQUEST_URI'])) { ?>
+                    <a href="/basidati/~abaldan/?controller=playlist&action=index"><button class="exit">&larr; Back to playlists</button></a>
+                <?php } ?>
                 <a href="/basidati/~abaldan/?controller=user&action=show&id=<?php echo $_SESSION['uid']; ?>"><button class="exit">Settings &#9881;</button></a>
                 <a href="/basidati/~abaldan/?controller=pages&action=logout"><button class="exit">Logout &#10144;</button></a>
-            </div>
-		<?php } ?>
+		    <?php } ?>
+        </div>
 		<main>
-		<?php require_once('routes.php') ?>
+		    <?php require_once('routes.php') ?>
 		</main>
 	</div>
     <div id="player">

@@ -63,5 +63,8 @@ class PagesController {
 			header('Location:/basidati/~abaldan/');
 		}
 	}
+    public function search() {
+        require_once('views/pages/search.php');
+    }
 }
 ?>

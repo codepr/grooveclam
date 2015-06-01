@@ -35,5 +35,17 @@ class UserController {
             }
         }
     }
+    public function manage() {
+        if(!isset($_SESSION['logged'])) {
+            return call('pages', 'login');
+        } else {
+            if(!isset($_GET['id'])) {
+                return call('pages', 'error', 2);
+            } else {
+                $user = User::find($_GET['id']);
+                require_once('views/user/manage.php');
+            }
+        }
+    }
 }
 ?>

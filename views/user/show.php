@@ -31,6 +31,8 @@ if(isset($_SESSION['logged'])) {
 		} else {
 			echo "<p><a href='?controller=user&action=unfollow&id=".$_GET['id']."'><button class='exit add'>&#10008; Unfollow</button></a></p>";
 		}
-	}
+	} else {
+        echo "<p><a href='?controller=user&action=manage&id=".$_GET['id']."'><button class='exit add'>&#9881; Manage infos</button></a></p>";
+    }
 }
 ?>
