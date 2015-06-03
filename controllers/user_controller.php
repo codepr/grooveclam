@@ -1,5 +1,13 @@
 <?php
 class UserController {
+    public function index() {
+        if(!isset($_SESSION['logged']) && $_SESSION['admin'] == true) {
+            return call('pages', 'login');
+        } else {
+            $list = User::all();
+            require_once('views/user/index.php');
+        }
+    }
 	public function show() {
 		if(!isset($_GET['id'])) {
 			return call('pages', 'error', 2);

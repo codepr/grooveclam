@@ -6,13 +6,15 @@ class User {
 	private $email;
 	private $username;
 	private $password;
+    private $admin;
 
-	public function __construct($id, $name, $email, $username, $password) {
+	public function __construct($id, $name, $email, $username, $password, $admin) {
 		$this->id = $id;
 		$this->name = $name;
 		$this->email = $email;
 		$this->username = $username;
 		$this->password = $password;
+        $this->admin = $admin;
 	}
 
 	public function id() {
@@ -23,6 +25,10 @@ class User {
 		return $this->name;
 	}
 
+    public function surname() {
+        return "";
+    }
+
 	public function email() {
 		return $this->email;
 	}
@@ -30,23 +36,37 @@ class User {
 	public function username() {
 		return $this->username;
 	}
+
+    public function admin() {
+        return $this->admin;
+    }
+    // retrieve all users, administration purpose
+    public static function all() {
+        $list = array();
+        $db = Db::getInstance();
+        $req = $db->query('SELECT u.*, l.Username, l.Password, l.Amministratore FROM Utenti u INNER JOIN Login l ON(u.IdUtente = l.IdUtente)');
+        foreach($req->fetchAll() as $result) {
+            $list[] = new User($result['IdUtente'], $result['Nome'], $result['Email'], $result['Username'], $result['Password'], $result['Amministratore']);
+        }
+        return $list;
+    }
 	// check if the user exists and return it by given credentials
 	public static function checkuser($uname, $passw) {
 		$db = Db::getInstance();
-		$req = $db->prepare('SELECT u.*, l.Username, l.Password FROM Utenti u INNER JOIN Login l ON(u.IdUtente = l.IdUtente) WHERE l.Username = :username AND l.Password = :password');
+		$req = $db->prepare('SELECT u.*, l.Username, l.Password, l.Amministratore FROM Utenti u INNER JOIN Login l ON(u.IdUtente = l.IdUtente) WHERE l.Username = :username AND l.Password = :password');
 		$req->execute(array('username' => $uname, 'password' => md5($passw)));
 		$u = $req->fetch();
 		if($u) {
-			return new User($u['IdUtente'], $u['Nome'], $u['Email'], $u['Username'], $u['Password']);
+			return new User($u['IdUtente'], $u['Nome'], $u['Email'], $u['Username'], $u['Password'], $u['Amministratore']);
 		} else return -1;
 	}
 	// return a complete user by a given id
 	public static function find($id) {
 		$db = Db::getInstance();
-		$req = $db->prepare('SELECT u.*, l.Username, l.Password FROM Utenti u INNER JOIN Login l ON(u.IdUtente = l.IdUtente) WHERE u.IdUtente = :id');
+		$req = $db->prepare('SELECT u.*, l.Username, l.Password, l.Amministratore FROM Utenti u INNER JOIN Login l ON(u.IdUtente = l.IdUtente) WHERE u.IdUtente = :id');
 		$req->execute(array('id' => $id));
 		$u = $req->fetch();
-		return new User($u['IdUtente'], $u['Nome']." ".$u['Cognome'], $u['Email'], $u['Username'], $u['Password']);
+		return new User($u['IdUtente'], $u['Nome']." ".$u['Cognome'], $u['Email'], $u['Username'], $u['Password'], $u['Amministratore']);
 	}
 	// retrieve fellow list for a user
 	public function fellows() {

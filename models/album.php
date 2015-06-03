@@ -129,5 +129,12 @@ class Album {
                 'Location' => $newalbum['Location']
             ));
     }
+    // delete an entire album from database, including all his songs
+    public static function drop($id) {
+        $id = intval($id);
+        $db = Db::getInstance();
+        $req = $db->prepare('DELETE FROM Album WHERE IdAlbum = :id');
+        $req->execute(array('id' => $id));
+    }
 }
 ?>

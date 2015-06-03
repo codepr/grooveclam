@@ -149,5 +149,12 @@ class Song {
         $req = $db->prepare('INSERT INTO Ascoltate (`IdUtente`, `IdBrano`, `Timestamp`) VALUES(:uid, :id, NOW())');
         $req->execute(array('id' => $id, 'uid' => $uid));
     }
+    // delete a song from database
+    public static function drop($id) {
+        $id = intval($id);
+        $db = Db::getInstance();
+        $req = $db->prepare('DELETE FROM Brani WHERE IdBrano = :id');
+        $req->execute(array('id' => $id));
+    }
 }
 ?>

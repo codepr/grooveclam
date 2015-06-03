@@ -45,7 +45,7 @@ $controllers = array(
 	'playlist' => array('index', 'show', 'newplaylist', 'swap'),
 	'collection' => array('index', 'addsong', 'remove'),
 	'queue' => array('index', 'addsong', 'swap'),
-	'user' => array('show', 'follow', 'unfollow', 'manage')
+	'user' => array('index', 'show', 'follow', 'unfollow', 'manage')
 );
 if(array_key_exists($controller, $controllers)) {
 	if(in_array($action, $controllers[$controller])) {

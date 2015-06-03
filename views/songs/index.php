@@ -1,5 +1,5 @@
 <h2>&#9836; SONG LIST</h2>
-<?php if(isset($_SESSION['logged'])) { ?>
+<?php if(isset($_SESSION['logged']) && $_SESSION['admin'] == true) { ?>
     <div class="addstuff">
         <div class="addstuff-circle">
             <a class="addstuff" href="?controller=songs&action=addnew">&#10010;</a>
@@ -15,6 +15,9 @@
 		<th>Album</th>
 		<?php if(isset($_SESSION['logged'])) { echo "<th></th><th></th>"; } ?>
         <th></th>
+        <?php if(isset($_SESSION['logged']) && $_SESSION['admin'] == true) { ?>
+            <th></th>
+        <?php } ?>
 	</tr>
 </thead>
 <tbody>
@@ -26,13 +29,16 @@
 		<td><a href='?controller=albums&action=show&id=<?php echo $song->idalbum(); ?>'><?php echo $song->album(); ?></a></td>
 		<?php if(isset($_SESSION['logged'])) {
 			if(in_array($song->id(), $got)) {
-				echo "<td style='color: rgb(15, 89, 182);'>&#10004</td>\n";
+				echo "<td style='color: rgb(15, 89, 182);'>&#10004;</td>\n";
 			} else { echo "<td><a href='?controller=collection&action=addsong&id=".$song->id()."&idu=".$_SESSION['uid']."'>&#10010;</a></td>\n"; }
 		?>
 		<td><a href='?controller=queue&action=addsong&id=<?php echo $song->id(); ?>'>&crarr;</a></td>
 		<?php
 		} ?>
         <td><a href="#" onclick="play('<?php echo $song->duration() . '\'',',\'' . addslashes($song->title()) . '\'',',\'' . $song->id(); ?>');">&#9654;</a></td>
+        <?php if(isset($_SESSION['logged']) && $_SESSION['admin'] == true) { ?>
+            <td><a href="?controller=songs&action=drop&id=<?php echo $song->id(); ?>">&#10008;</a></td>
+        <?php } ?>
 	</tr>
 <?php } ?>
 </tbody>

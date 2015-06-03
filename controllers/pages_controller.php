@@ -20,7 +20,8 @@ class PagesController {
         $errors = array(
             0 => '',
             1 => '404 page does not exists',
-            2 => 'Missing get or post parameters'
+            2 => 'Missing get or post parameters',
+            3 => 'Administration privileges required'
         );
         $message = $errors{$code};
 		require_once('views/pages/error.php');
@@ -38,6 +39,7 @@ class PagesController {
 			$session = GrooveSession::getInstance();
 			$session->__set('logged', 1);
 			$session->__set('uid', $user->id());
+            $session->__set('admin', $user->admin());
 			header('Location:/basidati/~abaldan/');
 		} else {
 			$this->login();

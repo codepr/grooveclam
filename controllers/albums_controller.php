@@ -50,5 +50,21 @@ class AlbumController {
 //            header('Location:basidati/~abaldan/?controller=albums&action=index');
         }
     }
+    public function drop() {
+        if(!isset($_SESSION['logged'])) {
+            return call('pages', 'login');
+        } else {
+            if($_SESSION['admin'] == false) {
+                return call('pages', 'error', 3);
+            } else {
+                if(!isset($_GET['id'])) {
+                    return call('pages', 'error', 2);
+                } else {
+                    Album::drop($_GET['id']);
+                    Header('Location:/basidati/~abaldan/?controller=albums&action=index');
+                }
+            }
+        }
+    }
 }
 ?>
