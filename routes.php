@@ -43,7 +43,7 @@ $controllers = array(
 	'songs' => array('index', 'show', 'addnew', 'addheard', 'addsong'),
 	'albums' => array('index', 'show', 'add', 'addalbum'),
 	'playlist' => array('index', 'show', 'newplaylist', 'swap'),
-	'collection' => array('index', 'addsong', 'remove'),
+	'collection' => array('index', 'show', 'addsong', 'remove'),
 	'queue' => array('index', 'addsong', 'swap'),
 	'user' => array('index', 'show', 'follow', 'unfollow', 'manage')
 );

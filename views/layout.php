@@ -29,7 +29,11 @@
 					<a href='?controller=albums&action=index'><img src="img/folder-icon.png" alt="">Albums</a>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=collection/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
-					<a href='?controller=collection&action=index&id=<?php echo isset($_SESSION['uid']) ? $_SESSION['uid'] : '-1'; ?>'><img src="img/music-icon.png" alt="">Collection</a>
+                    <?php if(isset($_SESSION['logged']) && $_SESSION['admin'] == true) { ?>
+                        <a href="?controller=collection&action=index"><img src="img/music-icon.png" alt="">Collections</a>
+                    <?php } else { ?>
+					    <a href='?controller=collection&action=show&id=<?php echo isset($_SESSION['uid']) ? $_SESSION['uid'] : '-1'; ?>'><img src="img/music-icon.png" alt="">Collection</a>
+                    <?php } ?>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=playlist/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
 					<a href='?controller=playlist&action=index'><img src="img/poweramp-icon.png" alt="">Playlists</a>

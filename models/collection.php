@@ -17,13 +17,26 @@ class Collection {
 	public function songs() {
 		return $this->songs;
 	}
+    // control if a given user is the author of a given collection
+    public function canI($uid, $id) {
+        $uid = intval($uid);
+        $id = intval($id);
+        $db = Db::getInstance();
+        $req = $db->prepare('SELECT c.IdUtente, c.IdCollezione FROM Collezioni c WHERE c.IdUtente = :uid AND c.IdCollezione = :id');
+        $req->execute(array('uid' => $uid, 'id' => $id));
+        if(!empty($req->fetch())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 	// list all collections, for administrator users
 	public static function all() {
 		$list = array();
 		$db = Db::getInstance();
-		$req = $db->query('SELECT * FROM Collezioni');
+		$req = $db->query('SELECT c.*, l.Username FROM Collezioni c INNER JOIN Login l ON(c.IdUtente = l.IdUtente)');
 		foreach($req->fetchAll() as $collection) {
-			$list[] = new Collection($collection['IdCollezione'], array());
+			$list[] = array('collection' => $collection['IdCollezione'], 'user' => $collection['Username']);
 		}
 		return $list;
 	}
