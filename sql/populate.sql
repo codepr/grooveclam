@@ -14,8 +14,6 @@ INSERT INTO Login(`Username`, `Password`, `Amministratore`, `IdUtente`)
              ('rossi', MD5('marco'), 0, 4),
              ('verdi', MD5('luca'), 0, 5),
              ('neri', MD5('Alessia'), 0, 6);
--- Insert into Subscrition
-INSERT INTO Iscrizioni(`IdUtente`, `Tipo`) VALUES(1, 'Premium'), (2, 'Free'), (3, 'Free'), (4, 'Free'), (5, 'Free');
 -- Insert into Album
 INSERT INTO Album(`Titolo`, `Autore`, `Info`, `Anno`, `Live`, `Locazione`, `PathCopertina`)
        VALUES('Inception Suite', 'Hans Zimmer', 'Inception movie soundtrack, composed by the Great Compositor Hans Zimmer', '2010', 0, NULL, 'img/covers/inception.png'),

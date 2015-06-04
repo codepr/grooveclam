@@ -35,6 +35,16 @@ class Playlist {
     public function domain() {
         return $this->domain;
     }
+    // retrieve all playlists including private ones
+    public function allWithPrivate() {
+        $list = array();
+		$db = Db::getInstance();
+		$req = $db->query('SELECT p.*, l.Username FROM Playlist p INNER JOIN Login l ON(p.IdUtente = l.IdUtente)');
+		foreach($req->fetchAll() as $playlist) {
+			$list[] = new Playlist($playlist['IdPlaylist'], $playlist['Nome'], array('IdUtente' => $playlist['IdUtente'], 'Username' => $playlist['Username']), array(), 0);
+		}
+		return $list;
+    }
 	// retrieve number of songs and total duration of a given playlist
 	public function stats($id) {
 		$stats = array();
@@ -51,7 +61,7 @@ class Playlist {
 		$dur = floor($dur / 60).":".($dur % 60);
 		return array('count' => count($res), 'duration' => $dur);
 	}
-	// list all playlists, for administrator users
+	// list all public playlists
 	public static function all() {
 		$list = array();
 		$db = Db::getInstance();
@@ -59,13 +69,12 @@ class Playlist {
 		foreach($req->fetchAll() as $playlist) {
 			$list[] = new Playlist($playlist['IdPlaylist'], $playlist['Nome'], array('IdUtente' => $playlist['IdUtente'], 'Username' => $playlist['Username']), array(), 0);
 		}
-
 		return $list;
 	}
 	// find a single playlist and all songs contained
 	public static function find($id) {
 		$songlist = array();
-		$song;
+		$song = 0;
 		$db = Db::getInstance();
 		$id = intval($id);
 		$req = $db->prepare('SELECT pl.IdPlaylist, pl.Nome, pl.Privata, p.Posizione, b.*, a.Autore, a.Titolo as AlbumTitle FROM Brani b INNER JOIN BraniPlaylist p ON(b.IdBrano = p.IdBrano) INNER JOIN Playlist pl ON(pl.IdPlaylist = p.IdPlaylist) INNER JOIN Album a ON(b.IdAlbum = a.IdAlbum) WHERE pl.IdPlaylist = :id ORDER BY p.Posizione');

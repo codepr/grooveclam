@@ -10,7 +10,12 @@ class AlbumController {
 			return call('pages', 'error', 2);
 		}
 		$album = Album::find($_GET['id']);
-		require_once('views/albums/show.php');
+        if(empty($album->id())) {
+            return call('pages', 'error', 1);
+        } else {
+		    require_once('views/albums/show.php');
+        }
+        
 	}
     public function add() {
         if(!isset($_SESSION['logged'])) {

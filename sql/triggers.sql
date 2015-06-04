@@ -2,6 +2,8 @@ DROP TRIGGER IF EXISTS checkDuration;
 DROP TRIGGER IF EXISTS errorTrigger;
 DROP TRIGGER IF EXISTS checkFollower;
 DROP TRIGGER IF EXISTS insertAutoCollection;
+DROP TRIGGER IF EXISTS insertAutoAdminSubs;
+DROP TRIGGER IF EXISTS updateAutoAdminSubs;
 
 DELIMITER $$
 
@@ -43,6 +45,36 @@ AFTER INSERT ON `Utenti`
 FOR EACH ROW
 BEGIN
     INSERT INTO `Collezioni` (`IdUtente`) VALUES(NEW.IdUtente);
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER insertAutoAdminSubs
+BEFORE INSERT ON `Login`
+FOR EACH ROW
+BEGIN
+    IF(NEW.Amministratore = 1) THEN
+        INSERT INTO `Iscrizioni` (`IdUtente`, `Tipo`) VALUES(NEW.IdUtente, 'Premium')
+        ON DUPLICATE KEY UPDATE Tipo = 'Premium';
+    ELSE
+        INSERT INTO `Iscrizioni` (`IdUtente`, `Tipo`) VALUES(NEW.IdUtente, 'Free');
+    END IF;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER updateAutoAdminSubs
+BEFORE UPDATE ON `Login`
+FOR EACH ROW
+BEGIN
+   IF(NEW.Amministratore = 1) THEN
+        INSERT INTO `Iscrizioni` (`IdUtente`, `Tipo`) VALUES(NEW.IdUtente, 'Premium')
+        ON DUPLICATE KEY UPDATE Tipo = 'Premium';
+   END IF;
 END $$
 
 DELIMITER ;

@@ -8,7 +8,7 @@
             <?php
             $index = 0;
             foreach($collection->songs() as $song) {
-                echo "<input type='checkbox' class='list' name='song_$index' value='".$song->id()."'> ".$song->title()." - " .$song->author()." - ".$song->duration()." min<br />";
+                echo "<input type='checkbox' class='list' name='song_$index' value='".$song->id()."'> ".$song->title()." - " .$song->author()." - ".floor($song->duration() / 60).":".($song->duration() % 60)." min<br />";
                 $index++;
             }
             ?>

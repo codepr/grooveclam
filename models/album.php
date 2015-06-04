@@ -95,7 +95,13 @@ class Album {
 	}
 	// retrieve a single album from the database, by a given id
 	public static function find($id) {
-		$song;
+		$song = array(
+            'IdAlbum' => 0,
+            'AlbumTitle' => "",
+            'Autore' => "",
+            'Info' => "",
+            'Anno' => ""
+        );
 		$live;
 		$songs = array();
 		$id = intval($id);
