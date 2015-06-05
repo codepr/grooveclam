@@ -87,6 +87,26 @@ class Song {
 		$song = $req->fetch();
 		return new Song($song['IdBrano'], $song['Titolo'], $song['Genere'], $song['Durata'], $song['Autore'], $song['IdAlbum'], $song['AlbumTitle']);
 	}
+    // retrieve a [list of] song by a given title
+    public static function findByTitle($title) {
+        $list = array();
+        $db = Db::getInstance();
+        $title = addslashes($title);
+        $req = $db->prepare('SELECT b.*, a.Autore, a.Titolo as AlbumTitle FROM Brani b INNER JOIN Album a ON(b.IdAlbum = a.IdAlbum) WHERE b.Titolo = :title OR b.Titolo REGEXP :title');
+        $req->execute(array('title' => $title));
+        foreach($req->fetchAll() as $song) {
+            $list[] = array(
+                'id' => $song['IdBrano'],
+                'Title' => $song['Titolo'],
+                'Genre' => $song['Genere'],
+                'Duration' => $song['Durata'],
+                'Author' => $song['Autore'],
+                'IdAlbum' => $song['IdAlbum'],
+                'AlbumTitle' => $song['AlbumTitle']
+            );
+        }
+        return $list;
+    }
 	// retrieve last 10 songs inserted
 	public static function lasten() {
 		$db = Db::getInstance();

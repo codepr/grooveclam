@@ -124,6 +124,38 @@ class Album {
 		}
 		return new Album($song['IdAlbum'], $song['AlbumTitle'], $song['Autore'], $song['Info'], $song['Anno'], $live, $songs, $song['PathCopertina']);
 	}
+    // retrieve a [list of] album by a given title
+    public static function findByTitle($title) {
+        $list = array();
+        $title = addslashes($title);
+        $song = array(
+            'IdAlbum' => 0,
+            'AlbumTitle' => "",
+            'Autore' => "",
+            'Info' => "",
+            'Anno' => ""
+        );
+        $db = Db::getInstance();
+		$live;
+		$songs = array();
+        $req = $db->prepare('SELECT a.IdAlbum, a.Live, a.Locazione, a.Info, a.Anno, a.PathCopertina, a.Titolo as AlbumTitle, a.Autore, b.* FROM Album a INNER JOIN Brani b ON(a.IdAlbum = b.IdAlbum) WHERE a.Titolo = :title');
+		$req->execute(array('title' => $title));
+		foreach($req->fetchAll() as $song) {
+			$songs[] = new Song($song['IdBrano'], $song['Titolo'], $song['Genere'], $song['Durata'], $song['Autore'], $song['IdAlbum'], $song['AlbumTitle']);
+		}
+		if(!isset($song['PathCopertina'])) {
+			$song['PathCopertina'] = '';
+		}
+		if(isset($song['Live']) && $song['Live'] == true) {
+			$live = array(
+				'Live' => $song['Live'],
+				'Location' => $song['Locazione']
+			);
+		} else {
+			$live = false;
+		}
+		return new Album($song['IdAlbum'], $song['AlbumTitle'], $song['Autore'], $song['Info'], $song['Anno'], $live, $songs, $song['PathCopertina']);
+    }
     // add a new album into the database
     public static function addalbum($newalbum) {
         $db = Db::getInstance();

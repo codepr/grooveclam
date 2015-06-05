@@ -329,6 +329,7 @@ CREATE TABLE IF NOT EXISTS `Album` (
 	`Titolo` VARCHAR(200) NOT NULL,
 	`Autore` VARCHAR(200) NOT NULL,
 	`Info` VARCHAR(300) DEFAULT NULL,
+    `NBrani` INT(11) NOT NULL,
 	`Anno` YEAR DEFAULT NULL,
 	`Live` BOOLEAN DEFAULT FALSE,
 	`Locazione` VARCHAR(100) DEFAULT NULL,
@@ -514,6 +515,8 @@ Di seguito i trigger creati. Sono trigger tipicamente di controllo.
 - ~insertAutoCollection:~ Trigger di controllo sull'inserimento di un nuovo utente, si occupa di generare una collezione vuota per il nuovo utente inserito, creando un entry nella tabella ~Collezioni~.
 - ~insertAutoAdminSubs:~ Trigger di controllo sull'inserimento di un nuovo utente con privilegi di amministrazione, crea un record nella tabella ~Iscrizioni~ associato al nuovo amministratore creato, dotandolo di privilegi ~Premium~.
 - ~updateAutpAdminSubs:~ Trigger di controllo sull'aggiornamento di un utente già presente nella base di dati, se viene aggiornato il campo ~Amministratore~ a ~TRUE~, viene creato o, aggiornato se già esistente, il campo ~Tipo~ nella tabella ~Iscrizioni~.
+- ~insertAutoSongNumber:~ Trigger di aggiornamento, dopo l'inserimento nella tabella ~Brani~ aumenta di 1 il contatore ~NBrani~ all'interno della tabella ~Album~ sul record associato al brano inserito.
+- ~updateAutoSongNumber:~ Trigger di controllo, come sopra ma cattura l'evento ~UPDATE~, e si occupa di decrementare il contatore del vecchio album a cui il brano era associato.
 - ~errorTrigger:~ Trigger di supporto, utilizzato per simulare un sistema di segnalazione errori, esegue un ~SET NEW = NEW.errore;~ che genera un messaggio in quanto ~NEW~ non puo essere manipolato e visualizza il messaggio passato alla procedura ~RAISE_ERROR~.
 #+BEGIN_LaTeX
 \begin{lstlisting}[language=SQL]
@@ -524,6 +527,8 @@ DROP TRIGGER IF EXISTS checkCoverImage;
 DROP TRIGGER IF EXISTS insertAutoCollection;
 DROP TRIGGER IF EXISTS insertAutoAdminSubs;
 DROP TRIGGER IF EXISTS updateAutoAdminSubs;
+DROP TRIGGER IF EXISTS insertAutoSongNumber;
+DROP TRIGGER IF EXISTS updateAutoSongNumber;
 
 DELIMITER $$
 
@@ -603,6 +608,41 @@ BEGIN
    END IF;
 END $$
 
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER insertAutoSongNumber
+AFTER INSERT ON `Brani`
+FOR EACH ROW
+BEGIN
+    DECLARE ida INTEGER DEFAULT -1;
+    SELECT a.IdAlbum INTO ida
+    FROM `Album` a
+    WHERE a.IdAlbum = NEW.IdAlbum;
+    IF(ida <> -1) THEN
+        UPDATE `Album` SET NBrani = NBrani + 1 WHERE IdAlbum = ida;
+    END IF;
+END $$
+ 
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER updateAutoSongNumber
+AFTER UPDATE ON `Brani`
+FOR EACH ROW
+BEGIN
+    DECLARE ida INTEGER DEFAULT -1;
+    SELECT a.IdAlbum INTO ida
+    FROM `Album` a
+    WHERE a.IdAlbum = NEW.IdAlbum;
+    IF(ida <> -1) THEN
+        UPDATE `Album` SET NBrani = NBrani - 1 WHERE IdAlbum = OLD.IdAlbum;
+        UPDATE `Album` SET NBrani = NBrani + 1 WHERE IdAlbum = ida;
+    END IF;
+END $$
+ 
 DELIMITER ;
 \end{lstlisting}
 #+END_LaTeX
@@ -751,22 +791,23 @@ DELIMITER ;
 #+END_LaTeX
 * Query
 Alcune query significative.
-1. Titolo, album e username dell'utente, degli ultimi 10 brani ascoltati tra i followers.
-   #+BEGIN_LaTeX
-  \begin{lstlisting}[language=SQL]
-  SELECT b.Titolo, a.Titolo as TitoloAlbum, u.Username, DATE_FORMAT(h.Timestamp, '%d-%m-%Y %T') AS Data
-  FROM Brani b INNER JOIN Album a ON(b.IdAlbum = a.IdAlbum)
-			   INNER JOIN Ascoltate h ON(h.IdBrano = b.IdBrano)
-			   INNER JOIN Seguaci f ON(f.IdSeguace = h.IdUtente)
-               INNER JOIN Utenti u ON(u.IdUtente = f.IdSeguace)
-  WHERE h.Timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 7 DAY) AND CURDATE()
-  AND u.IdUtente IN (SELECT u.IdUtente
-                     FROM Utenti u INNER JOIN Seguaci f ON(f.IdSeguace = u.IdUtente) 
-                     WHERE f.IdUtente = 1)
-  ORDER BY h.Timestamp DESC LIMIT 10;
-  \end{lstlisting}
-   \begin{verbatim}
-   Output:
+** Query 1
+Titolo, album e username dell'utente, degli ultimi 10 brani ascoltati tra i followers.
+#+BEGIN_LaTeX
+\begin{lstlisting}[language=SQL]
+SELECT b.Titolo, a.Titolo as TitoloAlbum, u.Username, DATE_FORMAT(h.Timestamp, '%d-%m-%Y %T') AS Data
+FROM Brani b INNER JOIN Album a ON(b.IdAlbum = a.IdAlbum)
+       		 INNER JOIN Ascoltate h ON(h.IdBrano = b.IdBrano)
+			 INNER JOIN Seguaci f ON(f.IdSeguace = h.IdUtente)
+             INNER JOIN Utenti u ON(u.IdUtente = f.IdSeguace)
+WHERE h.Timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 7 DAY) AND CURDATE()
+AND u.IdUtente IN (SELECT u.IdUtente
+                   FROM Utenti u INNER JOIN Seguaci f ON(f.IdSeguace = u.IdUtente) 
+                   WHERE f.IdUtente = 1)
+ORDER BY h.Timestamp DESC LIMIT 10;
+\end{lstlisting}
+\scriptsize\begin{verbatim}
+ Output:
 +-----------------------------------+-----------------+----------+---------------------+
 | Titolo                            | TitoloAlbum     | Username | Data                |
 +-----------------------------------+-----------------+----------+---------------------+
@@ -774,19 +815,20 @@ Alcune query significative.
 | Paradox                           | Inception Suite | keepcalm | 26-05-2015 15:04:36 |
 +-----------------------------------+-----------------+----------+---------------------+
 2 rows in set (0.00 sec)
-   \end{verbatim}
-  #+END_LaTeX
-2. Username e numero di volte che è stata ascoltata la canzone Paradox dai follower dell'user id 1
-   #+BEGIN_LaTeX
-  \begin{lstlisting}[language=SQL]
-  SELECT COUNT(b.IdBrano) AS Conto, u.Username 
-  FROM Brani b INNER JOIN Ascoltate h ON(b.IdBrano = h.IdBrano) 
-               INNER JOIN Seguaci f ON(h.IdUtente = f.IdSeguace)
-               INNER JOIN Utenti u ON(f.IdSeguace = u.IdUtente) 
-  WHERE b.Titolo = 'Paradox' AND f.IdUtente = 1 GROUP BY u.Username ORDER BY Conto DESC;
-  \end{lstlisting}
-   \begin{verbatim}
-   Output:
+\end{verbatim}
+#+END_LaTeX
+** Query 2
+Username e numero di volte che è stata ascoltata la canzone Paradox dai follower dell'user id 1
+#+BEGIN_LaTeX
+\begin{lstlisting}[language=SQL]
+SELECT COUNT(b.IdBrano) AS Conto, u.Username 
+FROM Brani b INNER JOIN Ascoltate h ON(b.IdBrano = h.IdBrano) 
+             INNER JOIN Seguaci f ON(h.IdUtente = f.IdSeguace)
+             INNER JOIN Utenti u ON(f.IdSeguace = u.IdUtente) 
+WHERE b.Titolo = 'Paradox' AND f.IdUtente = 1 GROUP BY u.Username ORDER BY Conto DESC;
+\end{lstlisting}
+\begin{verbatim}
+ Output:
 +-------+----------+
 | Conto | Username |
 +-------+----------+
@@ -794,19 +836,20 @@ Alcune query significative.
 |     1 | rossi    |
 +-------+----------+
 2 rows in set (0.00 sec)
-   \end{verbatim}
-  #+END_LaTeX
-3. Username, titolo e conto delle canzoni piu ascoltate dai follower dell'user id 1
-   #+BEGIN_LaTeX
-  \begin{lstlisting}[language=SQL]
-  SELECT u.Username, b.Titolo, COUNT(b.IdBrano) AS Conto 
-  FROM Brani b INNER JOIN Ascoltate h ON(b.IdBrano = h.IdBrano) 
-               INNER JOIN Seguaci f ON(h.IdUtente = f.IdSeguace)
-               INNER JOIN Utenti u ON(f.IdSeguace = u.IdUtente) 
-  WHERE f.IdUtente = 1 GROUP BY b.Titolo ORDER BY Conto DESC;
-  \end{lstlisting}
-   \begin{verbatim}
-   Output:
+\end{verbatim}
+#+END_LaTeX
+** Query 3
+Username, titolo e conto delle canzoni piu ascoltate dai follower dell'user id 1
+#+BEGIN_LaTeX
+\begin{lstlisting}[language=SQL]
+SELECT u.Username, b.Titolo, COUNT(b.IdBrano) AS Conto 
+FROM Brani b INNER JOIN Ascoltate h ON(b.IdBrano = h.IdBrano) 
+             INNER JOIN Seguaci f ON(h.IdUtente = f.IdSeguace)
+             INNER JOIN Utenti u ON(f.IdSeguace = u.IdUtente) 
+WHERE f.IdUtente = 1 GROUP BY b.Titolo ORDER BY Conto DESC;
+\end{lstlisting}
+\begin{verbatim}
+ Output:
 +----------+-----------------------------------+-------+
 | Username | Titolo                            | Conto |
 +----------+-----------------------------------+-------+
@@ -820,44 +863,46 @@ Alcune query significative.
 +----------+-----------------------------------+-------+
 7 rows in set (0.00 sec)
 \end{verbatim}
-  #+END_LaTeX
-4. Username e numero brani nella collezione dell'utente con più canzoni di genere 'Orchestra'
-   #+BEGIN_LaTeX
-  \begin{lstlisting}[language=SQL]
-  DROP VIEW IF EXISTS ContoBrani;
-  CREATE VIEW ContoBrani AS
-  SELECT u.Username, COUNT(b.Genere) as Conteggio
-  FROM Brani b INNER JOIN BraniCollezione bc ON(b.IdBrano = bc.IdBrano)
-               INNER JOIN Collezioni c ON(bc.IdCollezione = c.IdCollezione)
-               INNER JOIN Utenti u ON(c.IdUtente = u.IdUtente)
-  WHERE b.Genere = 'Orchestra' GROUP BY c.IdUtente;
-  SELECT * FROM ContoBrani HAVING MAX(Conteggio);
-  DROP VIEW IF EXISTS ContoBrani;
-  \end{lstlisting}
-   \begin{verbatim}
-   Output:
+#+END_LaTeX
+** Query 4
+Username e numero brani nella collezione dell'utente con più canzoni di genere 'Orchestra'
+#+BEGIN_LaTeX
+\begin{lstlisting}[language=SQL]
+DROP VIEW IF EXISTS ContoBrani;
+CREATE VIEW ContoBrani AS
+SELECT u.Username, COUNT(b.Genere) as Conteggio
+FROM Brani b INNER JOIN BraniCollezione bc ON(b.IdBrano = bc.IdBrano)
+             INNER JOIN Collezioni c ON(bc.IdCollezione = c.IdCollezione)
+             INNER JOIN Utenti u ON(c.IdUtente = u.IdUtente)
+WHERE b.Genere = 'Orchestra' GROUP BY c.IdUtente;
+SELECT * FROM ContoBrani HAVING MAX(Conteggio);
+DROP VIEW IF EXISTS ContoBrani;
+\end{lstlisting}
+\begin{verbatim}
+ Output:
 +----------+-----------+
 | Username | Conteggio |
 +----------+-----------+
 | codep    |         6 |
 +----------+-----------+
 1 row in set (0.00 sec)
-   \end{verbatim}
-  #+END_LaTeX
-5. Username e minuti di ascolto dei 3 utenti che ascolta più musica di genere 'Orchestra'
-  #+BEGIN_LaTeX
-  \begin{lstlisting}[language=SQL]
-  DROP VIEW IF EXISTS UtentiGenere;
-  CREATE VIEW UtentiGenere AS
-  SELECT u.Username, b.Genere, CONCAT(FLOOR(SUM(b.Durata) / 60), ":", (SUM(b.Durata) % 60)) AS DurataTotale
-  FROM Ascoltate a INNER JOIN Utenti u ON(a.IdUtente = u.IdUtente)
-                   INNER JOIN Brani b ON(a.IdBrano = b.IdBrano)
-  WHERE b.Genere = 'Orchestra' GROUP BY a.IdUtente ORDER BY DurataTotale DESC;
-  SELECT * FROM UtentiGenere LIMIT 3;
-  DROP VIEW IF EXISTS UtentiGenere;
-  \end{lstlisting}
-  \begin{verbatim}
-   Output:
+\end{verbatim}
+#+END_LaTeX
+** Query 5
+Username e minuti di ascolto dei 3 utenti che ascolta più musica di genere 'Orchestra'
+#+BEGIN_LaTeX
+\begin{lstlisting}[language=SQL]
+DROP VIEW IF EXISTS UtentiGenere;
+CREATE VIEW UtentiGenere AS
+SELECT u.Username, b.Genere, CONCAT(FLOOR(SUM(b.Durata) / 60), ":", (SUM(b.Durata) % 60)) AS DurataTotale
+FROM Ascoltate a INNER JOIN Utenti u ON(a.IdUtente = u.IdUtente)
+                 INNER JOIN Brani b ON(a.IdBrano = b.IdBrano)
+WHERE b.Genere = 'Orchestra' GROUP BY a.IdUtente ORDER BY DurataTotale DESC;
+SELECT * FROM UtentiGenere LIMIT 3;
+DROP VIEW IF EXISTS UtentiGenere;
+\end{lstlisting}
+\begin{verbatim}
+ Output:
 Query OK, 0 rows affected, 1 warning (0.00 sec)
 
 Query OK, 0 rows affected (0.01 sec)
@@ -874,27 +919,28 @@ Query OK, 0 rows affected (0.01 sec)
 Query OK, 0 rows affected (0.02 sec)
 
 Query OK, 0 rows affected (0.00 sec)
-  \end{verbatim} 
-    #+END_LaTeX
-6. Trova gli utenti che hanno ascoltato un numero di canzoni sopra alla media nell'ultimo mese
-  #+BEGIN_LaTeX
- \begin{lstlisting}[language=SQL]
- DROP VIEW IF EXISTS CanzoniAscoltate;
- CREATE VIEW CanzoniAscoltate AS
- SELECT u.Username, COUNT(a.IdBrano) as Conto
- FROM Ascoltate a INNER JOIN Brani b ON(a.IdBrano = b.IdBrano)
-                  INNER JOIN Utenti u ON(a.IdUtente = u.IdUtente)
- WHERE a.Timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND NOW()
- GROUP BY a.IdUtente;
- SELECT ca.* 
- FROM CanzoniUtente ca 
- WHERE ca.Conto > (SELECT AVG(ce.Conto) 
-                   FROM CanzoniAscoltate ce)
- ORDER BY ca.Conto DESC;
- DROP VIEW IF EXISTS CanzoniAscoltate;
- \end{lstlisting}
- \begin{verbatim}
-  Output:
+\end{verbatim} 
+#+END_LaTeX
+** Query 6
+Trova gli utenti che hanno ascoltato un numero di canzoni sopra alla media nell'ultimo mese
+#+BEGIN_LaTeX
+\begin{lstlisting}[language=SQL]
+DROP VIEW IF EXISTS CanzoniAscoltate;
+CREATE VIEW CanzoniAscoltate AS
+SELECT u.Username, COUNT(a.IdBrano) as Conto
+FROM Ascoltate a INNER JOIN Brani b ON(a.IdBrano = b.IdBrano)
+                 INNER JOIN Utenti u ON(a.IdUtente = u.IdUtente)
+WHERE a.Timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND NOW()
+GROUP BY a.IdUtente;
+SELECT ca.* 
+FROM CanzoniUtente ca 
+WHERE ca.Conto > (SELECT AVG(ce.Conto) 
+                  FROM CanzoniAscoltate ce)
+ORDER BY ca.Conto DESC;
+DROP VIEW IF EXISTS CanzoniAscoltate;
+\end{lstlisting}
+\begin{verbatim}
+ Output:
 +----------+-------+
 | Username | Conto |
 +----------+-------+
@@ -904,52 +950,54 @@ Query OK, 0 rows affected (0.00 sec)
 2 rows in set (0.02 sec)
 
 Query OK, 0 rows affected (0.00 sec)
- \end{verbatim}
- #+END_LaTeX
-7. Trova gli utenti e il numero di brani di genere 'Country' nella propria collezione
- #+BEGIN_LaTeX
- \begin{lstlisting}[language=SQL]
- CREATE VIEW Conteggi AS
- SELECT u.Username, b.Genere, COUNT(b.IdBrano) AS Conteggio 
- FROM BraniCollezione c INNER JOIN Brani b ON(c.IdBrano = b.IdBrano) 
-                        INNER JOIN Collezioni cn ON(c.IdCollezione = cn.IdCollezione)
-                        INNER JOIN Utenti u ON(cn.IdUtente = u.IdUtente)
- GROUP BY b.Genere, c.IdCollezione;
- SELECT Username, Conteggio 
- FROM Conteggi
- WHERE Genere = 'Country' HAVING Conteggio = (SELECT MAX(Conteggio)
-                                              FROM Conteggi 
-                                              WHERE Genere = 'Country');
- DROP VIEW IF EXISTS Conteggi;
- \end{lstlisting}
- \begin{verbatim}
-  Output:
+\end{verbatim}
+#+END_LaTeX
+** Query 7
+Trova gli utenti e il numero di brani di genere 'Country' nella propria collezione
+#+BEGIN_LaTeX
+\begin{lstlisting}[language=SQL]
+CREATE VIEW Conteggi AS
+SELECT u.Username, b.Genere, COUNT(b.IdBrano) AS Conteggio 
+FROM BraniCollezione c INNER JOIN Brani b ON(c.IdBrano = b.IdBrano) 
+                       INNER JOIN Collezioni cn ON(c.IdCollezione = cn.IdCollezione)
+                       INNER JOIN Utenti u ON(cn.IdUtente = u.IdUtente)
+GROUP BY b.Genere, c.IdCollezione;
+SELECT Username, Conteggio 
+FROM Conteggi
+WHERE Genere = 'Country' HAVING Conteggio = (SELECT MAX(Conteggio)
+                                             FROM Conteggi 
+                                             WHERE Genere = 'Country');
+DROP VIEW IF EXISTS Conteggi;
+\end{lstlisting}
+\begin{verbatim}
+ Output:
 +----------+-----------+
 | Username | Conteggio |
 +----------+-----------+
 | keepcalm |         2 |
 +----------+-----------+
 1 row in set (0.00 sec)
- \end{verbatim}
- #+END_LaTeX
-8. Trova gli utenti con più di 5 brani nella propria collezione che non hanno mai ascoltato brani country nell'ultimo mese
- #+BEGIN_LaTeX
- \begin{lstlisting}[language=SQL]
- SELECT DISTINCT u.Username
- FROM Utenti u INNER JOIN Ascoltate a ON(u.IdUtente = a.IdUtente)
- WHERE u.IdUtente NOT IN (
-    SELECT DISTINCT u1.IdUtente 
-    FROM Ascoltate a1 INNER JOIN Utenti u1 ON(a1.IdUtente = u1.IdUtente)
-                      INNER JOIN Brani b ON(a1.IdBrano = b.IdBrano)
-    WHERE b.Genere = 'Country')
- AND a.Timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND NOW()
- AND u.IdUtente IN (SELECT u2.IdUtente 
-                    FROM Utenti u2 INNER JOIN Ascoltate a2 ON(u2.IdUtente = a2.IdUtente)
-                    GROUP BY a2.IdUtente 
-                    HAVING COUNT(a2.IdBrano) > 5);
- \end{lstlisting}
- \begin{verbatim}
-  Output:
+\end{verbatim}
+#+END_LaTeX
+** Query 8
+Trova gli utenti con più di 5 brani nella propria collezione che non hanno mai ascoltato brani country nell'ultimo mese
+#+BEGIN_LaTeX
+\begin{lstlisting}[language=SQL]
+SELECT DISTINCT u.Username
+FROM Utenti u INNER JOIN Ascoltate a ON(u.IdUtente = a.IdUtente)
+WHERE u.IdUtente NOT IN (
+   SELECT DISTINCT u1.IdUtente 
+   FROM Ascoltate a1 INNER JOIN Utenti u1 ON(a1.IdUtente = u1.IdUtente)
+                     INNER JOIN Brani b ON(a1.IdBrano = b.IdBrano)
+   WHERE b.Genere = 'Country')
+AND a.Timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND NOW()
+AND u.IdUtente IN (SELECT u2.IdUtente 
+                   FROM Utenti u2 INNER JOIN Ascoltate a2 ON(u2.IdUtente = a2.IdUtente)
+                   GROUP BY a2.IdUtente 
+                   HAVING COUNT(a2.IdBrano) > 5);
+\end{lstlisting}
+\begin{verbatim}
+ Output:
 +----------+
 | Username |
 +----------+
@@ -957,8 +1005,31 @@ Query OK, 0 rows affected (0.00 sec)
 | verdi    |
 +----------+
 2 rows in set (0.02 sec)
- \end{verbatim}
-   #+END_LaTeX
+\end{verbatim}
+#+END_LaTeX
+** Query 9
+Trova gli utenti con account inattivo da almeno 60 giorni e stampa la data del loro ultimo ascolto
+#+BEGIN_LaTeX
+\begin{lstlisting}[language=SQL]
+SELECT u.*, a.Timestamp AS UltimoAscolto
+FROM Utenti u INNER JOIN Login l ON(u.IdUtente = l.IdUtente)
+              INNER JOIN Ascoltate a ON(u.IdUtente = a.IdUtente)
+WHERE l.DataCreazione < DATE_SUB(CURDATE(), INTERVAL 60 DAY)
+AND u.IdUtente IN (SELECT a1.IdUtente
+                   FROM Ascoltate a1
+                   WHERE a1.Timestamp < DATE_SUB(CURDATE(), INTERVAL 60 DAY))
+ORDER BY a.Timestamp DESC LIMIT 1;
+\end{lstlisting}
+\begin{verbatim}
++----------+--------+---------+----------------------+---------------------+
+| IdUtente | Nome   | Cognome | Email                | Timestamp           |
++----------+--------+---------+----------------------+---------------------+
+|        2 | Andrea | Baldan  | a.g.baldan@gmail.com | 2015-04-28 19:01:43 |
++----------+--------+---------+----------------------+---------------------+
+1 row in set (0.00 sec)
+\end{verbatim}
+\normalsize
+#+END_LaTeX
 * Interfaccia Web
 Per l'interfaccia web è stato seguito un pattern MVC molto rudimentale, che tuttavia ha permesso di semplificarne la realizzazione modularizzando
 le operazione da effettuare sulla base di dati mediante le pagine.

@@ -41,13 +41,14 @@ while(my $r = <$fh>) {
         print "\n\t---------------------------------------------------------------\n";
         print "\t Cover:\n\t $url\n";
         print "\t Tracks:\n\n";
+        my %lines;
         foreach my $ts ($te->table_states) {
             foreach my $row ($ts->rows) {
                 if (defined $row->[1]) {
                     next unless $row->[1] =~ /\w/;
                     next if $row->[2] =~ m/\240/ || $row->[2] =~ m/ /;
                     $row->[1] = $1 if $row->[1] =~ /"(.*?)"/;
-                    print $oh $cols[0]."   ".$row->[1]."   ".$row->[2]."   ".$cols[2]."\n";
+                    print $oh $cols[0]."   ".$row->[1]."   ".$row->[2]."   ".$cols[2]."\n" if not $lines{$cols[0]."   ".$row->[1]."   ".$row->[2]."   ".$cols[2]."\n"}++;
                     print "\t  $row->[1]\t\t$row->[2]\t\t$cols[2]\n";
                 }
             }

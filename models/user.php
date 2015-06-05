@@ -68,6 +68,15 @@ class User {
 		$u = $req->fetch();
 		return new User($u['IdUtente'], $u['Nome']." ".$u['Cognome'], $u['Email'], $u['Username'], $u['Password'], $u['Amministratore']);
 	}
+    // retrieve a user based on username
+    public static function findByUsername($uname) {
+        $db = Db::getInstance();
+        $uname = addslashes($uname);
+        $req = $db->prepare('SELECT u.*, l.Username, l.Password, l.Amministratore FROM Utenti u INNER JOIN Login l ON(u.IdUtente = l.IdUtente) WHERE l.Username = :uname');
+		$req->execute(array('uname' => $uname));
+		$u = $req->fetch();
+        return new User($u['IdUtente'], $u['Nome']." ".$u['Cognome'], $u['Email'], $u['Username'], $u['Password'], $u['Amministratore']);
+    }
 	// retrieve fellow list for a user
 	public function fellows() {
 		$list = array();

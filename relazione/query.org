@@ -87,3 +87,12 @@ AND u.IdUtente IN (SELECT u2.IdUtente
                    FROM Utenti u2 INNER JOIN Ascoltate a2 ON(u2.IdUtente = a2.IdUtente)
                    GROUP BY a2.IdUtente 
                    HAVING COUNT(a2.IdBrano) > 5);
+* trova gli utenti con account inattivo da 60 giorni
+SELECT u.*, a.Timestamp AS UltimoAscolto
+FROM Utenti u INNER JOIN Login l ON(u.IdUtente = l.IdUtente)
+              INNER JOIN Ascoltate a ON(u.IdUtente = a.IdUtente)
+WHERE l.DataCreazione < DATE_SUB(CURDATE(), INTERVAL 60 DAY)
+AND u.IdUtente IN (SELECT a1.IdUtente
+                   FROM Ascoltate a1
+                   WHERE a1.Timestamp < DATE_SUB(CURDATE(), INTERVAL 60 DAY))
+ORDER BY a.Timestamp DESC LIMIT 1;

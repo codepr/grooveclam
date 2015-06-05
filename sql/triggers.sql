@@ -4,6 +4,9 @@ DROP TRIGGER IF EXISTS checkFollower;
 DROP TRIGGER IF EXISTS insertAutoCollection;
 DROP TRIGGER IF EXISTS insertAutoAdminSubs;
 DROP TRIGGER IF EXISTS updateAutoAdminSubs;
+/*DROP TRIGGER IF EXISTS cleanUp*/
+DROP TRIGGER IF EXISTS insertAutoSongNumber;
+DROP TRIGGER IF EXISTS updateAutoSongNumber;
 
 DELIMITER $$
 
@@ -77,4 +80,39 @@ BEGIN
    END IF;
 END $$
 
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER insertAutoSongNumber
+AFTER INSERT ON `Brani`
+FOR EACH ROW
+BEGIN
+    DECLARE ida INTEGER DEFAULT -1;
+    SELECT a.IdAlbum INTO ida
+    FROM `Album` a
+    WHERE a.IdAlbum = NEW.IdAlbum;
+    IF(ida <> -1) THEN
+        UPDATE `Album` SET NBrani = NBrani + 1 WHERE IdAlbum = ida;
+    END IF;
+END $$
+ 
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER updateAutoSongNumber
+AFTER UPDATE ON `Brani`
+FOR EACH ROW
+BEGIN
+    DECLARE ida INTEGER DEFAULT -1;
+    SELECT a.IdAlbum INTO ida
+    FROM `Album` a
+    WHERE a.IdAlbum = NEW.IdAlbum;
+    IF(ida <> -1) THEN
+        UPDATE `Album` SET NBrani = NBrani - 1 WHERE IdAlbum = OLD.IdAlbum;
+        UPDATE `Album` SET NBrani = NBrani + 1 WHERE IdAlbum = ida;
+    END IF;
+END $$
+ 
 DELIMITER ;

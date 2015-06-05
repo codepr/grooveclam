@@ -6,6 +6,7 @@ function call($controller, $action, $code = 0) {
 		case 'pages':
 			require_once('models/user.php');
 			require_once('models/song.php');
+            require_once('models/album.php');
 			$controller = new PagesController();
 	 	break;
 		case 'songs':

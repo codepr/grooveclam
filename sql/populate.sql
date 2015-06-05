@@ -7,13 +7,13 @@ INSERT INTO Utenti(`Nome`, `Cognome`, `Email`)
 	         ('Marco', 'Rossi', 'rossi@gmail.com'),
              ('Luca', 'Verdi', 'verdi@yahoo.it'),
              ('Alessia', 'Neri', 'neri@gmail.com');
-INSERT INTO Login(`Username`, `Password`, `Amministratore`, `IdUtente`)
-       VALUES('admin', MD5('admin'), 1,1),
-             ('codep', MD5('ciao'), 0, 2),
-             ('keepcalm', MD5('calm'), 0, 3),
-             ('rossi', MD5('marco'), 0, 4),
-             ('verdi', MD5('luca'), 0, 5),
-             ('neri', MD5('Alessia'), 0, 6);
+INSERT INTO Login(`Username`, `Password`, `Amministratore`, `DataCreazione`, `IdUtente`)
+       VALUES('admin', MD5('admin'), 1, '2015-04-28 18:42:03', 1),
+             ('codep', MD5('ciao'), 0, '2015-04-29 18:51:00', 2),
+             ('keepcalm', MD5('calm'), 0, '2015-05-24 19:50:01', 3),
+             ('rossi', MD5('marco'), 0, '2015-05-28 19:50:04', 4),
+             ('verdi', MD5('luca'), 0, '2015-05-29 19:50:07', 5),
+             ('neri', MD5('Alessia'), 0, '2015-05-29 20:50:09', 6);
 -- Insert into Album
 INSERT INTO Album(`Titolo`, `Autore`, `Info`, `Anno`, `Live`, `Locazione`, `PathCopertina`)
        VALUES('Inception Suite', 'Hans Zimmer', 'Inception movie soundtrack, composed by the Great Compositor Hans Zimmer', '2010', 0, NULL, 'img/covers/inception.png'),

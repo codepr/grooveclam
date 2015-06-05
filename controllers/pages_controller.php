@@ -57,7 +57,7 @@ class PagesController {
 	}
 	// registration
 	public function register() {
-		if(!isset($_POST['Username']) || !isset($_POST['Password']) ||!isset($_POST['Email'])) {
+		if(!isset($_POST['Username']) || !isset($_POST['Password']) || !isset($_POST['Email'])) {
 			return call('pages', 'error');
 		} else {
 			$postdata = $_POST;
@@ -66,7 +66,56 @@ class PagesController {
 		}
 	}
     public function search() {
-        require_once('views/pages/search.php');
+        if(!$_POST) {
+            require_once('views/pages/search.php');
+        } else {
+            if(isset($_POST['query']) && !empty($_POST['query'])) {
+                $mh = function($str) {
+                    return "<th>".$str."</th>";
+                };
+                $mc = function($str) {
+                    return "<td>".$str."</td>";
+                };
+                $results = "<table class='table'><thead><tr>";
+                switch($_POST['filter']) {
+                    case 'user':
+                        $user = User::findByUsername($_POST['query']);
+                        $headers = array('Username', 'E-Mail', 'Name', 'Surname', 'Administrator');
+                        $q_res = array($user->email(), $user->name(), $user->surname(), $user->admin() ? "&#10004;" : "&#10008;");
+                        $results .= implode(array_map($mh, $headers));
+                        $results .= "</tr></thead><tbody><tr>";
+                        $results .= "<td><a href='?controller=user&action=show&id=".$user->id()."'>".$user->username()."</td>";
+                        $results .= implode(array_map($mc, $q_res));
+                        $results .= "</tr>";
+                    break;
+                    case 'song':
+                        $songs = Song::findByTitle($_POST['query']);
+                        $headers = array('Title', 'Genre', 'Duration', 'Author', 'Album');
+                        $results .= implode(array_map($mh, $headers));
+                        foreach($songs as $s) {
+                            $q_res = array($s['Genre'], floor($s['Duration'] / 60).":".($s['Duration'] % 60), $s['Author'], $s['AlbumTitle']);
+                            $results .= "</tr></thead><tbody><tr>";
+                            $results .= "<td><a href='?controller=songs&action=show&id=".$s['id']."'>".$s['Title']."</td>";
+                            $results .= implode(array_map($mc, $q_res));
+                            $results .= "</tr>";
+                        }
+                    break;
+                    case 'album':
+                        $albums = Album::findByTitle($_POST['query']);
+                        $headers = array('Title', 'Author', 'Year', 'Duration', 'Live', 'Location');
+                        $results .= implode(array_map($mh, $headers));
+                        $l = $albums->live();
+                        $q_res = array($albums->author(), $albums->year(), $albums->totalDuration(), $l['Live'], $l['Location']);
+                        $results .= "</tr></thead><tbody><tr>";
+                        $results .= "<td><a href='?controller=albums&action=show&id=".$albums->id()."'>".$albums->title()."</td>";
+                        $results .= implode(array_map($mc, $q_res));
+                        $results .= "</tr>";
+                    break;
+                }
+                $results .= "</tbody></table>";
+            }
+            require_once('views/pages/search.php');
+        }
     }
 }
 ?>
