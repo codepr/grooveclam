@@ -137,7 +137,7 @@ free o utilizzare un piano premium.
 ** Schema E/R
 #+CAPTION: Schema entity-relationship
 #+ATTR_LATEX: :width 19cm :float nil
-[[~/Basi/progetto2015/grooveclam/relazione/img/concettuale.png]]
+   [[~/Basi/progetto2015/grooveclam/relazione/img/concettuale.png]]
 * Progettazione Logica
 ** Gerarchie
 Tutte le gerarchie presenti nella progettazione concettuale sono state risolte mediante accorpamento in tabella unica, questo perchè
@@ -296,6 +296,14 @@ Quindi circa 200 album caricati e 1600 brani.
   - Nuova tabella *BraniCollezione*, attributi:
     - IdBrano: /int/ =<<PK>> <<FK(Brani)>>=
     - IdCollezione: /int/ =<<PK <<FK(Collezioni)>>=
+** Schema E/R ristrutturato
+#+ATTR_LATEX: :width 19cm :float nil
+   [[~/Basi/progetto2015/grooveclam/relazione/img/logico.png]]
+*** Note ristrutturazione
+A seguito delle analisi eseguite sullo schema concettuale, ho deciso di risolvere le gerarchie accorpandole all'entita' padre, in quanto 
+nessuna di esse ha interazioni significative con le altre entita' della base di dati. Visti i risultati dell'analisi sulle ridondanze 
+ho deciso di inserire l'attributo ridondante ~NBrani~ nella tabella ~Album~, in quanto il rapporto tra il costo computazionale e l'effettivo
+carico maggiorato favoriva di molto l'opzione valutata.
 * Implementazione Fisica
 Query di implementazione DDL SQL della base di dati. Sorgente in ~grooveclam.sql~, popolamento in ~populate.sql~.
 E' stata implementata una tabella *Errori*, riempita mediante procedura a sua volta richiamata dai trigger che ne fanno uso, 
