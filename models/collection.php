@@ -24,7 +24,8 @@ class Collection {
         $db = Db::getInstance();
         $req = $db->prepare('SELECT c.IdUtente, c.IdCollezione FROM Collezioni c WHERE c.IdUtente = :uid AND c.IdCollezione = :id');
         $req->execute(array('uid' => $uid, 'id' => $id));
-        if(!empty($req->fetch())) {
+        $res = $req->fetch();
+        if(!empty($res)) {
             return true;
         } else {
             return false;

@@ -10,7 +10,8 @@ class AlbumController {
 			return call('pages', 'error', 2);
 		}
 		$album = Album::find($_GET['id']);
-        if(empty($album->id())) {
+        $ida = $album->id();
+        if(empty($ida)) {
             return call('pages', 'error', 1);
         } else {
 		    require_once('views/albums/show.php');

@@ -5,12 +5,11 @@ use DBI;
 
 my $file1 = "albumlist";
 my $file2 = "songs";
-my $database = 'grooveclam';
-my $hostname = 'localhost';
+my $database = 'abaldan-PR';
+my $hostname = 'basidati.studenti.math.unipd.it';
 my $port = 3306;
-my $user = 'root';
-#my $password = 'NtQEfO78';
-my $password = '';
+my $user = 'abaldan';
+my $password = 'NtQEfO78';
 open(my $ah, '<:encoding(UTF-8)', $file1);
 
 my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";

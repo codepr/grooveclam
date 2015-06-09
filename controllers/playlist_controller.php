@@ -15,7 +15,8 @@ class PlaylistController {
 			return call('pages', 'error', 2);
 		} else {
 			$playlist = Playlist::find($_GET['id']);
-            if(empty($playlist->id())) {
+            $p = $playlist->id();
+            if(empty($p)) {
                 return call('pages', 'error', 1);
             }else {
                 if(isset($_SESSION['admin']) && !$_SESSION['admin']) {
