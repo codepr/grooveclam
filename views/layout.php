@@ -45,7 +45,7 @@
 		</nav>
         <div class="logout">
             <?php if('/basidati/~abaldan/' == $_SERVER['REQUEST_URI']) { ?>
-                <a href="/basidati/~abaldan/?controller=pages&action=search"><button class="exit" style="padding: 2px 10px 3px 10px;">&#128269; Search</button></a>
+                <a href="/basidati/~abaldan/?controller=pages&action=search"><button class="exit" style="padding: 2px 10px 3px 10px;"><div style="float:left;-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);-o-transform: rotate(45deg); transform: rotate(45 deg); margin-right:5px;">&#9906;</div> Search</button></a>
             <?php } ?>
 		    <?php if(isset($_SESSION['logged'])) { ?>
                 <?php if(preg_match('/\/\?controller=user&action=show/i', $_SERVER['REQUEST_URI'])) { ?>

@@ -1,4 +1,4 @@
-<h3>&#128269; SEARCH</h3>
+<h3><div style="float:left;-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);-o-transform: rotate(45deg); transform: rotate(45 deg); margin-right:5px;">&#9906;</div> SEARCH</h3>
 <form class="loginform" action="" method="post" style="width:60%;">
     <fieldset>
         <input name="query" id="query" type="text" value="" placeholder="Search" style="width:100%; margin-bottom:20px;"/>
