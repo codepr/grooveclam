@@ -39,7 +39,6 @@ class PagesController {
 			$session = GrooveSession::getInstance();
 			$session->__set('logged', 1);
 			$session->__set('uid', $user->id());
-            $session->__set('admin', $user->admin());
 			header('Location:/basidati/~abaldan/');
 		} else {
 			$this->login();
@@ -80,8 +79,8 @@ class PagesController {
                 switch($_POST['filter']) {
                     case 'user':
                         $user = User::findByUsername($_POST['query']);
-                        $headers = array('Username', 'E-Mail', 'Name', 'Surname', 'Administrator');
-                        $q_res = array($user->email(), $user->name(), $user->surname(), $user->admin() ? "&#10004;" : "&#10008;");
+                        $headers = array('Username', 'E-Mail', 'Name', 'Surname');
+                        $q_res = array($user->email(), $user->name());
                         $results .= implode(array_map($mh, $headers));
                         $results .= "</tr></thead><tbody><tr>";
                         $results .= "<td><a href='?controller=user&action=show&id=".$user->id()."'>".$user->username()."</td>";

@@ -31,16 +31,6 @@ class Collection {
             return false;
         }
     }
-	// list all collections, for administrator users
-	public static function all() {
-		$list = array();
-		$db = Db::getInstance();
-		$req = $db->query('SELECT c.*, l.Username FROM Collezioni c INNER JOIN Login l ON(c.IdUtente = l.IdUtente)');
-		foreach($req->fetchAll() as $collection) {
-			$list[] = array('collection' => $collection['IdCollezione'], 'user' => $collection['Username']);
-		}
-		return $list;
-	}
 	// find a single collection and all contained songs
 	public static function find($id) {
 		$list = array();

@@ -7,18 +7,13 @@
 </div>
 <?php } ?>
 <table class="table">
-    <caption><?php echo (isset($_SESSION['logged']) && $_SESSION['admin']) ? "All" : "Public"; ?> playlists</caption>
+    <caption>Public playlists</caption>
     <thead>
 	    <tr>
 		    <th>Name</th>
 		    <th>Author</th>
 		    <th># Tracks</th>
 		    <th>Duration (min)</th>
-            <?php if(isset($_SESSION['logged']) && $_SESSION['admin']) { ?>
-                <th>Domain</th>
-                <th></th>
-                <th></th>
-            <?php } ?>
 	    </tr>
     </thead>
     <tbody>
@@ -28,16 +23,11 @@
 		        <td><a href='?controller=user&action=show&id=<?php $owner = $playlist->owner(); echo $owner['IdUtente']; ?>'><?php echo $owner['Username']; ?></a></td>
 		        <td><?php $stats = $playlist->stats($playlist->id()); echo $stats['count']; ?></td>
 		        <td><?php echo $stats['duration']; ?></td>
-                <?php if(isset($_SESSION['logged']) && $_SESSION['admin']) { ?>
-                    <td><?php echo $playlist->domain() ? "&#128274;" : "&#128275;"; ?></td>
-                    <td><a href="?controller=playlist&action=alter&id=<?php echo $playlist->id(); ?>">&#9998;</a></td>
-                    <td><a href="?controller=playlist&action=drop&id=<?php echo $playlist->id(); ?>">&#10008;</a></td>
-                <?php } ?>
 	        </tr>
         <?php } ?>
     </tbody>
 </table>
-<?php if(isset($_SESSION['logged']) && !$_SESSION['admin']) { ?>
+<?php if(isset($_SESSION['logged'])) { ?>
 <table class="table">
     <caption>Personal playlists</caption>
     <thead>

@@ -35,16 +35,6 @@ class Playlist {
     public function domain() {
         return $this->domain;
     }
-    // retrieve all playlists including private ones
-    public function allWithPrivate() {
-        $list = array();
-		$db = Db::getInstance();
-		$req = $db->query('SELECT p.*, l.Username FROM Playlist p INNER JOIN Login l ON(p.IdUtente = l.IdUtente)');
-		foreach($req->fetchAll() as $playlist) {
-			$list[] = new Playlist($playlist['IdPlaylist'], $playlist['Nome'], array('IdUtente' => $playlist['IdUtente'], 'Username' => $playlist['Username']), array(), 0);
-		}
-		return $list;
-    }
 	// retrieve number of songs and total duration of a given playlist
 	public function stats($id) {
 		$stats = array();

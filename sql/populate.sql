@@ -1,19 +1,17 @@
 SET FOREIGN_KEY_CHECKS = 0;
 -- Insert into Utente
 INSERT INTO Utenti(`Nome`, `Cognome`, `Email`)
-       VALUES('MrGroove', 'Clam', 'mrgroove@groove.gv'),
-             ('Andrea', 'Baldan', 'a.g.baldan@gmail.com'),
+       VALUES('Andrea', 'Baldan', 'a.g.baldan@gmail.com'),
 	         ('Federico', 'Angi', 'angiracing@gmail.com'),
 	         ('Marco', 'Rossi', 'rossi@gmail.com'),
              ('Luca', 'Verdi', 'verdi@yahoo.it'),
              ('Alessia', 'Neri', 'neri@gmail.com');
-INSERT INTO Login(`Username`, `Password`, `Amministratore`, `DataCreazione`, `IdUtente`)
-       VALUES('admin', MD5('admin'), 1, '2015-04-28 18:42:03', 1),
-             ('codep', MD5('ciao'), 0, '2015-04-29 18:51:00', 2),
-             ('keepcalm', MD5('calm'), 0, '2015-05-24 19:50:01', 3),
-             ('rossi', MD5('marco'), 0, '2015-05-28 19:50:04', 4),
-             ('verdi', MD5('luca'), 0, '2015-05-29 19:50:07', 5),
-             ('neri', MD5('Alessia'), 0, '2015-05-29 20:50:09', 6);
+INSERT INTO Login(`Username`, `Password`, `DataCreazione`, `IdUtente`)
+       VALUES('codep', MD5('ciao'), '2015-04-29 18:51:00', 1),
+             ('keepcalm', MD5('calm'), '2015-05-24 19:50:01', 2),
+             ('rossi', MD5('marco'), '2015-05-28 19:50:04', 3),
+             ('verdi', MD5('luca'), '2015-05-29 19:50:07', 4),
+             ('neri', MD5('Alessia'), '2015-05-29 20:50:09', 5);
 -- Insert into Album
 INSERT INTO Album(`Titolo`, `Autore`, `Info`, `Anno`, `Live`, `Locazione`, `PathCopertina`)
        VALUES('Inception Suite', 'Hans Zimmer', 'Inception movie soundtrack, composed by the Great Compositor Hans Zimmer', '2010', 0, NULL, 'img/covers/inception.png'),
@@ -47,29 +45,29 @@ INSERT INTO Brani(`IdAlbum`, `Titolo`, `Genere`, `Durata`)
              (6, 'Old Man', 'Rock', 203),
              (6, 'Southern Man', 'Rock', 331);
 -- Insert into BraniCollezione
-INSERT INTO BraniCollezione(`IdBrano`, `IdCollezione`) VALUES(1, 2), (2, 2), (3, 2), (7, 2), (14, 2), (12, 2), (17, 2), (18, 2), (2, 3);
+INSERT INTO BraniCollezione(`IdBrano`, `IdCollezione`) VALUES(1, 1), (2, 1), (3, 1), (7, 1), (14, 1), (12, 1), (17, 1), (18, 1), (2, 2);
 -- Insert into Playlist
-INSERT INTO Playlist(`IdUtente`, `Nome`, `Privata`) VALUES(2, 'Score & Soundtracks', 0), (2, 'Southern Rock', 0), (3, 'Colonne sonore western', 0);
+INSERT INTO Playlist(`IdUtente`, `Nome`, `Privata`) VALUES(1, 'Score & Soundtracks', 0), (1, 'Southern Rock', 0), (2, 'Colonne sonore western', 0);
 -- Insert into BraniPlaylist
 INSERT INTO BraniPlaylist(`IdPlaylist`, `IdBrano`, `Posizione`) VALUES(1, 1, 1), (1, 2, 2), (1, 3, 3), (1, 4, 4), (1, 5, 5), (2, 21, 1), (2, 22, 2), (3, 5, 1), (3, 7, 2), (3, 4, 3);
 -- Insert into Code
 INSERT INTO Code(`IdUtente`, `IdBrano`, `Posizione`)
-       VALUES(2, 1, 1),
-             (2, 5, 2),
-             (2, 1, 3),
-             (2, 12, 4),
-             (2, 10, 5),
-             (3, 1, 1);
+       VALUES(1, 1, 1),
+             (1, 5, 2),
+             (1, 1, 3),
+             (1, 12, 4),
+             (1, 10, 5),
+             (2, 1, 1);
 -- Insert into Ascoltate
 INSERT INTO Ascoltate(`IdUtente`, `IdBrano`, `Timestamp`)
-       VALUES(2, 1, '2015-04-28 18:50:03'),
-             (2, 5, '2015-04-28 18:54:06'),
-             (2, 1, '2015-04-28 19:01:43'),
-             (3, 7, '2015-04-29 18:51:02'),
-             (4, 11, '2015-04-29 17:23:15'),
-             (4, 9, '2015-04-30 21:12:52'),
-             (3, 1, '2015-05-02 22:21:22');
+       VALUES(1, 1, '2015-04-28 18:50:03'),
+             (1, 5, '2015-04-28 18:54:06'),
+             (1, 1, '2015-04-28 19:01:43'),
+             (2, 7, '2015-04-29 18:51:02'),
+             (3, 11, '2015-04-29 17:23:15'),
+             (3, 9, '2015-04-30 21:12:52'),
+             (2, 1, '2015-05-02 22:21:22');
 -- Insert into Seguaci
-INSERT INTO Seguaci(`IdUtente`, `IdSeguace`) VALUES(2, 3), (2, 4), (3, 2), (4, 2);
+INSERT INTO Seguaci(`IdUtente`, `IdSeguace`) VALUES(1, 2), (1, 3), (2, 1), (3, 1);
 
 SET FOREIGN_KEY_CHECKS = 1;

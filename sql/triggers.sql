@@ -2,11 +2,10 @@ DROP TRIGGER IF EXISTS checkDuration;
 DROP TRIGGER IF EXISTS errorTrigger;
 DROP TRIGGER IF EXISTS checkFollower;
 DROP TRIGGER IF EXISTS insertAutoCollection;
-DROP TRIGGER IF EXISTS insertAutoAdminSubs;
-DROP TRIGGER IF EXISTS updateAutoAdminSubs;
 /*DROP TRIGGER IF EXISTS cleanUp*/
 DROP TRIGGER IF EXISTS insertAutoSongNumber;
 DROP TRIGGER IF EXISTS updateAutoSongNumber;
+DROP TRIGGER IF EXISTS checkCollectionSize;
 
 DELIMITER $$
 
@@ -26,22 +25,14 @@ BEGIN
     SET NEW = NEW.errore;
 END $$
 
-DELIMITER ;
-
-DELIMITER $$
-
 CREATE TRIGGER checkFollower
 BEFORE INSERT ON `Seguaci`
 FOR EACH ROW
 BEGIN
     IF NEW.IdUtente = NEW.IdSeguace THEN
        CALL RAISE_ERROR('Un utente non può seguire se stesso (IdUtente e IdSeguace devono essere diversi fra loro)');
-    END IF;       
+    END IF;
 END $$
-
-DELIMITER ;
-
-DELIMITER $$
 
 CREATE TRIGGER insertAutoCollection
 AFTER INSERT ON `Utenti`
@@ -49,57 +40,6 @@ FOR EACH ROW
 BEGIN
     INSERT INTO `Collezioni` (`IdUtente`) VALUES(NEW.IdUtente);
 END $$
-
-DELIMITER ;
-
-DELIMITER $$
-
-CREATE TRIGGER insertAutoAdminSubs
-BEFORE INSERT ON `Login`
-FOR EACH ROW
-BEGIN
-    IF(NEW.Amministratore = 1) THEN
-        INSERT INTO `Iscrizioni` (`IdUtente`, `Tipo`) VALUES(NEW.IdUtente, 'Premium')
-        ON DUPLICATE KEY UPDATE Tipo = 'Premium';
-    ELSE
-        INSERT INTO `Iscrizioni` (`IdUtente`, `Tipo`) VALUES(NEW.IdUtente, 'Free');
-    END IF;
-END $$
-
-DELIMITER ;
-
-DELIMITER $$
-
-CREATE TRIGGER updateAutoAdminSubs
-BEFORE UPDATE ON `Login`
-FOR EACH ROW
-BEGIN
-   IF(NEW.Amministratore = 1) THEN
-        INSERT INTO `Iscrizioni` (`IdUtente`, `Tipo`) VALUES(NEW.IdUtente, 'Premium')
-        ON DUPLICATE KEY UPDATE Tipo = 'Premium';
-   END IF;
-END $$
-
-DELIMITER ;
-
-DELIMITER $$
-
-CREATE TRIGGER insertAutoSongNumber
-AFTER INSERT ON `Brani`
-FOR EACH ROW
-BEGIN
-    DECLARE ida INTEGER DEFAULT -1;
-    SELECT a.IdAlbum INTO ida
-    FROM `Album` a
-    WHERE a.IdAlbum = NEW.IdAlbum;
-    IF(ida <> -1) THEN
-        UPDATE `Album` SET NBrani = NBrani + 1 WHERE IdAlbum = ida;
-    END IF;
-END $$
- 
-DELIMITER ;
-
-DELIMITER $$
 
 CREATE TRIGGER updateAutoSongNumber
 AFTER UPDATE ON `Brani`
@@ -114,5 +54,26 @@ BEGIN
         UPDATE `Album` SET NBrani = NBrani + 1 WHERE IdAlbum = ida;
     END IF;
 END $$
- 
+
+CREATE TRIGGER checkCollectionSize
+BEFORE INSERT ON `BraniCollezione`
+FOR EACH ROW
+BEGIN
+	DECLARE numSong INTEGER DEFAULT 0;
+    DECLARE idUser INTEGER DEFAULT 0;
+    DECLARE subType VARCHAR(7) DEFAULT '';
+    SELECT DISTINCT c.IdUtente INTO idUser
+    FROM BraniCollezione bc INNER JOIN Collezioni c ON(bc.IdCollezione = c.IdCollezione)
+    WHERE bc.IdCollezione = NEW.IdCollezione;
+    SELECT COUNT(IdBrano) INTO numSong
+    FROM BraniCollezione
+    WHERE IdCollezione = NEW.IdCollezione;
+    SELECT DISTINCT i.Tipo INTO subType
+    FROM Iscrizioni i INNER JOIN Login l ON(i.IdUtente = l.IdUtente)
+    WHERE l.IdUtente = idUser;
+    IF(numSong = 50 && subType = 'Free') THEN
+        CALL RAISE_ERROR('Maximum limit for collected songs reached for a free subscription account.');
+    END IF;
+END $$
+
 DELIMITER ;

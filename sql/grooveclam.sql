@@ -53,7 +53,6 @@ CREATE TABLE IF NOT EXISTS `Utenti` (
 CREATE TABLE IF NOT EXISTS `Login` (
     `Username` VARCHAR(40) NOT NULL,
 	`Password` VARCHAR(40) NOT NULL,
-    `Amministratore` BOOLEAN DEFAULT FALSE,
     `DataCreazione` TIMESTAMP NOT NULL,
     `IdUtente` INT(11) NOT NULL,
     PRIMARY KEY(`Username`),

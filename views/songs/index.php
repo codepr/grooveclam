@@ -1,11 +1,4 @@
 <h2>&#9836; SONG LIST</h2>
-<?php if(isset($_SESSION['logged']) && $_SESSION['admin'] == true) { ?>
-    <div class="addstuff">
-        <div class="addstuff-circle">
-            <a class="addstuff" href="?controller=songs&action=addnew">&#10010;</a>
-        </div>
-    </div>
-<?php } ?>
 <table class="table">
 <thead>
 	<tr>
@@ -15,9 +8,6 @@
 		<th>Album</th>
 		<?php if(isset($_SESSION['logged'])) { echo "<th></th><th></th>"; } ?>
         <th></th>
-        <?php if(isset($_SESSION['logged']) && $_SESSION['admin'] == true) { ?>
-            <th></th>
-        <?php } ?>
 	</tr>
 </thead>
 <tbody>
@@ -36,9 +26,6 @@
 		<?php
 		} ?>
         <td><a href="#" onclick="play('<?php echo $song->duration() . '\'',',\'' . addslashes($song->title()) . '\'',',\'' . $song->id(); ?>');">&#9654;</a></td>
-        <?php if(isset($_SESSION['logged']) && $_SESSION['admin'] == true) { ?>
-            <td><a href="?controller=songs&action=drop&id=<?php echo $song->id(); ?>">&#10008;</a></td>
-        <?php } ?>
 	</tr>
 <?php } ?>
 </tbody>

@@ -1,18 +1,5 @@
 <?php
 class CollectionController {
-	public function index() {
-        $session = GrooveSession::getInstance();
-        if(!isset($_SESSION['logged'])) {
-			return call('pages', 'login');
-		} else { 
-		    if($_SESSION['admin'] != true ) {
-			    return call('pages', 'error', 3);
-		    } elseif($_SESSION['admin'] == true) {
-                $collections = Collection::all();
-                require_once('views/collection/index.php');
-            }
-        }
-	}
     public function show() {
         if(!isset($_SESSION['logged'])) {
             return call('pages', 'login');
@@ -22,12 +9,7 @@ class CollectionController {
             } else {
                 $can_i = Collection::canI($_SESSION['uid'], $_GET['id']);
                 if(!$can_i) {
-                    if(!$_SESSION['admin']) {
-                        return call('pages', 'error', 3);
-                    } else {
-                        $collection = Collection::findbyid($_GET['id']);
-		                require_once('views/collection/show.php');
-                    }
+                    return call('pages', 'error', 3);
                 } else {
                     $collection = Collection::findbyid($_GET['id']);
 		            require_once('views/collection/show.php');

@@ -17,11 +17,6 @@
 				<li <?php if($_SERVER['REQUEST_URI'] == '/basidati/~abaldan/') { echo 'class="active"'; }?>>
 					<a href='/basidati/~abaldan'><img src="img/home.png" alt="">Home</a>
 				</li>
-                <?php if(isset($_SESSION['logged']) && $_SESSION['admin'] == true) { ?>
-                    <li <?php if(preg_match('/\/\?controller=user/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; } ?>>
-                        <a href='?controller=user&action=index'><img src="img/collab.png" alt="">Users</a>
-                    </li>
-                <?php } ?>
 				<li <?php if(preg_match('/\/\?controller=songs/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
 					<a href='?controller=songs&action=index'><img src="img/music.png" alt="">Songs</a>
 				</li>
@@ -29,11 +24,7 @@
 					<a href='?controller=albums&action=index'><img src="img/folder-icon.png" alt="">Albums</a>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=collection/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
-                    <?php if(isset($_SESSION['logged']) && $_SESSION['admin'] == true) { ?>
-                        <a href="?controller=collection&action=index"><img src="img/music-icon.png" alt="">Collections</a>
-                    <?php } else { ?>
-					    <a href='?controller=collection&action=show&id=<?php echo isset($_SESSION['uid']) ? $_SESSION['uid'] : '-1'; ?>'><img src="img/music-icon.png" alt="">Collection</a>
-                    <?php } ?>
+					<a href='?controller=collection&action=show&id=<?php echo isset($_SESSION['uid']) ? $_SESSION['uid'] : '-1'; ?>'><img src="img/music-icon.png" alt="">Collection</a>
 				</li>
 				<li <?php if(preg_match('/\/\?controller=playlist/i', $_SERVER['REQUEST_URI'])) { echo 'class="active"'; }?>>
 					<a href='?controller=playlist&action=index'><img src="img/poweramp-icon.png" alt="">Playlists</a>

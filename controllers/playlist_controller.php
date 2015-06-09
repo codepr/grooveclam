@@ -4,9 +4,6 @@ class PlaylistController {
 		$playlists = Playlist::all();
         if(isset($_SESSION['logged'])) {
             $personal_playlists = Playlist::personal_playlist($_SESSION['uid']);
-            if($_SESSION['admin']) {
-                $playlist = Playlist::allWithPrivate();
-            }
         }
 		require_once('views/playlist/index.php');
 	}
@@ -18,22 +15,14 @@ class PlaylistController {
             $p = $playlist->id();
             if(empty($p)) {
                 return call('pages', 'error', 1);
-            }else {
-                if(isset($_SESSION['admin']) && !$_SESSION['admin']) {
-                    if($playlist->domain()) {
-                        return call('pages', 'error', 3);
-                    } else {
-			            require_once('views/playlist/show.php');
-                    }
-		        } else {
-                    if($playlist->domain()) {
-                        return call('pages', 'error', 3);
-                    } else {
-                        require_once('views/playlist/show.php');
-                    }
+            } else {
+                if($playlist->domain()) {
+                    return call('pages', 'error', 3);
+                } else {
+                    require_once('views/playlist/show.php');
                 }
-	        }
-        }
+            }
+	    }
     }
     public function newplaylist() {
         if(!isset($_SESSION['logged'])) {
