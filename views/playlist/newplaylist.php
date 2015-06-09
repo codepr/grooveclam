@@ -1,4 +1,4 @@
-<h3>Add new song</h3>
+<h3>Create a new playlist</h3>
 <form class="loginform playlist" action="?controller=playlist&action=createplaylist" method="post">
     <fieldset>
         <label for="Name">Name</label>
@@ -9,6 +9,17 @@
             $index = 0;
             foreach($collection->songs() as $song) {
                 echo "<input type='checkbox' class='list' name='song_$index' value='".$song->id()."'> ".$song->title()." - " .$song->author()." - ".floor($song->duration() / 60).":".($song->duration() % 60)." min<br />";
+                $index++;
+            }
+            ?>
+        </fieldset>
+        <fieldset class="list">
+            <legend>Share with fellows?</legend>
+            <?php
+            $index = 0;
+            foreach($user->fellows() as $fellow) {
+                $name = User::find($fellow);
+                echo "<input type='checkbox' class='list' name='fellow_$index' value='".$fellow."'> ".$name->username()."<br />";
                 $index++;
             }
             ?>

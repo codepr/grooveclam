@@ -21,6 +21,7 @@ function call($controller, $action, $code = 0) {
 		case 'playlist':
 			require_once('models/playlist.php');
             require_once('models/collection.php');
+            require_once('models/user.php');
 			$controller = new PlayListController();
 		break;
 		case 'collection':
@@ -46,7 +47,7 @@ $controllers = array(
 	'playlist' => array('index', 'show', 'newplaylist', 'swap'),
 	'collection' => array('index', 'show', 'addsong', 'remove'),
 	'queue' => array('index', 'addsong', 'swap'),
-	'user' => array('index', 'show', 'follow', 'unfollow', 'manage')
+	'user' => array('show', 'follow', 'unfollow', 'manage')
 );
 if(array_key_exists($controller, $controllers)) {
 	if(in_array($action, $controllers[$controller])) {

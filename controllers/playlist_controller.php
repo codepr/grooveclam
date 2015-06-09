@@ -29,6 +29,7 @@ class PlaylistController {
             return call('pages', 'login');
         } else {
             $collection = Collection::findbyid($_SESSION['uid']);
+            $user = User::find($_SESSION['uid']);
             require_once('views/playlist/newplaylist.php');
         }
     }
