@@ -9,6 +9,7 @@ echo '<h3>Hello there '.$first_name.'</h3>';
 	        <tr>
 		        <th></th>
 		        <th></th>
+                <th></th>
 	        </tr>
 	    </thead>
 	    <tbody>
@@ -16,6 +17,7 @@ echo '<h3>Hello there '.$first_name.'</h3>';
 	            <tr>
 		            <td><a href="/basidati/~abaldan/?controller=songs&action=show&id=<?php echo $title['id']; ?>"><?php echo $title['Title']; ?></a></td>
 		            <td><?php echo $title['Genre']; ?></td>
+                    <td><?php echo floor($title['Duration'] / 60).":".sprintf("%02d", $title['Duration'] % 60); ?></td>
 	            </tr>
             <?php }
             ?>

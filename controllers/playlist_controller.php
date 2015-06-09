@@ -16,7 +16,7 @@ class PlaylistController {
             if(empty($p)) {
                 return call('pages', 'error', 1);
             } else {
-                if($playlist->domain()) {
+                if($playlist->domain() == 'Privata') {
                     return call('pages', 'error', 3);
                 } else {
                     require_once('views/playlist/show.php');

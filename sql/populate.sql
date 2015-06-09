@@ -47,9 +47,10 @@ INSERT INTO Brani(`IdAlbum`, `Titolo`, `Genere`, `Durata`)
 -- Insert into BraniCollezione
 INSERT INTO BraniCollezione(`IdBrano`, `IdCollezione`) VALUES(1, 1), (2, 1), (3, 1), (7, 1), (14, 1), (12, 1), (17, 1), (18, 1), (2, 2);
 -- Insert into Playlist
-INSERT INTO Playlist(`IdUtente`, `Nome`, `Privata`) VALUES(1, 'Score & Soundtracks', 0), (1, 'Southern Rock', 0), (2, 'Colonne sonore western', 0);
+INSERT INTO Playlist(`IdUtente`, `Nome`, `Tipo`) VALUES(1, 'Score & Soundtracks', 'Pubblica'), (1, 'Southern Rock', 'Pubblica'), (2, 'Colonne sonore western', 'Pubblica');
 -- Insert into BraniPlaylist
 INSERT INTO BraniPlaylist(`IdPlaylist`, `IdBrano`, `Posizione`) VALUES(1, 1, 1), (1, 2, 2), (1, 3, 3), (1, 4, 4), (1, 5, 5), (2, 21, 1), (2, 22, 2), (3, 5, 1), (3, 7, 2), (3, 4, 3);
+-- Insert Condivise
 -- Insert into Code
 INSERT INTO Code(`IdUtente`, `IdBrano`, `Posizione`)
        VALUES(1, 1, 1),

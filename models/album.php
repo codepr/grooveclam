@@ -59,7 +59,7 @@ class Album {
 		foreach ($this->songs() as $song) {
             $seconds += $song->duration();
 		}
-		return floor($seconds / 60).":".($seconds % 60);
+		return floor($seconds / 60).":".sprintf("%02d",$seconds % 60);
 	}
 	// add a new album to the database
 	public static function add($album) {

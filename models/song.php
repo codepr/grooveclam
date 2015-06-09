@@ -110,10 +110,10 @@ class Song {
 	// retrieve last 10 songs inserted
 	public static function lasten() {
 		$db = Db::getInstance();
-		$req = $db->query('SELECT b.IdBrano, b.Titolo, b.Genere FROM Brani b ORDER BY b.IdBrano DESC LIMIT 10');
+		$req = $db->query('SELECT b.IdBrano, b.Titolo, b.Genere, b.Durata FROM Brani b ORDER BY b.IdBrano DESC LIMIT 10');
 		$list = array();
 		foreach ($req->fetchAll() as $result) {
-			$list[]	= array('id' => $result['IdBrano'], 'Title' => $result['Titolo'], 'Genre' => $result['Genere']);
+			$list[]	= array('id' => $result['IdBrano'], 'Title' => $result['Titolo'], 'Genre' => $result['Genere'], 'Duration' => $result['Durata']);
 		}
 		return $list;
 	}

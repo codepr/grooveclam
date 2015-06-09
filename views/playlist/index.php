@@ -44,7 +44,7 @@
 		        <td><a href='?controller=playlist&action=show&id=<?php echo $playlist->id(); ?>'><?php echo $playlist->name(); ?></a></td>
 		        <td><?php $stats = $playlist->stats($playlist->id()); echo $stats['count']; ?></td>
 		        <td><?php echo $stats['duration']; ?></td>
-                <td style="color: rgb(15, 89, 182); font-size:.9em;"><?php if($playlist->domain()) { ?>&#128274;<?php } else { echo "&#128275;"; } ?></td>
+                <td style="color: rgb(15, 89, 182); font-size:.9em;"><?php echo $playlist->domain() == 'Pubblica' ? "&#128275;" : "&#128274;"; ?></td>
 	        </tr>
         <?php } ?>
     </tbody>

@@ -55,7 +55,7 @@ class Playlist {
 	public static function all() {
 		$list = array();
 		$db = Db::getInstance();
-		$req = $db->query('SELECT p.*, l.Username FROM Playlist p INNER JOIN Login l ON(p.IdUtente = l.IdUtente) WHERE p.Privata = FALSE');
+		$req = $db->query('SELECT p.*, l.Username FROM Playlist p INNER JOIN Login l ON(p.IdUtente = l.IdUtente) WHERE p.Tipo = \'Pubblica\'');
 		foreach($req->fetchAll() as $playlist) {
 			$list[] = new Playlist($playlist['IdPlaylist'], $playlist['Nome'], array('IdUtente' => $playlist['IdUtente'], 'Username' => $playlist['Username']), array(), 0);
 		}
@@ -67,12 +67,12 @@ class Playlist {
 		$song = 0;
 		$db = Db::getInstance();
 		$id = intval($id);
-		$req = $db->prepare('SELECT pl.IdPlaylist, pl.Nome, pl.Privata, p.Posizione, b.*, a.Autore, a.Titolo as AlbumTitle FROM Brani b INNER JOIN BraniPlaylist p ON(b.IdBrano = p.IdBrano) INNER JOIN Playlist pl ON(pl.IdPlaylist = p.IdPlaylist) INNER JOIN Album a ON(b.IdAlbum = a.IdAlbum) WHERE pl.IdPlaylist = :id ORDER BY p.Posizione');
+		$req = $db->prepare('SELECT pl.IdPlaylist, pl.Nome, pl.Tipo, p.Posizione, b.*, a.Autore, a.Titolo as AlbumTitle FROM Brani b INNER JOIN BraniPlaylist p ON(b.IdBrano = p.IdBrano) INNER JOIN Playlist pl ON(pl.IdPlaylist = p.IdPlaylist) INNER JOIN Album a ON(b.IdAlbum = a.IdAlbum) WHERE pl.IdPlaylist = :id ORDER BY p.Posizione');
 		$req->execute(array('id' => $id));
 		foreach($req->fetchAll() as $song) {
 			$songlist[$song['Posizione']] = new Song($song['IdBrano'], $song['Titolo'], $song['Genere'], $song['Durata'], $song['Autore'], $song['IdAlbum'], $song['AlbumTitle']);
 		}
-		return new Playlist($song['IdPlaylist'], $song['Nome'], array(), $songlist, $song['Privata']);
+		return new Playlist($song['IdPlaylist'], $song['Nome'], array(), $songlist, $song['Tipo']);
 	}
     // retrieve all personal playlist by a given userID
     public static function personal_playlist($id) {
@@ -82,7 +82,7 @@ class Playlist {
         $req = $db->prepare('SELECT p.* FROM Playlist p WHERE p.IdUtente = :id');
         $req->execute(array('id' => $id));
         foreach($req->fetchAll() as $playlist) {
-            $list[] = new Playlist($playlist['IdPlaylist'], $playlist['Nome'], array('IdUser' => $id, 'Username' => ''), array(), $playlist['Privata']);
+            $list[] = new Playlist($playlist['IdPlaylist'], $playlist['Nome'], array('IdUser' => $id, 'Username' => ''), array(), $playlist['Tipo']);
         }
         return $list;
     }
