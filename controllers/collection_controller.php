@@ -21,15 +21,27 @@ class CollectionController {
 		if(!isset($_GET['id']) || !isset($_GET['idu'])) {
 			return call('pages', 'error', 2);
 		}
-		Collection::addsong($_GET['id'], $_GET['idu']);
-		header('Location:/basidati/~abaldan/?controller=songs&action=index');
+        $offsetY = 0;
+        if(isset($_GET['y'])) {
+            $offsetY = $_GET['y'];
+        }
+        try {
+		    Collection::addsong($_GET['id'], $_GET['idu']);
+        } catch(Exception $e) {
+            return call('pages', 'error', 3);
+        }
+		header('Location:/basidati/~abaldan/?controller=songs&action=index&y='.$offsetY);
 	}
 	public function remove() {
 		if(!isset($_GET['id']) || !isset($_GET['idc'])) {
 			return call('pages', 'error', 2);
 		}
+        $offsetY = 0;
+        if(isset($_GET['y'])) {
+            $offsetY = $_GET['y'];
+        }
 		Collection::remove($_GET['id'], $_GET['idc']);
-		header('Location:/basidati/~abaldan/?controller=collection&action=index&id='.$_GET['idc'].'');
+		header('Location:/basidati/~abaldan/?controller=collection&action=show&id='.$_GET['idc'].'&y='.$offsetY);
 	}
 }
 ?>

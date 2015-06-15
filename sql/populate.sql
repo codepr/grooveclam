@@ -6,12 +6,20 @@ INSERT INTO Utenti(`Nome`, `Cognome`, `Email`)
 	         ('Marco', 'Rossi', 'rossi@gmail.com'),
              ('Luca', 'Verdi', 'verdi@yahoo.it'),
              ('Alessia', 'Neri', 'neri@gmail.com');
+-- Insert into Login
 INSERT INTO Login(`Username`, `Password`, `DataCreazione`, `IdUtente`)
        VALUES('codep', MD5('ciao'), '2015-04-29 18:51:00', 1),
              ('keepcalm', MD5('calm'), '2015-05-24 19:50:01', 2),
              ('rossi', MD5('marco'), '2015-05-28 19:50:04', 3),
              ('verdi', MD5('luca'), '2015-05-29 19:50:07', 4),
              ('neri', MD5('Alessia'), '2015-05-29 20:50:09', 5);
+-- Insert into Iscrizioni
+INSERT INTO Iscrizioni(`IdUtente`, `Tipo`)
+       VALUES(1, 'Free'),
+             (2, 'Free'),
+             (3, 'Premium'),
+             (4, 'Free'),
+             (5, 'Premium');
 -- Insert into Album
 INSERT INTO Album(`Titolo`, `Autore`, `Info`, `Anno`, `Live`, `Locazione`, `PathCopertina`)
        VALUES('Inception Suite', 'Hans Zimmer', 'Inception movie soundtrack, composed by the Great Compositor Hans Zimmer', '2010', 0, NULL, 'img/covers/inception.png'),

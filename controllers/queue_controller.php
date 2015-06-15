@@ -31,8 +31,12 @@ class QueueController {
             if(!isset($_GET['a']) || !isset($_GET['b'])) {
                 return call('pages', 'error', 2);
             } else {
+                $offsetY = 0;
+                if(isset($_GET['y'])) {
+                    $offsetY = $_GET['y'];
+                }
                 Queue::swap($_GET['a'], $_GET['b'], $_SESSION['uid']);
-                header("Location:/basidati/~abaldan/?controller=queue&action=index&id=".$_SESSION['uid']);
+                header("Location:/basidati/~abaldan/?controller=queue&action=index&id=".$_SESSION['uid']."&y=".$offsetY);
             }
         }
     }

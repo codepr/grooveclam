@@ -21,7 +21,7 @@ class PagesController {
             0 => '',
             1 => '404 page does not exists',
             2 => 'Missing get or post parameters',
-            3 => 'Administration privileges required'
+            3 => 'Maximum quota for free users reached. Free subscription users are allowed to add a maximum of 50 songs to their collection.'
         );
         $message = $errors{$code};
 		require_once('views/pages/error.php');

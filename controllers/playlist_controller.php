@@ -48,8 +48,12 @@ class PlaylistController {
             if(!isset($_GET['a']) || !isset($_GET['b']) || !isset($_GET['id'])) {
                 return call('pages', 'error', 2);
             } else {
+                $offsetY = 0;
+                if(isset($_GET['y'])) {
+                    $offsetY = $_GET['y'];
+                }
                 Playlist::swap($_GET['a'], $_GET['b'], $_GET['id']);
-                header("Location:/basidati/~abaldan/?controller=playlist&action=show&id=".$_GET['id']);
+                header("Location:/basidati/~abaldan/?controller=playlist&action=show&id=".$_GET['id']."&y=".$offsetY);
             }
         }
     }

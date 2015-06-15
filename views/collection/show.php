@@ -1,4 +1,4 @@
-<h2>&#9738; COLLECTION</h2>
+<h2>&#9738; COLLECTION (<?php echo count($collection->songs()); ?>)</h2>
 <table class="table">
 <thead>
 	<tr>

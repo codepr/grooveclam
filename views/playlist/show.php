@@ -1,4 +1,4 @@
-<h3><?php echo $playlist->name(); ?></h3>
+<h3><?php echo $playlist->name()." (".count($playlist->songs()).")"; ?></h3>
 <table class="table">
 <thead>
 	<tr>
@@ -27,3 +27,16 @@
 <?php } ?>
 </tbody>
 </table>
+<?php if($playlist->domain() == 'Condivisa') { ?>
+    <table class="table">
+        <caption>Shared with</caption>
+        <thead>
+            <tr>
+                <th>Fellow</th>
+            </tr>
+        </thead>
+        <tbody>
+            <td></td>
+        </tbody>
+    </table>
+<?php } ?>

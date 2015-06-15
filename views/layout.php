@@ -69,6 +69,7 @@
 		Progetto Basi di dati 2015
 	</footer>
     <script type="text/javascript">
+     window.onload = scroll();
      var min = document.getElementById("minutes");
      var sec = document.getElementById("seconds");
      var tot = 0;
@@ -160,6 +161,23 @@
          tot = 0;
          min.innerHTML = '00';
          sec.innerHTML = '00';
+     }
+     // set y position when clicking on a link
+     document.addEventListener('click', function(e) {
+         e = e || window.event;
+         var target = e.target || e.srcElement;
+         var top = window.pageYOffset || document.documentElement.scrollTop;
+         if(!new RegExp("abaldan$").test(target.href) && !new RegExp("#$").test(target.href)) {
+             target.href = target.href + '&y=' + top;
+         }
+     });
+     // scroll to the y position of get params
+     function scroll() {
+         var offsetY = location.search.split('y=')[1];
+         if(typeof offsetY !== 'undefined') {
+             window.scrollTo(0, offsetY);
+             history.pushState({}, "page", window.location.href.substring(0, window.location.href.indexOf("&y=")));
+         }
      }
     </script>
 </body>
