@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `Playlist` (
 	`IdPlaylist` INT(11) NOT NULL AUTO_INCREMENT,
 	`IdUtente` INT(11) NOT NULL,
 	`Nome` VARCHAR(40) NOT NULL,
-    `Tipo` ENUM('Pubblica', 'Privata', 'Condivisa') DEFAULT 'Pubblica',
+    `Tipo` ENUM('Pubblica', 'Privata') DEFAULT 'Pubblica',
 	PRIMARY KEY(`IdPlaylist`),
 	FOREIGN KEY(`IdUtente`) REFERENCES Utenti(`IdUtente`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

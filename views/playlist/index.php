@@ -45,7 +45,7 @@
 		        <td><?php $stats = $playlist->stats($playlist->id()); echo $stats['count']; ?></td>
 		        <td><?php echo $stats['duration']; ?></td>
                 <td style="color: rgb(15, 89, 182); font-size:.9em;">
-                    <?php echo $playlist->domain() == 'Pubblica' ? "&#128275;" : ($playlist->domain() == 'Condivisa' ? "&#128274;" : "&#9741;"); ?>
+                    <?php echo $playlist->domain() == 'Pubblica' ? "&#128275;" : "&#128274;"; ?>
                 </td>
 	        </tr>
         <?php } ?>

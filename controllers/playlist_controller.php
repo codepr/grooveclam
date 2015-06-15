@@ -38,7 +38,12 @@ class PlaylistController {
             return call('pages', 'login');
         } else {
             $postdata = $_POST;
-            Playlist::create($postdata);
+            $postdata['uid'] = $_SESSION['uid'];
+            try {
+                Playlist::create($postdata);
+            } catch(Exceptio $e) {
+                return call('pages', 'error', 1);
+            }
         }
     }
     public function swap() {

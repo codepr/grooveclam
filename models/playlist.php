@@ -35,6 +35,26 @@ class Playlist {
     public function domain() {
         return $this->domain;
     }
+    // create a new playlist
+    public static function create($newplaylist) {
+        $db = Db::getInstance();
+        $add = $db->prepare('INSERT INTO Playlist (IdUtente, Nome, Tipo) VALUES(:idUser, :Name, :Type)');
+        if(!isset($newplaylist['Private'])) {
+            $newplaylist['Private'] = 'Pubblica';
+        }
+        $add->execute(array('idUser' => $newplaylist['uid'], 'Name' => $newplaylist['Name'], 'Type' => $newplaylist['Private']));
+        $idp = $db->lastInsertId();
+        foreach($newplaylist['fellow'] as $fellow) {
+            $add = $db->prepare('INSERT INTO Condivise (IdPlaylist, IdUtente) VALUES(:idp, :idu)');
+            $add->execute(array('idp' => $idp, 'idu' => $fellow));
+        }
+        $i = 1;
+        foreach($newplaylist['song'] as $song) {
+            $add = $db->prepare('INSERT INTO BraniPlaylist (IdPlaylist, IdBrano, Posizione) VALUES(:idp, :idb, :pos)');
+            $add->execute(array('idp' => $idp, 'idb' => $song, 'pos' => $i));
+            $i++;
+        }
+    }
 	// retrieve number of songs and total duration of a given playlist
 	public function stats($id) {
 		$stats = array();
