@@ -1,15 +1,17 @@
 <h2>&#9881; USER SETTINGS</h2>
-<dl>
+<dl style="float:left; margin-right:50px;">
     <dt>Username</dt>
     <dd><?php echo $user->username(); ?></dd>
     <dt>Name</dt>
     <dd><?php echo $user->name(); ?></dd>
+    <dt>Surname</dt>
+    <dd><?php echo $user->surname(); ?></dd>
     <dt>E-mail</dt>
     <dd><?php echo $user->email(); ?></dd>
     <dt>Following</dt>
     <dd><?php echo count($fellows); ?></dd>
 </dl>
-<table class="table" style="width: 20%;">
+<table class="table" style="width: 20%; margin-top:0;">
     <thead>
         <th>Genre</th>
         <th>Distribution</th>
@@ -23,6 +25,7 @@
         <?php }?>
     </tbody>
 </table>
+<div style="clear:both;">
 <?php
 if(isset($_SESSION['logged'])) {
 	if($_SESSION['uid'] != $_GET['id']) {
@@ -36,3 +39,4 @@ if(isset($_SESSION['logged'])) {
     }
 }
 ?>
+</div>

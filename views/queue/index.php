@@ -1,4 +1,4 @@
-<h2>&crarr; QUEUE</h2>
+<h2>&crarr; QUEUE (<?php echo count($queue->queue()); ?>)</h2>
 <table class="table">
     <thead>
         <th></th>

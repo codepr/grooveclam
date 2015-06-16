@@ -1,4 +1,4 @@
-<h2>&#9733; PLAYLISTS</h2>
+<h2>&#9733; PLAYLISTS (<?php echo count($playlists); ?>)</h2>
 <?php if(isset($_SESSION['logged'])) { ?>
 <div class="addstuff">
     <div class="addstuff-circle">

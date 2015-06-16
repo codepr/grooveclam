@@ -3,13 +3,15 @@ class User {
 
 	private $id;
 	private $name;
+    private $surname;
 	private $email;
 	private $username;
 	private $password;
 
-	public function __construct($id, $name, $email, $username, $password) {
+	public function __construct($id, $name, $surname, $email, $username, $password) {
 		$this->id = $id;
 		$this->name = $name;
+        $this->surname = $surname;
 		$this->email = $email;
 		$this->username = $username;
 		$this->password = $password;
@@ -24,7 +26,7 @@ class User {
 	}
 
     public function surname() {
-        return "";
+        return $this->surname;
     }
 
 	public function email() {
@@ -41,7 +43,7 @@ class User {
 		$req->execute(array('username' => $uname, 'password' => md5($passw)));
 		$u = $req->fetch();
 		if($u) {
-			return new User($u['IdUtente'], $u['Nome'], $u['Email'], $u['Username'], $u['Password']);
+			return new User($u['IdUtente'], $u['Nome'], $u['Cognome'], $u['Email'], $u['Username'], $u['Password']);
 		} else return -1;
 	}
 	// return a complete user by a given id
@@ -50,7 +52,7 @@ class User {
 		$req = $db->prepare('SELECT u.*, l.Username, l.Password FROM Utenti u INNER JOIN Login l ON(u.IdUtente = l.IdUtente) WHERE u.IdUtente = :id');
 		$req->execute(array('id' => $id));
 		$u = $req->fetch();
-		return new User($u['IdUtente'], $u['Nome']." ".$u['Cognome'], $u['Email'], $u['Username'], $u['Password']);
+		return new User($u['IdUtente'], $u['Nome'], $u['Cognome'], $u['Email'], $u['Username'], $u['Password']);
 	}
     // retrieve a user based on username
     public static function findByUsername($uname) {
@@ -59,7 +61,7 @@ class User {
         $req = $db->prepare('SELECT u.*, l.Username, l.Password FROM Utenti u INNER JOIN Login l ON(u.IdUtente = l.IdUtente) WHERE l.Username = :uname');
 		$req->execute(array('uname' => $uname));
 		$u = $req->fetch();
-        return new User($u['IdUtente'], $u['Nome']." ".$u['Cognome'], $u['Email'], $u['Username'], $u['Password']);
+        return new User($u['IdUtente'], $u['Nome'], $u['Cognome'], $u['Email'], $u['Username'], $u['Password']);
     }
 	// retrieve fellow list for a user
 	public function fellows() {

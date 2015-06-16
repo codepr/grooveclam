@@ -1,4 +1,4 @@
-<h2>&#9839; ALBUM LIST</h2>
+<h2>&#9839; ALBUM LIST (<?php echo count($albums); ?>)</h2>
 <table class="table">
 <thead>
 	<tr>

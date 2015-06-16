@@ -1,4 +1,4 @@
-<h2>&#9836; SONG LIST</h2>
+<h2>&#9836; SONG LIST (<?php echo count($songs); ?>)</h2>
 <table class="table">
 <thead>
 	<tr>

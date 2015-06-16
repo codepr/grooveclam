@@ -4,7 +4,7 @@
         <label for="NewName">Name</label>
         <input name="NewName" type="text" value="<?php echo $user->name(); ?>" id="NewName" />
         <label for="NewSurname">Surname</label>
-        <input name="NewSurname" type="text" value="" id="NewSurname" />
+        <input name="NewSurname" type="text" value="<?php echo $user->surname(); ?>" id="NewSurname" />
         <label for="NewMail">E-Mail</label>
         <input name="NewMail" type="email" value="<?php echo $user->email(); ?>" id="NewMail" />
         <label for="NewUsername">Username</label>
