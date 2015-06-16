@@ -23,7 +23,7 @@ class Queue {
 		}
 		return new Queue($list);
 	}
-	// add a song to te queue
+	// add a song to the queue
 	public static function addsong($uid, $id) {
 		$db = Db::getInstance();
 		$id = intval($id);
@@ -35,6 +35,14 @@ class Queue {
 		$req = $db->prepare('INSERT INTO Code VALUES(:uid, :id,  :pos)');
 		$req->execute(array('uid' => $uid, 'id' => $id, 'pos' => $len));
 	}
+    // remove a song from the queue
+    public static function removesong($uid, $id, $pos) {
+        $db = Db::getInstance();
+        $id = intval($id);
+        $uid = intval($uid);
+        $req = $db->prepare("DELETE FROM Code WHERE IdBrano = :idb AND IdUtente = :idu AND Posizione = :pos");
+        $req->execute(array("idb" => $id, "idu" => $uid, "pos" => $pos));
+    }
     // swap two song position for a give uid
     public static function swap($a, $b, $id) {
         $db = Db::getInstance();

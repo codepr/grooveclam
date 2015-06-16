@@ -46,7 +46,7 @@ $controllers = array(
 	'albums' => array('index', 'show', 'add', 'addalbum'),
 	'playlist' => array('index', 'show', 'newplaylist', 'swap', 'createplaylist', 'manage', 'alter'),
 	'collection' => array('index', 'show', 'addsong', 'remove'),
-	'queue' => array('index', 'addsong', 'swap'),
+	'queue' => array('index', 'addsong', 'swap', 'remove'),
 	'user' => array('show', 'follow', 'unfollow', 'manage', 'alter')
 );
 if(array_key_exists($controller, $controllers)) {

@@ -24,6 +24,22 @@ class QueueController {
 			}
 		}
 	}
+    public function remove() {
+        if(!isset($_GET['id']) || !isset($_GET['pos'])) {
+			return call('pages', 'error', 2);
+		} else {
+			if(isset($_SESSION['logged'])) {
+                $offsetY = 0;
+                if(isset($_GET['y'])) {
+                    $offsetY = $_GET['y'];
+                }
+				Queue::removesong($_SESSION['uid'], $_GET['id'], $_GET['pos']);
+				header("Location:/basidati/~abaldan/?controller=queue&action=index&id=".$_SESSION['uid']."&y=".$offsetY);
+			} else {
+				return call('pages', 'login');
+			}
+		}
+    }
     public function swap() {
         if(!isset($_SESSION['logged'])) {
             return call('pages', 'login');
