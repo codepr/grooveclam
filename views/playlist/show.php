@@ -15,7 +15,7 @@
 	<tr>
 		<td><a href='?controller=songs&action=show&id=<?php echo $song->id(); ?>'><?php echo $song->title(); ?></a></td>
 		<td><?php echo $song->genre(); ?></td>
-		<td><?php echo floor($song->duration() / 60).":".($song->duration() % 60); ?></td>
+		<td><?php echo floor($song->duration() / 60).":".sprintf("%02d", $song->duration() % 60); ?></td>
 		<td><a href='?controller=albums&action=show&id=<?php echo $song->idalbum(); ?>'><?php echo $song->album(); ?></a></td>
         <td>
             <?php if($key > 1) { ?>

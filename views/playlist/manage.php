@@ -15,6 +15,15 @@
             }
             ?>
         </fieldset>
+        <?php
+        $chk = '';
+        if($playlist->domain() == 'Privata') {
+            $chk = "checked";
+        }
+        ?>
+        <input type="checkbox" name="Private" value="Private" <?php echo $chk; ?>> Private
+        <br />
+        <input type="hidden" name="idpl" id="idpl" value="<?php echo $_GET['id']; ?>" />
         <input type="submit" value="submit" />
     </fieldset>
 </form>

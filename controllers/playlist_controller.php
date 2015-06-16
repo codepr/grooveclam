@@ -61,6 +61,23 @@ class PlaylistController {
             }
         }
     }
+    public function alter() {
+        if(!isset($_SESSION['logged'])) {
+            return call('pages', 'login');
+        } else {
+            if(!isset($_GET['id'])) {
+                return call('pages', 'error', 2);
+            } else {
+                try {
+                    $postdata = $_POST;
+                    Playlist::alter($postdata);
+                    header("Location:/basidati/~abaldan/?controller=playlist&action=show&id=".$_GET['id']);
+                } catch(Exception $e) {
+                    echo $e->message();
+                }
+            }
+        }
+    }
     public function swap() {
         if(!isset($_SESSION['logged'])) {
             return call('pages', 'login');

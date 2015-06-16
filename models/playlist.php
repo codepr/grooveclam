@@ -62,6 +62,30 @@ class Playlist {
             }
         }
     }
+    // modify a given list
+    public static function alter($altplaylist) {
+        $idp = intval($altplaylist['idpl']);
+        $db = Db::getInstance();
+        if(isset($altplaylist['NewName'])) {
+            $req = $db->prepare("UPDATE Playlist SET Nome = :name WHERE IdPlaylist = :idp");
+            $req->execute(array("name" => $altplaylist['NewName'], "idp" => $idp));
+        }
+        if(isset($altplaylist['song'])) {
+            $req = $db->prepare("DELETE FROM BraniPlaylist WHERE IdPlaylist = :idp");
+            $req->execute(array("idp" => $idp));
+            $i = 0;
+            foreach($altplaylist['song'] as $song) {
+                $req = $db->prepare("INSERT INTO BraniPlaylist (IdPlaylist, IdBrano, Posizione) VALUES(:idp, :idb, :pos)");
+                $req->execute(array("idp" => $idp, "idb" => $song, "pos" => $i));
+                $i++;
+            }
+        }
+        if(!isset($altplaylist['Private'])) {
+            $altplaylist['Private'] = 'Pubblica';
+        } 
+        $req = $db->prepare('UPDATE Playlist SET Tipo = :type WHERE IdPlaylist = :idp');
+        $req->execute(array("type" => $altplaylist['Private'], "idp" => $idp));
+    }
 	// retrieve number of songs and total duration of a given playlist
 	public function stats($id) {
 		$stats = array();
@@ -75,7 +99,7 @@ class Playlist {
 		foreach ($res as $duration) {
             $dur += $duration['Durata'];
 		}
-		$dur = floor($dur / 60).":".($dur % 60);
+		$dur = floor($dur / 60).":".sprintf("%02d", ($dur % 60));
 		return array('count' => count($res), 'duration' => $dur);
 	}
 	// list all public playlists
