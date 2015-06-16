@@ -229,6 +229,12 @@ Quindi circa 200 album caricati e 1600 brani.
   accessi al giorno senza ridondanza.\\
   Si può dunque concludere che ~8000 accessi in più contro un risparmio di 200 byte giustificano
   l'utilizzo di un attributo ridondante nella tabella *Album*.
+*** Note
+  Tale ragionamento puo' tovare applicazione in maniera equivalente o comunque molto simile anche nelle
+  tabelle *Playlist-Brani* e *Collezioni-Brani*, ma non ho ritenuto di procedere data la poca utilita'
+  di tale scelta in ragione della struttura dell'interfaccia web progettata, dove utilizzo funzioni PHP
+  come ~count~ per ottenere la lunghezza di un array, ad esempio l'array contenente i brani di una collezione
+  ottenendo quindi il numero di brani della collezione effettivo.
 ** Associazioni
 - *Utenti-Login:* "Possiede"
   - Ogni utente possiede una login, ogni login e' posseduta da un utente.
@@ -305,7 +311,7 @@ nessuna di esse ha interazioni significative con le altre entita' della base di 
 ho deciso di inserire l'attributo ridondante ~NBrani~ nella tabella ~Album~, in quanto il rapporto tra il costo computazionale e l'effettivo
 carico maggiorato favoriva di molto l'opzione valutata.
 * Implementazione Fisica
-Query di implementazione DDL SQL della base di dati. Sorgente in ~grooveclam.sql~, popolamento in ~populate.sql~.
+Query di implementazione DDL SQL della base di dati. Sorgente in ~grooveclam.sql~, popolamento in ~fill.sql~.
 E' stata implementata una tabella *Errori*, riempita mediante procedura a sua volta richiamata dai trigger che ne fanno uso, 
 contiene i messaggi d'errore rilevati.
 ~functions.sql~ contiene invece le funzioni, i trigger sono contenuti in ~triggers.sql~ e le procedure in ~procedures.sql~.\\
@@ -323,6 +329,7 @@ DROP TABLE IF EXISTS `Collezioni`;
 DROP TABLE IF EXISTS `BraniCollezione`;
 DROP TABLE IF EXISTS `Playlist`;
 DROP TABLE IF EXISTS `BraniPlaylist`;
+DROP TABLE IF EXISTS `Condivise`;
 DROP TABLE IF EXISTS `Code`;
 DROP TABLE IF EXISTS `Ascoltate`;
 DROP TABLE IF EXISTS `Login`;
@@ -366,7 +373,7 @@ CREATE TABLE IF NOT EXISTS `Utenti` (
 CREATE TABLE IF NOT EXISTS `Login` (
     `Username` VARCHAR(40) NOT NULL,
 	`Password` VARCHAR(40) NOT NULL,
-    `Amministratore` BOOLEAN DEFAULT FALSE,
+    `DataCreazione` TIMESTAMP NOT NULL,
     `IdUtente` INT(11) NOT NULL,
     PRIMARY KEY(`Username`),
     FOREIGN KEY(`IdUtente`) REFERENCES Utenti(`IdUtente`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -407,7 +414,7 @@ CREATE TABLE IF NOT EXISTS `Playlist` (
 	`IdPlaylist` INT(11) NOT NULL AUTO_INCREMENT,
 	`IdUtente` INT(11) NOT NULL,
 	`Nome` VARCHAR(40) NOT NULL,
-    `Privata` BOOLEAN DEFAULT FALSE,
+    `Tipo` ENUM('Pubblica', 'Privata') DEFAULT 'Pubblica',
 	PRIMARY KEY(`IdPlaylist`),
 	FOREIGN KEY(`IdUtente`) REFERENCES Utenti(`IdUtente`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -419,6 +426,14 @@ CREATE TABLE IF NOT EXISTS `BraniPlaylist` (
 	CONSTRAINT PRIMARY KEY pk(`IdPlaylist`, `IdBrano`),
 	FOREIGN KEY(`IdPlaylist`) REFERENCES Playlist(`IdPlaylist`) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY(`IdBrano`) REFERENCES Brani(`IdBrano`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Table Condivise
+CREATE TABLE IF NOT EXISTS `Condivise` (
+    `IdPlaylist` INT(11) NOT NULL,
+    `IdUtente` INT(11) NOT NULL,
+    CONSTRAINT PRIMARY KEY pk(`IdPlaylist`, `IdUtente`),
+    FOREIGN KEY(`IdPlaylist`) REFERENCES Playlist(`IdPlaylist`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(`IdUtente`) REFERENCES Utenti(`IdUtente`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 -- Table Code
 CREATE TABLE IF NOT EXISTS `Code` (
@@ -438,22 +453,27 @@ CREATE TABLE IF NOT EXISTS `Ascoltate` (
 	FOREIGN KEY(`IdUtente`) REFERENCES Utenti(`IdUtente`) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY(`IdBrano`) REFERENCES Brani(`IdBrano`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 -- Insert into Utente
 INSERT INTO Utenti(`Nome`, `Cognome`, `Email`)
-       VALUES('MrGroove', 'Clam', 'mrgroove@groove.gv'),
-             ('Andrea', 'Baldan', 'a.g.baldan@gmail.com'),
+       VALUES('Andrea', 'Baldan', 'a.g.baldan@gmail.com'),
 	         ('Federico', 'Angi', 'angiracing@gmail.com'),
 	         ('Marco', 'Rossi', 'rossi@gmail.com'),
              ('Luca', 'Verdi', 'verdi@yahoo.it'),
              ('Alessia', 'Neri', 'neri@gmail.com');
-INSERT INTO Login(`Username`, `Password`, `Amministratore`, `IdUtente`)
-       VALUES('admin', MD5('admin'), 1,1),
-             ('codep', MD5('ciao'), 0, 2),
-             ('keepcalm', MD5('calm'), 0, 3),
-             ('rossi', MD5('marco'), 0, 4),
-             ('verdi', MD5('luca'), 0, 5),
-             ('neri', MD5('Alessia'), 0, 6);
+-- Insert into Login
+INSERT INTO Login(`Username`, `Password`, `DataCreazione`, `IdUtente`)
+       VALUES('codep', MD5('ciao'), '2015-04-29 18:51:00', 1),
+             ('keepcalm', MD5('calm'), '2015-05-24 19:50:01', 2),
+             ('rossi', MD5('marco'), '2015-05-28 19:50:04', 3),
+             ('verdi', MD5('luca'), '2015-05-29 19:50:07', 4),
+             ('neri', MD5('Alessia'), '2015-05-29 20:50:09', 5);
+-- Insert into Iscrizioni
+INSERT INTO Iscrizioni(`IdUtente`, `Tipo`)
+       VALUES(1, 'Free'),
+             (2, 'Free'),
+             (3, 'Premium'),
+             (4, 'Free'),
+             (5, 'Premium');
 -- Insert into Album
 INSERT INTO Album(`Titolo`, `Autore`, `Info`, `Anno`, `Live`, `Locazione`, `PathCopertina`)
        VALUES('Inception Suite', 'Hans Zimmer', 'Inception movie soundtrack, composed by the Great Compositor Hans Zimmer', '2010', 0, NULL, 'img/covers/inception.png'),
@@ -487,30 +507,31 @@ INSERT INTO Brani(`IdAlbum`, `Titolo`, `Genere`, `Durata`)
              (6, 'Old Man', 'Rock', 203),
              (6, 'Southern Man', 'Rock', 331);
 -- Insert into BraniCollezione
-INSERT INTO BraniCollezione(`IdBrano`, `IdCollezione`) VALUES(1, 2), (2, 2), (3, 2), (7, 2), (14, 2), (12, 2), (17, 2), (18, 2), (2, 3);
+INSERT INTO BraniCollezione(`IdBrano`, `IdCollezione`) VALUES(1, 1), (2, 1), (3, 1), (7, 1), (14, 1), (12, 1), (17, 1), (18, 1), (2, 2);
 -- Insert into Playlist
-INSERT INTO Playlist(`IdUtente`, `Nome`, `Privata`) VALUES(2, 'Score & Soundtracks', 0), (2, 'Southern Rock', 0), (3, 'Colonne sonore western', 0);
+INSERT INTO Playlist(`IdUtente`, `Nome`, `Tipo`) VALUES(1, 'Score & Soundtracks', 'Pubblica'), (1, 'Southern Rock', 'Pubblica'), (2, 'Colonne sonore western', 'Pubblica');
 -- Insert into BraniPlaylist
 INSERT INTO BraniPlaylist(`IdPlaylist`, `IdBrano`, `Posizione`) VALUES(1, 1, 1), (1, 2, 2), (1, 3, 3), (1, 4, 4), (1, 5, 5), (2, 21, 1), (2, 22, 2), (3, 5, 1), (3, 7, 2), (3, 4, 3);
+-- Insert Condivise
 -- Insert into Code
 INSERT INTO Code(`IdUtente`, `IdBrano`, `Posizione`)
-       VALUES(2, 1, 1),
-             (2, 5, 2),
-             (2, 1, 3),
-             (2, 12, 4),
-             (2, 10, 5),
-             (3, 1, 1);
+       VALUES(1, 1, 1),
+             (1, 5, 2),
+             (1, 1, 3),
+             (1, 12, 4),
+             (1, 10, 5),
+             (2, 1, 1);
 -- Insert into Ascoltate
 INSERT INTO Ascoltate(`IdUtente`, `IdBrano`, `Timestamp`)
-       VALUES(2, 1, '2015-04-28 18:50:03'),
-             (2, 5, '2015-04-28 18:54:06'),
-             (2, 1, '2015-04-28 19:01:43'),
-             (3, 7, '2015-04-29 18:51:02'),
-             (4, 11, '2015-04-29 17:23:15'),
-             (4, 9, '2015-04-30 21:12:52'),
-             (3, 1, '2015-05-02 22:21:22');
+       VALUES(1, 1, '2015-04-28 18:50:03'),
+             (1, 5, '2015-04-28 18:54:06'),
+             (1, 1, '2015-04-28 19:01:43'),
+             (2, 7, '2015-04-29 18:51:02'),
+             (3, 11, '2015-04-29 17:23:15'),
+             (3, 9, '2015-04-30 21:12:52'),
+             (2, 1, '2015-05-02 22:21:22');
 -- Insert into Seguaci
-INSERT INTO Seguaci(`IdUtente`, `IdSeguace`) VALUES(2, 3), (2, 4), (3, 2), (4, 2);
+INSERT INTO Seguaci(`IdUtente`, `IdSeguace`) VALUES(1, 2), (1, 3), (2, 1), (3, 1);
 
 SET FOREIGN_KEY_CHECKS = 1;
 \end{lstlisting}
@@ -525,6 +546,7 @@ Di seguito i trigger creati. Sono trigger tipicamente di controllo.
 - ~updateAutpAdminSubs:~ Trigger di controllo sull'aggiornamento di un utente già presente nella base di dati, se viene aggiornato il campo ~Amministratore~ a ~TRUE~, viene creato o, aggiornato se già esistente, il campo ~Tipo~ nella tabella ~Iscrizioni~.
 - ~insertAutoSongNumber:~ Trigger di aggiornamento, dopo l'inserimento nella tabella ~Brani~ aumenta di 1 il contatore ~NBrani~ all'interno della tabella ~Album~ sul record associato al brano inserito.
 - ~updateAutoSongNumber:~ Trigger di controllo, come sopra ma cattura l'evento ~UPDATE~, e si occupa di decrementare il contatore del vecchio album a cui il brano era associato.
+- ~checkCollectionSize:~ Trigger di controllo, prima dell'inserimento nella tabella ~Brani~ controlla il tipo di iscrizione dell'utente che intende eseguire l'inserimento, e, nel caso si tratti di un utente "Free" genera un errore e impedisce l'inserimento.
 - ~errorTrigger:~ Trigger di supporto, utilizzato per simulare un sistema di segnalazione errori, esegue un ~SET NEW = NEW.errore;~ che genera un messaggio in quanto ~NEW~ non puo essere manipolato e visualizza il messaggio passato alla procedura ~RAISE_ERROR~.
 #+BEGIN_LaTeX
 \begin{lstlisting}[language=SQL]
@@ -651,6 +673,30 @@ BEGIN
     END IF;
 END $$
  
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER checkCollectionSize
+BEFORE INSERT ON `BraniCollezione`
+FOR EACH ROW
+BEGIN
+	DECLARE numSong INTEGER DEFAULT 0;
+    DECLARE idUser INTEGER DEFAULT 0;
+    DECLARE subType VARCHAR(7) DEFAULT '';
+    SELECT DISTINCT c.IdUtente INTO idUser
+    FROM BraniCollezione bc INNER JOIN Collezioni c ON(bc.IdCollezione = c.IdCollezione)
+    WHERE bc.IdCollezione = NEW.IdCollezione;
+    SELECT COUNT(IdBrano) INTO numSong
+    FROM BraniCollezione
+    WHERE IdCollezione = NEW.IdCollezione;
+    SELECT DISTINCT i.Tipo INTO subType
+    FROM Iscrizioni i INNER JOIN Login l ON(i.IdUtente = l.IdUtente)
+    WHERE l.IdUtente = idUser;
+    IF(numSong = 50 && subType = 'Free') THEN
+        CALL RAISE_ERROR('Maximum limit for collected songs reached for a free subscription account.');
+    END IF;
+END $$
+
 DELIMITER ;
 \end{lstlisting}
 #+END_LaTeX
@@ -1067,12 +1113,6 @@ danno la possibilità di privatizzare o rendere pubbliche le proprie playlist. *
 posizione di accodamento, modificabile.\\
 E' possibile modificare i dati relativi al proprio account, incluso il piano di'iscrizione, utilizzando la pagina accessibile clickando sul 
 bottone in alto a destra *settings*, solo dopo aver loggato.
-** Amministrazione
-Nel caso di login di un utente con privilegi di amministratore, il menu risulta leggermente modificato, in primis, compare la voce *Users*, che mostra
-tutti gli utenti registrati nella base di dati e offre la possibilità di modificarne i dati, eliminare profili o aggiungerne.
-Le voci *Collections*, *Playlists* mostrano tutte le collezioni e playlist create, con relativi dati dei creatori, anche qui è possibile cancellare, 
-creare e modificare tali elementi.\\
-L'amministratore infine ha pieno potere di creazione e cancellazione / modifica dei brani e album.
 ** Mantenimento Stato Pagine
 L'interfaccia da la possibilità di ascoltare canzoni come utente visitatore (anonimo), ma per le operazioni più specifiche, ad esempio la creazione
 e gestione di una personale collezione è necessario registrarsi e loggare utilizzando le credenziali scelte, è stato pertanto creato un sistema di
@@ -1080,8 +1120,7 @@ gestione delle sessioni mediante la classe singleton /GrooveSession/, nel file s
 Essa contiene i campi dati basilari quali l'id della sessione che si va a creare e l'istanza dell'oggetto che la contiene, e i metodi necessari alla 
 gestione con la possibilità di aggiungere variabili utili.\\
 Per i controlli sull'effettiva autenticazione ad esempio, viene creata una variabile di sessione ~logged~, essa vale 1 se esiste un utente loggato, mentre
-la variabile ~uid~ si occupa di tenere traccia dell'id dell'utente autenticato. La variabile ~admin~ infine, viene creata per tenere traccia dei privilegi
-dell'utente, un valore 1 rappresenta i massimi privilegi amministrativi, 0 per utenti ordinari.\\
+la variabile ~uid~ si occupa di tenere traccia dell'id dell'utente autenticato.\\
 Alcuni account di prova:
 - codep : ciao
 - rossi : marco
