@@ -12,6 +12,7 @@ class PlaylistController {
 			return call('pages', 'error', 2);
 		} else {
 			$playlist = Playlist::find($_GET['id']);
+            $shared_fellows = Playlist::shared_fellows($_GET['id']);
             $p = $playlist->id();
             if(empty($p)) {
                 return call('pages', 'error', 1);
@@ -41,8 +42,22 @@ class PlaylistController {
             $postdata['uid'] = $_SESSION['uid'];
             try {
                 Playlist::create($postdata);
-            } catch(Exceptio $e) {
+                header("Location:/basidati/~abaldan/?controller=playlist&action=index");
+            } catch(Exception $e) {
                 return call('pages', 'error', 1);
+            }
+        }
+    }
+    public function manage() {
+        if(!isset($_SESSION['logged'])) {
+            return call('pages', 'login');
+        } else {
+            if(!isset($_GET['id'])) {
+                return call('pages', 'error', 2);
+            } else {
+                $collection = Collection::findbyid($_SESSION['uid']);
+                $playlist = Playlist::find($_GET['id']);
+                require_once('views/playlist/manage.php');
             }
         }
     }

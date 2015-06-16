@@ -35,7 +35,7 @@
 		    <th>Name</th>
 		    <th># Tracks</th>
 		    <th>Duration (min)</th>
-            <th></th>
+            <th>Domain</th>
 	    </tr>
     </thead>
     <tbody>
@@ -45,7 +45,7 @@
 		        <td><?php $stats = $playlist->stats($playlist->id()); echo $stats['count']; ?></td>
 		        <td><?php echo $stats['duration']; ?></td>
                 <td style="color: rgb(15, 89, 182); font-size:.9em;">
-                    <?php echo $playlist->domain() == 'Pubblica' ? "&#128275;" : "&#128274;"; ?>
+                    <?php echo $playlist->domain() == 'Pubblica' ? "Public" : "Private"; ?>
                 </td>
 	        </tr>
         <?php } ?>

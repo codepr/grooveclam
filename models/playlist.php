@@ -44,15 +44,22 @@ class Playlist {
         }
         $add->execute(array('idUser' => $newplaylist['uid'], 'Name' => $newplaylist['Name'], 'Type' => $newplaylist['Private']));
         $idp = $db->lastInsertId();
-        foreach($newplaylist['fellow'] as $fellow) {
-            $add = $db->prepare('INSERT INTO Condivise (IdPlaylist, IdUtente) VALUES(:idp, :idu)');
-            $add->execute(array('idp' => $idp, 'idu' => $fellow));
+        if(isset($newplaylist['fellow']) && !empty($newplaylist)) {
+            // insert creator in Condivise table
+            $req = $db->prepare('INSERT INTO Condivise (IdPlaylist, IdUtente) VALUES(:idp, :idu)');
+            $req->execute(array('idp' => $idp, 'idu' => $_SESSION['uid']));
+            foreach($newplaylist['fellow'] as $fellow) {
+                $add = $db->prepare('INSERT INTO Condivise (IdPlaylist, IdUtente) VALUES(:idp, :idu)');
+                $add->execute(array('idp' => $idp, 'idu' => $fellow));
+            }
         }
         $i = 1;
-        foreach($newplaylist['song'] as $song) {
-            $add = $db->prepare('INSERT INTO BraniPlaylist (IdPlaylist, IdBrano, Posizione) VALUES(:idp, :idb, :pos)');
-            $add->execute(array('idp' => $idp, 'idb' => $song, 'pos' => $i));
-            $i++;
+        if(isset($newplaylist['song']) && !empty($newplaylist['song'])) {
+            foreach($newplaylist['song'] as $song) {
+                $add = $db->prepare('INSERT INTO BraniPlaylist (IdPlaylist, IdBrano, Posizione) VALUES(:idp, :idb, :pos)');
+                $add->execute(array('idp' => $idp, 'idb' => $song, 'pos' => $i));
+                $i++;
+            }
         }
     }
 	// retrieve number of songs and total duration of a given playlist
@@ -104,7 +111,49 @@ class Playlist {
         foreach($req->fetchAll() as $playlist) {
             $list[] = new Playlist($playlist['IdPlaylist'], $playlist['Nome'], array('IdUser' => $id, 'Username' => ''), array(), $playlist['Tipo']);
         }
+        $req = $db->prepare('SELECT c.*, pl.Nome, pl.Tipo FROM Condivise c INNER JOIN Playlist pl ON(c.IdPlaylist = pl.IdPlaylist) WHERE c.IdUtente = :id AND c.IdPlaylist NOT IN (SELECT p.IdPlaylist FROM Playlist p WHERE p.IdUtente = :id)');
+        $req->execute(array('id' => $id));
+        foreach($req->fetchAll() as $playlist) {
+            $list[] = new Playlist($playlist['IdPlaylist'], $playlist['Nome'], array('IdUser' => $id, 'Username' => ''), array(), $playlist['Tipo']);
+        }
         return $list;
+    }
+    // retrieve shared fellows of a given playlist
+    public static function shared_fellows($id) {
+        $list = array();
+        $id = intval($id);
+        $db = Db::getInstance();
+        $req = $db->prepare('SELECT l.IdUtente, l.Username FROM Login l INNER JOIN Condivise c ON(l.IdUtente = c.IdUtente) WHERE c.IdPlaylist = :idp AND c.IdUtente <> :idu');
+        $req->execute(array('idp' => $id, 'idu' => $_SESSION['uid']));
+        foreach($req->fetchAll() as $fellow) {
+            $list[$fellow['IdUtente']] = $fellow['Username'];
+        }
+        return $list;
+    }
+    // verify who's the owner of a given playlist
+    public function is_mine() {
+        $db = Db::getInstance();
+        $req = $db->prepare('SELECT IdPlaylist FROM Playlist WHERE IdUtente = :uid');
+        $req->execute(array('uid' => $_SESSION['uid']));
+        $res = array();
+        foreach($req->fetchAll() as $r) {
+            $res[] = $r['IdPlaylist'];
+        }
+        if(!empty($res) && in_array($this->id(), $res)) {
+            return true;
+        } else {
+            $req = $db->prepare('SELECT IdPlaylist FROM Condivise WHERE IdUtente = :uid');
+            $req->execute(array('uid' => $_SESSION['uid']));
+            $res = array();
+            foreach($req->fetchAll() as $r) {
+                $res[] = $r['IdPlaylist'];
+            }
+            if(!empty($res) && in_array($this->id(), $res)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
     // swap position of two songs in the playlist
     public static function swap($a, $b, $id) {

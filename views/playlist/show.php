@@ -27,7 +27,7 @@
 <?php } ?>
 </tbody>
 </table>
-<?php if($playlist->domain() == 'Condivisa') { ?>
+<?php if(count($shared_fellows)) { ?>
     <table class="table">
         <caption>Shared with</caption>
         <thead>
@@ -36,7 +36,14 @@
             </tr>
         </thead>
         <tbody>
-            <td></td>
+            <?php foreach($shared_fellows as $key => $value) { ?>
+                <tr>
+                    <td><a href="?controller=user&action=show&id=<?php echo $key; ?>"><?php echo $value; ?></a></td>
+                </tr>
+            <?php } ?>
         </tbody>
     </table>
+<?php } ?>
+<?php if(isset($_SESSION['logged']) && $playlist->is_mine()) { ?>
+    <p><a href="?controller=playlist&action=manage&id=<?php echo $_GET['id']; ?>"><button class='exit add'>&#9881; Manage playlist</button></a></p>
 <?php } ?>

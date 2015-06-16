@@ -115,5 +115,30 @@ class User {
         $req = $db->prepare('DELETE FROM Seguaci WHERE IdUtente = :uid AND IdSeguace = :id');
         $req->execute(array('id' => $id, 'uid' => $uid));
     }
+    // modify an existing user
+    public static function alter($uid, $altuser) {
+        $uid = intval($uid);
+        $db = Db::getInstance();
+        if(isset($altuser['NewName'])) {
+            $req = $db->prepare('UPDATE Utenti SET Nome = :name WHERE IdUtente = :uid');
+            $req->execute(array('name' => $altuser['NewName'], 'uid' => $uid));
+        }
+        if(isset($altuser['NewSurname'])) {
+            $req = $db->prepare('UPDATE Utenti SET Cognome = :surname WHERE IdUtente = :uid');
+            $req->execute(array('surname' => $altuser['NewSurname'], 'uid' => $uid));
+        }
+        if(isset($altuser['NewMail'])) {
+            $req = $db->prepare('UPDATE Utenti SET Email = :mail WHERE IdUtente = :uid');
+            $req->execute(array('mail' => $altuser['NewMail'], 'uid' => $uid));
+        }
+        if(isset($altuser['NewUsername'])) {
+            $req = $db->prepare('UPDATE Login SET Username = :uname WHERE IdUtente = :uid');
+            $req->execute(array('uname' => $altuser['NewUsername'], 'uid' => $uid));
+        }
+        if(isset($altuser['NewPassword'])) {
+            $req = $db->prepare('UPDATE Login SET Password = :pwd WHERE IdUtente = :uid');
+            $req->execute(array('pwd' => $altuser['NewPassword'], 'uid' => $uid));
+        }
+    }
 }
 ?>

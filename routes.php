@@ -44,10 +44,10 @@ $controllers = array(
 	'pages' => array('home', 'error', 'login', 'checkuser', 'logout', 'registration', 'search'),
 	'songs' => array('index', 'show', 'addnew', 'addheard', 'addsong'),
 	'albums' => array('index', 'show', 'add', 'addalbum'),
-	'playlist' => array('index', 'show', 'newplaylist', 'swap', 'createplaylist'),
+	'playlist' => array('index', 'show', 'newplaylist', 'swap', 'createplaylist', 'manage'),
 	'collection' => array('index', 'show', 'addsong', 'remove'),
 	'queue' => array('index', 'addsong', 'swap'),
-	'user' => array('show', 'follow', 'unfollow', 'manage')
+	'user' => array('show', 'follow', 'unfollow', 'manage', 'alter')
 );
 if(array_key_exists($controller, $controllers)) {
 	if(in_array($action, $controllers[$controller])) {

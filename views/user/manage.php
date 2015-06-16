@@ -10,7 +10,7 @@
         <label for="NewUsername">Username</label>
         <input name="NewUsername" type="text" value="<?php echo $user->username(); ?>" id="NewUsername" />
         <label for="NewPassword">Password</label>
-        <input name="NewPassowrd" type="Password" value="" id="NewPassword" />
+        <input name="NewPassword" type="Password" value="" id="NewPassword" />
         <input type="submit" value="submit" />
     </fieldset>
 </form>

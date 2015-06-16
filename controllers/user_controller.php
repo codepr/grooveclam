@@ -47,5 +47,22 @@ class UserController {
             }
         }
     }
+    public function alter() {
+        if(!isset($_SESSION['logged'])) {
+            return call('pages', 'login');
+        } else {
+            if(!isset($_GET['id'])) {
+                return call('pages', 'error', 2);
+            } else {
+                try {
+                    $postdata = $_POST;
+                    User::alter($_GET['id'], $postdata);
+                    header("Location:/basidati/~abaldan/?controller=user&action=show&id=".$_GET['id']);
+                } catch(Exception $e) {
+                    echo $e->message();
+                }
+            }
+        }
+    }
 }
 ?>
