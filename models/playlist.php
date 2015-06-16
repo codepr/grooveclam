@@ -86,6 +86,13 @@ class Playlist {
         $req = $db->prepare('UPDATE Playlist SET Tipo = :type WHERE IdPlaylist = :idp');
         $req->execute(array("type" => $altplaylist['Private'], "idp" => $idp));
     }
+    // remove a playlist from DB
+    public static function remove($idp) {
+        $idp = intval($idp);
+        $db = Db::getInstance();
+        $req = $db->prepare("DELETE FROM Playlist WHERE IdPlaylist = :idp");
+        $req->execute(array("idp" => $idp));
+    }
 	// retrieve number of songs and total duration of a given playlist
 	public function stats($id) {
 		$stats = array();

@@ -78,7 +78,7 @@ class PagesController {
                 $results = "<table class='table'><thead><tr>";
                 switch($_POST['filter']) {
                     case 'user':
-                        $user = User::findByUsername($_POST['query']);
+                        $user = User::findByUsername(trim($_POST['query']));
                         $headers = array('Username', 'E-Mail', 'Name', 'Surname');
                         $q_res = array($user->email(), $user->name());
                         $results .= implode(array_map($mh, $headers));
@@ -88,7 +88,7 @@ class PagesController {
                         $results .= "</tr>";
                     break;
                     case 'song':
-                        $songs = Song::findByTitle($_POST['query']);
+                        $songs = Song::findByTitle(trim($_POST['query']));
                         $headers = array('Title', 'Genre', 'Duration', 'Author', 'Album');
                         $results .= implode(array_map($mh, $headers));
                         foreach($songs as $s) {
@@ -100,7 +100,7 @@ class PagesController {
                         }
                     break;
                     case 'album':
-                        $albums = Album::findByTitle($_POST['query']);
+                        $albums = Album::findByTitle(trim($_POST['query']));
                         $headers = array('Title', 'Author', 'Year', 'Duration', 'Live', 'Location');
                         $results .= implode(array_map($mh, $headers));
                         $l = $albums->live();

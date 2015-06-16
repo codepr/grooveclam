@@ -36,6 +36,7 @@
 		    <th># Tracks</th>
 		    <th>Duration (min)</th>
             <th>Domain</th>
+            <th></th>
 	    </tr>
     </thead>
     <tbody>
@@ -47,6 +48,7 @@
                 <td style="color: rgb(15, 89, 182); font-size:.9em;">
                     <?php echo $playlist->domain() == 'Pubblica' ? "Public" : "Private"; ?>
                 </td>
+                <td><a href="?controller=playlist&action=remove&id=<?php echo $playlist->id(); ?>">&#10008;</a></td>
 	        </tr>
         <?php } ?>
     </tbody>
