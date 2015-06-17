@@ -29,8 +29,7 @@ e popolare la propria collezione personale di brani.
 #+END_ABSTRACT
 * Analisi Dei Requisiti
 Si vuole realizzare una base di dati per la gestione di una libreria musicale
-condivisa e la relativa interfaccia web che permetta interazione tra gli
-utenti.\\
+e la relativa interfaccia web che permetta interazione tra gli utenti.\\
 Il cuore della libreria è formato da un insieme di album, ogni album è 
 identificato da un codice. E' inoltre formato da alcuni metadati (titolo, autore, 
 anno di pubblicazione), è specificato se si tratta di un album registrato in 
@@ -38,18 +37,20 @@ studio o una versione live e, in quest'ultimo caso, è possibile specificare la
 città in cui si è svolta la registrazione del concerto, può possedere inoltre 
 informazioni opzionali di carattere generale (critiche ricevute, recensioni o 
 breve storia sulla realizzazione dell'album). Infine ogni album può avere una 
-copertina, a cui fanno riferimento anche tutti i brani che contiene.\\ 
+copertina.\\ 
 Un album contiene più brani musicali. Ogni brano contenuto nell'album è
 identificato da un codice, ed è formato da alcuni metadati quali titolo,
 genere, durata.\\
-Degli utenti che possono accedere alla libreria, interessano l'indirizzo e-mail
+Degli utenti che possono accedere alla libreria, interessa sapere l'indirizzo e-mail
 e i dati anagrafici quali nome e cognome (opzionali). Ogni utente possiede una 
-login, formata da username e password.\\
+login, formata da username e password, interessa inoltre sapere la data di creazione
+dell'account.\\
 Gli utenti possono decidere di seguire altri utenti, eccetto se stessi. 
 Ogni utente ha la possibilità di creare una propria collezione di brani 
 preferiti selezionandoli tra quelli disponibili nella libreria, può creare una coda
 di riproduzione anonima, o creare delle playlist delle quali interessa sapere il nome. 
 Interessa inoltre sapere se si tratta di playlist pubbliche o private.\\
+Ogni utente può inoltre decidere di condividere le proprie playlist con altri utenti.
 All'interno della collezione i brani non possono ripetersi mentre nelle code di
 riproduzione o nelle playlist uno stesso brano può comparire più volte.
 All'atto di registrazione un utente può decidere se attivare un abbonamento
@@ -64,9 +65,11 @@ free o utilizzare un piano premium.
 - *Login:* Rappresenta delle credenziali d'accesso per un utente.
   - Username: /String/ =<<PK>>=
   - Password: /String/
-  - Amministratore: /Boolean/
+  - DataCreazione: /Date/
 - *Iscrizioni:* Modella un piano di iscrizione.
-  - Tipo: /Enum/ ['Free', 'Premium']
+  Sono definite le seguenti sottoclassi disgiunte con vincolo di partizionamento.
+  - *Free:* Rappresenta un abbonamento free.
+  - *Premium:* Rappresenta un abbondamento premium.
 - *Brani:* Rappresenta un brano musicale.
   - IdBrano: /Int/ =<<PK>>=
   - Titolo: /String/
@@ -148,13 +151,14 @@ Tutte le gerarchie presenti nella progettazione concettuale sono state risolte m
 nessuna di esse possedeva sottoclassi con un numero significativo di attributi o associazioni entranti da giustificarne un partizionamento
 di qualche genere.
 ** Chiavi Primarie
-Sono state create alcune chiavi primarie per identificare le istanze di alcune tabelle, quali /IdPlaylist/ a *Playlist*. 
+Sono state create alcune chiavi primarie per identificare le istanze di alcune tabelle, quali /IdPlaylist/ a *Playlist* 
+e /IdAbbonamento/ per la classe *Iscrizioni*.
 ** Schema Relazionale
 Sono state create le  tabelle *BraniCollezione* e *BraniPlaylist* per rappresentare le relazioni N:N tra *Brani-Collezioni* e tra
 *Brani-Playlist*. Inoltre per lo stesso motivo sono state create *Ascoltate* e *Code* tra *Utenti-Brani*.\\\\
 *Utenti* (IdUtente, Nome*, Cognome*, EMail)
 - PK(IdUtente)
-*Login* (Username, Password, Amministratore, IdUtente)
+*Login* (Username, Password, DataCreazione, IdUtente)
 - PK(Username)
 - IdUtente FK(Utenti)
 *Iscrizioni* (IdUtente, Tipo)
@@ -571,6 +575,8 @@ Di seguito i trigger creati. Sono trigger tipicamente di controllo.
 - ~insertAutoSongNumber:~ Trigger di aggiornamento, dopo l'inserimento nella tabella ~Brani~ aumenta di 1 il contatore ~NBrani~ all'interno della tabella ~Album~ sul record associato al brano inserito.
 - ~updateAutoSongNumber:~ Trigger di controllo, come sopra ma cattura l'evento ~UPDATE~, e si occupa di decrementare il contatore del vecchio album a cui il brano era associato.
 - ~checkCollectionSize:~ Trigger di controllo, prima dell'inserimento nella tabella ~Brani~ controlla il tipo di iscrizione dell'utente che intende eseguire l'inserimento, e, nel caso si tratti di un utente "Free" genera un errore e impedisce l'inserimento.
+- ~checkSharedFellows:~ Trigger di controlllo sull'inserimento nella tabella ~Condivise~, prima dell'inserimento controlla che l'utente proprietario della playlist stia già seguendo l'utente con cui intende condividere la playlist. 
+- ~checkSharedFellows:~ Trigger di controllo, come sopra ma cattura l'update.
 - ~errorTrigger:~ Trigger di supporto, utilizzato per simulare un sistema di segnalazione errori, esegue un ~SET NEW = NEW.errore;~ che genera un messaggio in quanto ~NEW~ non puo essere manipolato e visualizza il messaggio passato alla procedura ~RAISE_ERROR~.
 #+BEGIN_LaTeX
 \begin{lstlisting}[language=SQL]
@@ -583,6 +589,9 @@ DROP TRIGGER IF EXISTS insertAutoAdminSubs;
 DROP TRIGGER IF EXISTS updateAutoAdminSubs;
 DROP TRIGGER IF EXISTS insertAutoSongNumber;
 DROP TRIGGER IF EXISTS updateAutoSongNumber;
+DROP TRIGGER IF EXISTS checkCollectionSize;
+DROP TRIGGER IF EXISTS checkSharedFellows;
+DROP TRIGGER IF EXISTS checkSharedFellowsUpdate;
 
 DELIMITER $$
 
@@ -718,6 +727,44 @@ BEGIN
     WHERE l.IdUtente = idUser;
     IF(numSong = 50 && subType = 'Free') THEN
         CALL RAISE_ERROR('Maximum limit for collected songs reached for a free subscription account.');
+    END IF;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER checkSharedFellows
+BEFORE INSERT ON `Condivise`
+FOR EACH ROW
+BEGIN
+    DECLARE IdF INT DEFAULT -1;
+    DECLARE IdU INT DEFAULT -1;
+    SELECT IdUtente INTO IdU
+    FROM Playlist WHERE IdPlaylist = NEW.IdPlaylist;
+    SELECT IdSeguace INTO IdF
+    FROM Seguaci WHERE IdSeguace = NEW.IdUtente AND IdUtente = IdU;
+    IF(IdF = -1) THEN
+        CALL RAISE_ERROR('You cannot share playlist with people you dont follow.');
+    END IF;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER checkSharedFellowsUpdate
+BEFORE UPDATE ON `Condivise`
+FOR EACH ROW
+BEGIN
+    DECLARE IdF INT DEFAULT -1;
+    DECLARE IdU INT DEFAULT -1;
+    SELECT IdUtente INTO IdU
+    FROM Playlist WHERE IdPlaylist = NEW.IdPlaylist;
+    SELECT IdSeguace INTO IdF
+    FROM Seguaci WHERE IdSeguace = NEW.IdUtente AND IdUtente = IdU;
+    IF(IdF = -1) THEN
+        CALL RAISE_ERROR('You cannot share playlist with people you dont follow.');
     END IF;
 END $$
 

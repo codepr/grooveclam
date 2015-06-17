@@ -2,10 +2,11 @@ DROP TRIGGER IF EXISTS checkDuration;
 DROP TRIGGER IF EXISTS errorTrigger;
 DROP TRIGGER IF EXISTS checkFollower;
 DROP TRIGGER IF EXISTS insertAutoCollection;
-/*DROP TRIGGER IF EXISTS cleanUp*/
 DROP TRIGGER IF EXISTS insertAutoSongNumber;
 DROP TRIGGER IF EXISTS updateAutoSongNumber;
 DROP TRIGGER IF EXISTS checkCollectionSize;
+DROP TRIGGER IF EXISTS checkSharedFellows;
+DROP TRIGGER IF EXISTS checkSharedFellowsUpdate;
 
 DELIMITER $$
 
@@ -73,6 +74,36 @@ BEGIN
     WHERE l.IdUtente = idUser;
     IF(numSong = 50 && subType = 'Free') THEN
         CALL RAISE_ERROR('Maximum limit for collected songs reached for a free subscription account.');
+    END IF;
+END $$
+
+CREATE TRIGGER checkSharedFellows
+BEFORE INSERT ON `Condivise`
+FOR EACH ROW
+BEGIN
+    DECLARE IdF INT DEFAULT -1;
+    DECLARE IdU INT DEFAULT -1;
+    SELECT IdUtente INTO IdU
+    FROM Playlist WHERE IdPlaylist = NEW.IdPlaylist;
+    SELECT IdSeguace INTO IdF
+    FROM Seguaci WHERE IdSeguace = NEW.IdUtente AND IdUtente = IdU;
+    IF(IdF = -1) THEN
+        CALL RAISE_ERROR('You cannot share playlist with people you dont follow.');
+    END IF;
+END $$
+
+CREATE TRIGGER checkSharedFellowsUpdate
+BEFORE UPDATE ON `Condivise`
+FOR EACH ROW
+BEGIN
+    DECLARE IdF INT DEFAULT -1;
+    DECLARE IdU INT DEFAULT -1;
+    SELECT IdUtente INTO IdU
+    FROM Playlist WHERE IdPlaylist = NEW.IdPlaylist;
+    SELECT IdSeguace INTO IdF
+    FROM Seguaci WHERE IdSeguace = NEW.IdUtente AND IdUtente = IdU;
+    IF(IdF = -1) THEN
+        CALL RAISE_ERROR('You cannot share playlist with people you dont follow.');
     END IF;
 END $$
 
