@@ -67,7 +67,7 @@ free o utilizzare un piano premium.
   - Amministratore: /Boolean/
 - *Iscrizioni:* Modella un piano di iscrizione.
   - Tipo: /Enum/ ['Free', 'Premium']
-- *Brani:* Rappresenta un brano.
+- *Brani:* Rappresenta un brano musicale.
   - IdBrano: /Int/ =<<PK>>=
   - Titolo: /String/
   - Genere: /String/
@@ -90,7 +90,7 @@ free o utilizzare un piano premium.
 - *Collezioni:* Rappresenta una collezione di brani preferiti dall'utente.
   - IdCollezione: /Int/ =<<PK>>=
 ** Associazioni
-- *Utenti-Login:* "Posside"
+- *Utenti-Login:* "Possiede"
   - Ogni utente possiede una login, ogni login e' posseduta da un utente.
   - Molteplicità 1 : 1
   - Totale verso *Utenti*, totale verso *Login*.
@@ -114,10 +114,14 @@ free o utilizzare un piano premium.
   - Ogni utente può seguire zero o più utenti, ogni utente può essere seguito da zero o più utenti.
   - Molteplicità N : N
   - Parziale verso entrambi.
-- *Utenti-Playlist*: "Crea"
+- *Utenti-Playlist:* "Crea"
   - Ogni utente può creare zero o più playlist, ogni playlist può essere creata da un solo utente.
   - Molteplicità N : 1
   - Parziale verso *Utenti*, totale verso *Playlist*.
+- *Playlist-Utente:* "Condivide"
+  - Ogni playlist può essere condivisa con zero o più, ogni utente può condividere zero o più playlist.
+  - Molteplicità N : N
+  - Parziale verso *Playlist*, parziale verso *Utenti*.
 - *Utenti-Iscrizioni:* "Iscritto"
   - Ogni utente può avere una sola iscrizione, ogni iscrizione può essere associata ad un solo utente.
   - Molteplicità 1 : 1
@@ -179,6 +183,10 @@ Sono state create le  tabelle *BraniCollezione* e *BraniPlaylist* per rappresent
 - PK(IdPlaylist, IdBrano)
 - IdPlaylist FK(Playlist)
 - IdBrano FK(Brani)
+*Condivise* (IdPlaylist, IdUtente)
+- PK(IdPlaylist, IdUtente)
+- IdPlaylist FK(Playlist)
+- IdUtente FK(IdUtente)
 *Ascoltate* (IdUtente, IdBrano, Timestamp)
 - PK(IdUtente, IdBrano)
 - IdUtente FK(Utenti)
@@ -187,6 +195,15 @@ Sono state create le  tabelle *BraniCollezione* e *BraniPlaylist* per rappresent
 - PK(IdUtente, IdBrano)
 - IdUtente FK(Utenti)
 - IdBrano FK(Brani)
+*** Note
+Nel passaggio dalla progettazione concettuale alla progettazione logica, in fase di ristrutturazione ho deciso di creare una tabella *Code*
+per rappresentare la relazione *Accoda*, la cui implementazione fisica portera' alla creazione di una tabella molto simile alla tabella di
+giunzione che verra' a formarsi tra *Playlist* e *Brani*.\\
+Si sono presentate 2 alternative:
+- Inserire mediante un trigger una playlist "standard" nominata ~CodaRiproduzione~ ogni volta che viene inserito un nuovo utente, la quale conterra' la coda di riproduzione
+  dell'utente in questione.
+- Creare una tabella apposita per la gestione delle code di riproduzione.
+Ho infine optato per la seconda soluzione, cosi' da mantenere una separazione dei concetti ed evitare eventuali ridondanze, e maggiore chiarezza .
 ** Analisi Ridondanze
 Nella tabella *Album* vi è la possibilità di inserire un attributo ridondante (nBrani) al fine
 di diminuire il carico di lavoro della BD. Per valutare la convenienza o meno della scelta
@@ -273,11 +290,18 @@ Quindi circa 200 album caricati e 1600 brani.
   - Nuova tabella *Seguaci*, attributi:
     - IdUtente: /Int/ =<<PK>> <<FK(Utenti)>>=
     - IdSeguace: /Int/ =<<PK>> <<FK(Utenti)>>=
-- *Utenti-Playlist*: "Crea"
+- *Utenti-Playlist:* "Crea"
   - Ogni utente può creare zero o più playlist, ogni playlist può essere creata da un solo utente.
   - Molteplicità N : 1
   - Parziale verso *Utenti*, totale verso *Playlist*.
   - Chiave esterna non-nulla in *Playlist* verso *Utenti*.
+- *Playlist-Utenti:* "Condivisa"
+  - Ogni playlist può essere condivisa con zero o più, ogni utente può condividere zero o più playlist.
+  - Molteplicità N : N
+  - Parziale verso *Playlist*, parziale verso *Utenti*.
+  - Nuova tabella *Condivise*, attributi:
+    - IdPlaylist: /Int/ =<<PK>> <<FK(Playlist)>>=
+    - IdUtente: /Int/ =<<PK>> <<FK(Utenti)>>=
 - *Utenti-Iscrizioni:* "Iscritto"
   - Ogni utente può avere una sola iscrizione, ogni iscrizione può essere associata ad un solo utente.
   - Molteplicità 1 : 1

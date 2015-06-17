@@ -45,7 +45,7 @@ echo '<h3>Hello there '.$first_name.'</h3>';
     </table>
 <?php } ?>
 <!-- table last 10 played by followers -->
-<?php if(!empty($lastfellowplay)) { ?>
+<?php if(!empty($lastfellowsplay)) { ?>
     <table class="table floated" style="width:45%;">
 	    <caption>Last played by fellows</caption>
 	    <thead>
