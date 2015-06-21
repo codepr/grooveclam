@@ -87,7 +87,7 @@ BEGIN
     FROM Playlist WHERE IdPlaylist = NEW.IdPlaylist;
     SELECT IdSeguace INTO IdF
     FROM Seguaci WHERE IdSeguace = NEW.IdUtente AND IdUtente = IdU;
-    IF(IdF = -1) THEN
+    IF(IdF = -1 AND NEW.IdUtente <> IdU) THEN
         CALL RAISE_ERROR('You cannot share playlist with people you dont follow.');
     END IF;
 END $$
@@ -102,7 +102,7 @@ BEGIN
     FROM Playlist WHERE IdPlaylist = NEW.IdPlaylist;
     SELECT IdSeguace INTO IdF
     FROM Seguaci WHERE IdSeguace = NEW.IdUtente AND IdUtente = IdU;
-    IF(IdF = -1) THEN
+    IF(IdF = -1 AND NEW.IdUtente <> IdU) THEN
         CALL RAISE_ERROR('You cannot share playlist with people you dont follow.');
     END IF;
 END $$

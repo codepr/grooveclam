@@ -11,7 +11,7 @@ class AlbumController {
 		}
 		$album = Album::find($_GET['id']);
         $ida = $album->id();
-        if(empty($ida)) {
+        if($ida === null) {
             return call('pages', 'error', 1);
         } else {
 		    require_once('views/albums/show.php');

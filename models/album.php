@@ -104,8 +104,12 @@ class Album {
         );
 		$live;
 		$songs = array();
+        $alb = 0;
 		$id = intval($id);
 		$db = Db::getInstance();
+        $req = $db->prepare('SELECT * FROM Album WHERE IdAlbum = :id');
+        $req->execute(array('id' => $id));
+        $alb = $req->fetch();
 		$req = $db->prepare('SELECT a.IdAlbum, a.Live, a.Locazione, a.Info, a.Anno, a.PathCopertina, a.Titolo as AlbumTitle, a.Autore, b.* FROM Album a INNER JOIN Brani b ON(a.IdAlbum = b.IdAlbum) WHERE a.IdAlbum = :id');
 		$req->execute(array('id' => $id));
 		foreach($req->fetchAll() as $song) {
@@ -122,7 +126,7 @@ class Album {
 		} else {
 			$live = false;
 		}
-		return new Album($song['IdAlbum'], $song['AlbumTitle'], $song['Autore'], $song['Info'], $song['Anno'], $live, $songs, $song['PathCopertina']);
+		return new Album($id, $alb['Titolo'], $alb['Autore'], $alb['Info'], $alb['Anno'], $live, $songs, $alb['PathCopertina']);
 	}
     // retrieve a [list of] album by a given title
     public static function findByTitle($title) {

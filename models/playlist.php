@@ -123,14 +123,18 @@ class Playlist {
 	public static function find($id) {
 		$songlist = array();
 		$song = 0;
+        $playlist = 0;
 		$db = Db::getInstance();
 		$id = intval($id);
+        $req = $db->prepare('SELECT * FROM Playlist WHERE IdPlaylist = :id');
+        $req->execute(array('id' => $id));
+        $playlist = $req->fetch();
 		$req = $db->prepare('SELECT pl.IdPlaylist, pl.Nome, pl.Tipo, p.Posizione, b.*, a.Autore, a.Titolo as AlbumTitle FROM Brani b INNER JOIN BraniPlaylist p ON(b.IdBrano = p.IdBrano) INNER JOIN Playlist pl ON(pl.IdPlaylist = p.IdPlaylist) INNER JOIN Album a ON(b.IdAlbum = a.IdAlbum) WHERE pl.IdPlaylist = :id ORDER BY p.Posizione');
 		$req->execute(array('id' => $id));
 		foreach($req->fetchAll() as $song) {
 			$songlist[$song['Posizione']] = new Song($song['IdBrano'], $song['Titolo'], $song['Genere'], $song['Durata'], $song['Autore'], $song['IdAlbum'], $song['AlbumTitle']);
 		}
-		return new Playlist($song['IdPlaylist'], $song['Nome'], array(), $songlist, $song['Tipo']);
+		return new Playlist($id, $playlist['Nome'], array(), $songlist, $playlist['Tipo']);
 	}
     // retrieve all personal playlist by a given userID
     public static function personal_playlist($id) {

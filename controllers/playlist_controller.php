@@ -14,7 +14,7 @@ class PlaylistController {
 			$playlist = Playlist::find($_GET['id']);
             $shared_fellows = Playlist::shared_fellows($_GET['id']);
             $p = $playlist->id();
-            if(empty($p)) {
+            if($playlist === null) {
                 return call('pages', 'error', 1);
             } else {
                 if($playlist->domain() == 'Privata') {
