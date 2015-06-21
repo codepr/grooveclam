@@ -1,5 +1,5 @@
 <h3>Registration</h3>
-<form action='/?controller=pages&action=register' method='post' class='loginform'>
+<form action='?controller=pages&action=register' method='post' class='loginform'>
 	<fieldset>
 		<label for="Name">Name</label>
 		<input type="text" id="Name" name="Name" placeholder="Name">

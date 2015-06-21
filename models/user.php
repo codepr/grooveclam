@@ -102,6 +102,14 @@ class User {
 			'surname' => $data['Surname'],
 			'email' => $data['Email']
 		));
+        $today = date("Y-m-d H:i:s");
+        $req = $db->prepare('INSERT INTO Login (IdUtente, Username, Password, DataCreazione) VALUES(:id, :uname, :pass, :cdate)');
+        $req->execute(array(
+            'id' => $db->lastInsertId(),
+            'uname' => $data['Username'],
+            'pass' => md5($data['Password']),
+            'cdate' => $today
+        ));
 	}
     // follow an User
     public static function follow($id, $uid) {

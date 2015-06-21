@@ -49,7 +49,7 @@ footer { position: fixed; bottom: 5px; right: 5px; color: rgb(15, 89, 182); font
 	border-radius: 3px; border: 1px solid rgb(15, 89, 182); background-color: rgb(15, 89, 182);
 	padding: 5px; outline: none; margin: 8px 0px; color: #ffffff; width: 85px;
 }
-.regbutton a { color: #ffffff; }
+a.regbutton { text-decoration: none; padding: 5px 20px; color: #ffffff; font-size: .85em; }
 caption { color: rgb(15, 89, 182); font-weight: 700; }
 .addstuff {	width:1.7%; margin-top: 10px; }
 .addstuff-circle {

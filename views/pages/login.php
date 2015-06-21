@@ -5,6 +5,6 @@
 		<label for="passw">Password</label>
 		<input type="password" id="passw" name="passw" placeholder="Password">
 		<input type="submit" value="Sign in">
-		<button class="regbutton"><a href="/basidati/~abaldan/?controller=pages&action=registration">Register</a></button>
+		<a href="/basidati/~abaldan/?controller=pages&action=registration" class="regbutton" >Register</a>
 	</fieldset>
 </form>

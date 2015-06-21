@@ -41,9 +41,9 @@ function call($controller, $action, $code = 0) {
 }
 // array containing all action for every controller
 $controllers = array(
-	'pages' => array('home', 'error', 'login', 'checkuser', 'logout', 'registration', 'search'),
-	'songs' => array('index', 'show', 'addnew', 'addheard', 'addsong'),
-	'albums' => array('index', 'show', 'add', 'addalbum'),
+	'pages' => array('home', 'error', 'login', 'checkuser', 'logout', 'registration', 'search', 'register'),
+	'songs' => array('index', 'show', 'addheard'),
+	'albums' => array('index', 'show'),
 	'playlist' => array('index', 'show', 'newplaylist', 'swap', 'createplaylist', 'manage', 'alter', 'remove'),
 	'collection' => array('index', 'show', 'addsong', 'remove'),
 	'queue' => array('index', 'addsong', 'swap', 'remove'),

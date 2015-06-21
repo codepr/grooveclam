@@ -61,19 +61,6 @@ class Album {
 		}
 		return floor($seconds / 60).":".sprintf("%02d",$seconds % 60);
 	}
-	// add a new album to the database
-	public static function add($album) {
-		$db = Db::getInstance();
-		$req = $db->prepare('INSERT INTO Album (Titolo, Info, Autore, Anno, Live, Locazione, PathCopertina) VALUES(:Title, :Info, :Author, :Year, :Live, :Location, :CoverPath)');
-		$req->execute(array(
-			'Title' => $album['Title'],
-			'Info' => $album['Info'],
-			'Author' => $album['Year'],
-			'Live' => $album['Live'],
-			'Location' => $album['Location'],
-            'CoverPath' => $album['CoverPath']
-		));
-	}
 	// retrieve all albums from the database
 	public static function all() {
 		$list = array();
@@ -159,24 +146,6 @@ class Album {
 			$live = false;
 		}
 		return new Album($song['IdAlbum'], $song['AlbumTitle'], $song['Autore'], $song['Info'], $song['Anno'], $live, $songs, $song['PathCopertina']);
-    }
-    // add a new album into the database
-    public static function addalbum($newalbum) {
-        $db = Db::getInstance();
-        $req = $db->prepare('INSERT INTO Album VALUES(:Title, :Author, :Live, :Location)');
-        $req->execute(array(
-                'Title' => $newalbum['Title'],
-                'Author' => $newalbum['Author'],
-                'Live' => $newalbum['Live'],
-                'Location' => $newalbum['Location']
-            ));
-    }
-    // delete an entire album from database, including all his songs
-    public static function drop($id) {
-        $id = intval($id);
-        $db = Db::getInstance();
-        $req = $db->prepare('DELETE FROM Album WHERE IdAlbum = :id');
-        $req->execute(array('id' => $id));
     }
 }
 ?>

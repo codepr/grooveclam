@@ -54,20 +54,6 @@ class Song {
 		$p = $req->fetch();
 		return $p['PathCopertina'];
 	}
-	// add a song to the database
-	public static function add($song) {
-        $duration = split('[:.]', $song['Duration']);
-        $duration = ($duration[0] * 60) + $duration[1];
-		$db = Db::getInstance();
-		$req = $db->prepare('INSERT INTO Brani (IdAlbum, Titolo, Genere, Durata) VALUES (:IdAlbum, :Title, :Genre, :Duration)');
-		$req->execute(array(
-			'IdAlbum' => $song['IdAlbum'],
-			'Title' => $song['Title'],
-			'Genre' => $song['Genre'],
-			'Duration' => $duration,
-			)
-		);
-	}
 	// retrieve all songs from the database
 	public static function all() {
 		$list = array();
@@ -168,13 +154,6 @@ class Song {
         $db = Db::getInstance();
         $req = $db->prepare('INSERT INTO Ascoltate (`IdUtente`, `IdBrano`, `Timestamp`) VALUES(:uid, :id, NOW())');
         $req->execute(array('id' => $id, 'uid' => $uid));
-    }
-    // delete a song from database
-    public static function drop($id) {
-        $id = intval($id);
-        $db = Db::getInstance();
-        $req = $db->prepare('DELETE FROM Brani WHERE IdBrano = :id');
-        $req->execute(array('id' => $id));
     }
 }
 ?>

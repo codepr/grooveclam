@@ -38,6 +38,11 @@
             <?php if('/basidati/~abaldan/' == $_SERVER['REQUEST_URI']) { ?>
                 <a href="/basidati/~abaldan/?controller=pages&action=search"><button class="exit" style="padding: 2px 10px 3px 10px;"><div style="float:left;-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);-o-transform: rotate(45deg); transform: rotate(45 deg); margin-right:5px;">&#9906;</div> Search</button></a>
             <?php } ?>
+            <?php if(!isset($_SESSION['logged'])) {
+                if(preg_match('/\/\?controller=pages&action=registration/i', $_SERVER['REQUEST_URI'])) {
+                    echo "<a href='/basidati/~abaldan/'><button class='exit'>&larr; back to home</button></a>";
+                }
+            }?>
 		    <?php if(isset($_SESSION['logged'])) { ?>
                 <?php if(preg_match('/\/\?controller=user&action=show/i', $_SERVER['REQUEST_URI'])) { ?>
                     <a href="/basidati/~abaldan/"><button class="exit">&larr; back to home</button></a>
