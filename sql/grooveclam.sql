@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS `Album`;
 DROP TABLE IF EXISTS `Brani`;
 DROP TABLE IF EXISTS `Utenti`;
 DROP TABLE IF EXISTS `Seguaci`;
-DROP TABLE IF EXISTS `Iscrizioni`;
+DROP TABLE IF EXISTS `Abbonamenti`;
 DROP TABLE IF EXISTS `Collezioni`;
 DROP TABLE IF EXISTS `BraniCollezione`;
 DROP TABLE IF EXISTS `Playlist`;
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `Album` (
 	`Titolo` VARCHAR(200) NOT NULL,
 	`Autore` VARCHAR(200) NOT NULL,
 	`Info` VARCHAR(300) DEFAULT NULL,
-    `NBrani` INT(11) NOT NULL,
+    `NBrani` TINYINT NOT NULL,
 	`Anno` YEAR DEFAULT NULL,
 	`Live` BOOLEAN DEFAULT FALSE,
 	`Locazione` VARCHAR(100) DEFAULT NULL,
@@ -68,8 +68,8 @@ CREATE TABLE IF NOT EXISTS `Seguaci` (
 	FOREIGN KEY(`IdSeguace`) REFERENCES Utenti(`IdUtente`) ON DELETE CASCADE ON UPDATE CASCADE,
 	CHECK(`IdUtente` != `IdSeguace`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
--- Table Iscrizioni
-CREATE TABLE IF NOT EXISTS `Iscrizioni` (
+-- Table Abbonamenti
+CREATE TABLE IF NOT EXISTS `Abbonamenti` (
 	`IdUtente` INT(10) NOT NULL,
 	`Tipo` ENUM('Free', 'Premium') NOT NULL,
 	PRIMARY KEY(`IdUtente`),

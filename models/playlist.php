@@ -41,6 +41,8 @@ class Playlist {
         $add = $db->prepare('INSERT INTO Playlist (IdUtente, Nome, Tipo) VALUES(:idUser, :Name, :Type)');
         if(!isset($newplaylist['Private'])) {
             $newplaylist['Private'] = 'Pubblica';
+        } else {
+            $newplaylist['Private'] = 'Private';
         }
         $add->execute(array('idUser' => $newplaylist['uid'], 'Name' => $newplaylist['Name'], 'Type' => $newplaylist['Private']));
         $idp = $db->lastInsertId();
@@ -82,7 +84,9 @@ class Playlist {
         }
         if(!isset($altplaylist['Private'])) {
             $altplaylist['Private'] = 'Pubblica';
-        } 
+        } else {
+            $altplaylist['Private'] = 'Privata';
+        }
         $req = $db->prepare('UPDATE Playlist SET Tipo = :type WHERE IdPlaylist = :idp');
         $req->execute(array("type" => $altplaylist['Private'], "idp" => $idp));
     }

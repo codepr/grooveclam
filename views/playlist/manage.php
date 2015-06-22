@@ -6,7 +6,7 @@
         <label>Song list</label>
         <fieldset class="list">
             <?php
-            foreach($collection->songs() as $song) {
+            foreach($songlist as $song) {
                 $checked = '';
                 if(in_array($song, $playlist->songs())) {
                     $checked = 'checked';
@@ -21,7 +21,7 @@
             $chk = "checked";
         }
         ?>
-        <input type="checkbox" name="Private" value="Private" <?php echo $chk; ?>> Private
+        <input type="checkbox" name="Private" id="Private" value="Privata" <?php echo $chk; ?>> Private
         <br />
         <input type="hidden" name="idpl" id="idpl" value="<?php echo $_GET['id']; ?>" />
         <input type="submit" value="submit" />

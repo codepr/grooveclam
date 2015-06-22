@@ -36,6 +36,17 @@ class User {
 	public function username() {
 		return $this->username;
 	}
+
+    public function password() {
+        return $this->password;
+    }
+
+    public function subscription() {
+        $db = Db::getInstance();
+        $req = $db->query('SELECT Tipo FROM Abbonamenti WHERE IdUtente = ' . $this->id());
+        $res = $req->fetch();
+        return $res['Tipo'];
+    }
 	// check if the user exists and return it by given credentials
 	public static function checkuser($uname, $passw) {
 		$db = Db::getInstance();
@@ -104,12 +115,17 @@ class User {
 		));
         $today = date("Y-m-d H:i:s");
         $req = $db->prepare('INSERT INTO Login (IdUtente, Username, Password, DataCreazione) VALUES(:id, :uname, :pass, :cdate)');
+        $lastInsert = $db->lastInsertId();
         $req->execute(array(
-            'id' => $db->lastInsertId(),
+            'id' => $lastInsert,
             'uname' => $data['Username'],
             'pass' => md5($data['Password']),
             'cdate' => $today
         ));
+        if(isset($data['Subscription'])) {
+            $req = $db->prepare('UPDATE Abbonamenti SET Tipo = :sub WHERE IdUtente = :id');
+            $req->execute(array('id' => $lastInsert, 'sub' => $data['Subscription']));
+        }
 	}
     // follow an User
     public static function follow($id, $uid) {
@@ -147,7 +163,14 @@ class User {
         }
         if(isset($altuser['NewPassword'])) {
             $req = $db->prepare('UPDATE Login SET Password = :pwd WHERE IdUtente = :uid');
-            $req->execute(array('pwd' => $altuser['NewPassword'], 'uid' => $uid));
+            $req->execute(array('pwd' => md5($altuser['NewPassword']), 'uid' => $uid));
+        }
+        if(!isset($altuser['Subscription'])) {
+            $req = $db->prepare('UPDATE Abbonamenti SET Tipo = "Free" WHERE IdUtente = :uid');
+            $req->execute(array('uid' => $uid));
+        } else {
+            $req = $db->prepare('UPDATE Abbonamenti SET Tipo = "Premium" WHERE IdUtente = :uid');
+            $req->execute(array("uid" => $uid));
         }
     }
 }

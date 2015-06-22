@@ -20,7 +20,7 @@ function call($controller, $action, $code = 0) {
 		break;
 		case 'playlist':
 			require_once('models/playlist.php');
-            require_once('models/collection.php');
+            require_once('models/song.php');
             require_once('models/user.php');
 			$controller = new PlayListController();
 		break;
@@ -45,7 +45,7 @@ $controllers = array(
 	'songs' => array('index', 'show', 'addheard'),
 	'albums' => array('index', 'show'),
 	'playlist' => array('index', 'show', 'newplaylist', 'swap', 'createplaylist', 'manage', 'alter', 'remove'),
-	'collection' => array('index', 'show', 'addsong', 'remove'),
+	'collection' => array('show', 'addsong', 'remove'),
 	'queue' => array('index', 'addsong', 'swap', 'remove'),
 	'user' => array('show', 'follow', 'unfollow', 'manage', 'alter')
 );

@@ -59,7 +59,7 @@ class UserController {
                     User::alter($_GET['id'], $postdata);
                     header("Location:/basidati/~abaldan/?controller=user&action=show&id=".$_GET['id']);
                 } catch(Exception $e) {
-                    echo $e->message();
+                    return call('pages', 'error', 2);
                 }
             }
         }

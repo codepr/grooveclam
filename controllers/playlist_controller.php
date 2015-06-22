@@ -17,8 +17,8 @@ class PlaylistController {
             if($playlist === null) {
                 return call('pages', 'error', 1);
             } else {
-                if($playlist->domain() == 'Privata') {
-                    return call('pages', 'error', 3);
+                if($playlist->domain() == 'Privata' && !$playlist->is_mine()) {
+                    return call('pages', 'error', 1);
                 } else {
                     require_once('views/playlist/show.php');
                 }
@@ -29,7 +29,7 @@ class PlaylistController {
         if(!isset($_SESSION['logged'])) {
             return call('pages', 'login');
         } else {
-            $collection = Collection::findbyid($_SESSION['uid']);
+            $songlist = Song::all();
             $user = User::find($_SESSION['uid']);
             require_once('views/playlist/newplaylist.php');
         }
@@ -55,7 +55,7 @@ class PlaylistController {
             if(!isset($_GET['id'])) {
                 return call('pages', 'error', 2);
             } else {
-                $collection = Collection::findbyid($_SESSION['uid']);
+                $songlist = Song::all();
                 $playlist = Playlist::find($_GET['id']);
                 require_once('views/playlist/manage.php');
             }

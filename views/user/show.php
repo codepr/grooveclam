@@ -8,6 +8,8 @@
     <dd><?php echo $user->surname(); ?></dd>
     <dt>E-mail</dt>
     <dd><?php echo $user->email(); ?></dd>
+    <dt>Subscription</dt>
+    <dd><?php echo $user->subscription(); ?>
     <dt>Following</dt>
     <dd><?php echo count($fellows); ?></dd>
 </dl>

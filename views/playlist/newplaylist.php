@@ -6,7 +6,7 @@
         <label>Song list</label>
         <fieldset class="list">
             <?php
-            foreach($collection->songs() as $song) {
+            foreach($songlist as $song) {
                 echo "<input type='checkbox' class='list' name='song[]' value='".$song->id()."'> ".$song->title()." - " .$song->author()." - ".floor($song->duration() / 60).":".($song->duration() % 60)." min<br />";
             }
             ?>
@@ -22,7 +22,7 @@
             }
             ?>
         </fieldset>
-        <input type="checkbox" name="Private" value="Private"> Private
+        <input type="checkbox" name="Private" id="Private" value="Privata"> Private
         <br />
         <input type="submit" value="submit" >
     </fieldset>

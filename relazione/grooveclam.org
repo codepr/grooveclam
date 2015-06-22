@@ -30,7 +30,7 @@ e popolare la propria collezione personale di brani.
 * Analisi Dei Requisiti
 Si vuole realizzare una base di dati per la gestione di una libreria musicale
 e la relativa interfaccia web che permetta interazione tra gli utenti.\\
-Il cuore della libreria è formato da un insieme di album, ogni album è 
+Il cuore della libreria è rappresentato da un insieme di album, ogni album è 
 identificato da un codice. E' inoltre formato da alcuni metadati (titolo, autore, 
 anno di pubblicazione), è specificato se si tratta di un album registrato in 
 studio o una versione live e, in quest'ultimo caso, è possibile specificare la 
@@ -48,7 +48,9 @@ dell'account.\\
 Gli utenti possono decidere di seguire altri utenti, eccetto se stessi. 
 Ogni utente ha la possibilità di creare una propria collezione di brani 
 preferiti selezionandoli tra quelli disponibili nella libreria, può creare una coda
-di riproduzione anonima, o creare delle playlist delle quali interessa sapere il nome. 
+di riproduzione anonima con un preciso ordine di riproduzione, o creare delle playlist 
+delle quali interessa sapere il nome, anch'esse rispettano uno specifico ordine di 
+riproduzione. 
 Interessa inoltre sapere se si tratta di playlist pubbliche o private.\\
 Ogni utente può inoltre decidere di condividere le proprie playlist con altri utenti.
 All'interno della collezione i brani non possono ripetersi mentre nelle code di
@@ -57,16 +59,16 @@ All'atto di registrazione un utente può decidere se attivare un abbonamento
 free o utilizzare un piano premium.
 * Progettazione concettuale
 ** Classi
-- *Utenti:* Rappresenta un utente del servizio.
+- *Utenti:* Rappresenta un utente usufruitore del servizio.
   - IdUtente: /Int/ =<<PK>>=
   - Nome: /String/
   - Cognome: /String/
   - Email: /String/
-- *Login:* Rappresenta delle credenziali d'accesso per un utente.
+- *Login:* Rappresenta le credenziali d'accesso per un utente usufruitore.
   - Username: /String/ =<<PK>>=
   - Password: /String/
   - DataCreazione: /Date/
-- *Iscrizioni:* Modella un piano di iscrizione.
+- *Abbonamenti:* Modella un piano di abbonamento per registrarsi alla piattaforma.
   Sono definite le seguenti sottoclassi disgiunte con vincolo di partizionamento.
   - *Free:* Rappresenta un abbonamento free.
   - *Premium:* Rappresenta un abbondamento premium.
@@ -75,7 +77,7 @@ free o utilizzare un piano premium.
   - Titolo: /String/
   - Genere: /String/
   - Durata: /Float/
-- *Album:* Modella un album di brani.
+- *Album:* Modella un album musicale.
   - IdAlbum: /Int/ =<<PK>>=
   - Titolo: /String/
   - Autore: /String/
@@ -89,56 +91,52 @@ free o utilizzare un piano premium.
   - Nome: /String/
   Sono definite le seguenti sottoclassi disgiunte con vincolo di partizionamento.
   - *Pubblica:* Rappresenta una playlist pubblica, a cui tutti gli utenti possono accedere all'ascolto.
-  - *Privata:* Rappresenta una playlist privata, solo il creatore può accedervi all'ascolto
+  - *Privata:* Rappresenta una playlist privata, solo il creatore può accedere all'ascolto.
 - *Collezioni:* Rappresenta una collezione di brani preferiti dall'utente.
   - IdCollezione: /Int/ =<<PK>>=
 ** Associazioni
-- *Utenti-Login:* "Possiede"
+- *Utenti-Login:* "Possesso"
   - Ogni utente possiede una login, ogni login e' posseduta da un utente.
   - Molteplicità 1 : 1
   - Totale verso *Utenti*, totale verso *Login*.
-- *Utenti-Collezioni:* "Crea"
-  - Ogni utente può creare zero o una collezione, ogni collezione può essere creata da un solo utente.
+- *Utenti-Collezioni:* "Disposizione"
+  - Ogni utente ha a disposizione una collezione, ogni collezione e' a disposizione di un solo utente.
   - Molteplicità 1 : 1
-  - Parziale verso *Utenti*, totale verso *Collezioni*.
-- *Utenti-Brani:* "Ascolta"
+  - Totale verso *Utenti*, totale verso *Collezioni*.
+- *Utenti-Brani:* "Ascolto"
   - Ogni utente può ascoltare zero o più brani, ogni brano può essere ascoltato da zero o più utenti.
   - Molteplicità N : N
   - Parziale verso *Utenti*, parziale verso *Brani*.
-  - Attributi:
-    - Timestamp: /Timestamp/
-- *Utenti-Brani:* "Accoda"
+- *Utenti-Brani:* "Coda"
   - Ogni utente può accodare zero o più brani, ogni brano può essere accodato da zero o più utenti.
   - Molteplicità N : N
   - Parziale verso *Utenti*, parziale verso *Brani*.
-  - Attributi:
-    - Timestamp: /Timestamp/
-- *Utenti-Utenti:* "Segue"
+- *Utenti-Utenti:* "Seguito"
   - Ogni utente può seguire zero o più utenti, ogni utente può essere seguito da zero o più utenti.
   - Molteplicità N : N
   - Parziale verso entrambi.
-- *Utenti-Playlist:* "Crea"
+- *Utenti-Playlist:* "Creazione"
   - Ogni utente può creare zero o più playlist, ogni playlist può essere creata da un solo utente.
   - Molteplicità N : 1
   - Parziale verso *Utenti*, totale verso *Playlist*.
-- *Playlist-Utente:* "Condivide"
+- *Playlist-Utente:* "Condivisione"
   - Ogni playlist può essere condivisa con zero o più, ogni utente può condividere zero o più playlist.
   - Molteplicità N : N
   - Parziale verso *Playlist*, parziale verso *Utenti*.
-- *Utenti-Iscrizioni:* "Iscritto"
-  - Ogni utente può avere una sola iscrizione, ogni iscrizione può essere associata ad un solo utente.
+- *Utenti-Abbonamenti:* "Iscrizione"
+  - Ogni utente può iscriversi con un solo abbonamento, ogni abbonamento può essere associato ad un solo utente iscritto.
   - Molteplicità 1 : 1
-  - Totale verso *Utenti* e verso *Iscrizioni*.
-- *Playlist-Brani:* "PopolataDa"
+  - Totale verso *Utenti* e verso *Abbonamenti*.
+- *Playlist-Brani:* "Popolazione"
   - Ogni playlist è popolata da zero o più brani, ogni brano popola zero o più playlist.
   - Molteplicità N : N
   - Parziale verso *Playlist*, parziale verso *Brani*.
-- *Brani-Album:* "AppartieneA"
-  - Ogni brano appartiene a zero o un brano, ogni brano contiene uno o più brani.
+- *Brani-Album:* "Composizione"
+  - Ogni brano compone un solo album, ogni brano e' composto da uno o più brani.
   - Molteplicità 1 : N
   - Parziale verso *Brani*, totale verso *Album*.
-- *Collezioni-Brani:* "PopolateDa"
-  - Ogni collezione è popolata da zero o più brani, ogni brano popola zero o più collezioni.
+- *Collezioni-Brani:* "Raccolta"
+  - Ogni collezione raccoglie zero o più brani, ogni brano e' raccolto in zero o più collezioni.
   - Molteplicità N : N
   - Parziale verso *Collezioni*, parziale verso *Brani*.
 ** Schema E/R
@@ -147,67 +145,16 @@ free o utilizzare un piano premium.
    [[~/Basi/progetto2015/grooveclam/relazione/img/concettuale.png]]
 * Progettazione Logica
 ** Gerarchie
-Tutte le gerarchie presenti nella progettazione concettuale sono state risolte mediante accorpamento in tabella unica, questo perchè
+Tutte le gerarchie presenti nella progettazione concettuale sono state risolte mediante accorpamento in tabella unica sul padre, questo perchè
 nessuna di esse possedeva sottoclassi con un numero significativo di attributi o associazioni entranti da giustificarne un partizionamento
-di qualche genere.
+di genere differente.\\
+Per fare cio' sono stati inseriti attributi aggiuntivi nelle entita' padre, in *Playlist* e' stato aggiunto l'attributo ~Tipo~, un enum che puo`
+assumere valore ~Pubblica~ o valore ~Privata~, in *Abbonamenti* e' stato aggiunto ~Tipo~, anche qui un enum che puo` assumere valore ~Free~ o 
+~Premium~. Infine su *Album* sono stati aggiunti due attributi, ~Live~, un booleano che indica se si tratta di un album live o studio, e ~Locazione~
+un attributo opzionale che puo` essere ~NULL~ nel caso di un album studio.
 ** Chiavi Primarie
-Sono state create alcune chiavi primarie per identificare le istanze di alcune tabelle, quali /IdPlaylist/ a *Playlist* 
-e /IdAbbonamento/ per la classe *Iscrizioni*.
-** Schema Relazionale
-Sono state create le  tabelle *BraniCollezione* e *BraniPlaylist* per rappresentare le relazioni N:N tra *Brani-Collezioni* e tra
-*Brani-Playlist*. Inoltre per lo stesso motivo sono state create *Ascoltate* e *Code* tra *Utenti-Brani*.\\\\
-*Utenti* (IdUtente, Nome*, Cognome*, EMail)
-- PK(IdUtente)
-*Login* (Username, Password, DataCreazione, IdUtente)
-- PK(Username)
-- IdUtente FK(Utenti)
-*Iscrizioni* (IdUtente, Tipo)
-- PK(IdUtente)
-- IdUtente FK(Utenti)
-*Brani* (IdBrano, IdAlbum, Titolo, Genere, Durata)
-- PK(IdBrano)
-- IdAlbum FK(Album)
-*Album* (IdAlbum, Titolo, Autore, Info*, Anno, Live, Locazione*, PathCopertina*)
-- PK(IdAlbum)
-*Seguaci* (IdUtente, IdSeguace)
-- PK(IdUtente, IdSeguace)
-- IdUtente FK(Utenti)
-- IdSeguace FK(Utenti)
-*Collezioni* (IdCollezione, IdUtente)
-- PK(IdCollezione)
-- IdUtente FK(Utenti)
-*BraniCollezione* (IdBrano, IdCollezione)
-- PK(IdBrano, IdCollezione)
-- IdBrano FK(Brani)
-- IdCollezione FK(Collezioni)
-*Playlist* (IdPlaylist, IdUtente, Nome, Privata)
-- PK(IdPlaylist)
-- IdUtente FK(Utenti)
-*BraniPlaylist* (IdPlaylist, IdBrano, Posizione)
-- PK(IdPlaylist, IdBrano)
-- IdPlaylist FK(Playlist)
-- IdBrano FK(Brani)
-*Condivise* (IdPlaylist, IdUtente)
-- PK(IdPlaylist, IdUtente)
-- IdPlaylist FK(Playlist)
-- IdUtente FK(IdUtente)
-*Ascoltate* (IdUtente, IdBrano, Timestamp)
-- PK(IdUtente, IdBrano)
-- IdUtente FK(Utenti)
-- IdBrano FK(Brani)
-*Code* (IdUtente, IdBrano, Posizione)
-- PK(IdUtente, IdBrano)
-- IdUtente FK(Utenti)
-- IdBrano FK(Brani)
-*** Note
-Nel passaggio dalla progettazione concettuale alla progettazione logica, in fase di ristrutturazione ho deciso di creare una tabella *Code*
-per rappresentare la relazione *Accoda*, la cui implementazione fisica portera' alla creazione di una tabella molto simile alla tabella di
-giunzione che verra' a formarsi tra *Playlist* e *Brani*.\\
-Si sono presentate 2 alternative:
-- Inserire mediante un trigger una playlist "standard" nominata ~CodaRiproduzione~ ogni volta che viene inserito un nuovo utente, la quale conterra' la coda di riproduzione
-  dell'utente in questione.
-- Creare una tabella apposita per la gestione delle code di riproduzione.
-Ho infine optato per la seconda soluzione, cosi' da mantenere una separazione dei concetti ed evitare eventuali ridondanze, e maggiore chiarezza .
+E' stata creata una chiavi primaria /IdPlaylist/ per identificare le istanze della tabella *Playlist*. Nella tabella *Abbonamenti* e' stata invece inserita
+una chiave primaria ed esterna /IdUtente/.
 ** Analisi Ridondanze
 Nella tabella *Album* vi è la possibilità di inserire un attributo ridondante (nBrani) al fine
 di diminuire il carico di lavoro della BD. Per valutare la convenienza o meno della scelta
@@ -256,18 +203,82 @@ Quindi circa 200 album caricati e 1600 brani.
   di tale scelta in ragione della struttura dell'interfaccia web progettata, dove utilizzo funzioni PHP
   come ~count~ per ottenere la lunghezza di un array, ad esempio l'array contenente i brani di una collezione
   ottenendo quindi il numero di brani della collezione effettivo.
+** Schema E/R ristrutturato
+#+ATTR_LATEX: :width 19cm :float nil
+   [[~/Basi/progetto2015/grooveclam/relazione/img/logico.png]]
+*** Note ristrutturazione
+Visti i risultati dell'analisi sulle ridondanze ho deciso di inserire l'attributo ridondante ~NBrani~ nella tabella ~Album~, in quanto il rapporto tra il costo computazionale e l'effettivo
+carico maggiorato favoriva di molto l'opzione valutata. Ho inoltre inserito un attributo ~Posizione~ nell'associazione ~Coda~ e un attributo ~Timestamp~ nell'associazione ~Ascolto~, la quale
+in fase di progettazione fisica diverra' a tutti gli effetti una tabella rappresentante lo storico degli ascolti dell'utenza.
+** Schema Relazionale
+Sono state create le  tabelle *BraniCollezione* e *BraniPlaylist* per rappresentare le relazioni N:N tra *Brani-Collezioni* e tra
+*Brani-Playlist*. Inoltre per lo stesso motivo sono state create *Ascoltate* e *Code* tra *Utenti-Brani*.\\\\
+*Utenti* (IdUtente, Nome*, Cognome*, EMail)
+- PK(IdUtente)
+*Login* (Username, Password, DataCreazione, IdUtente)
+- PK(Username)
+- IdUtente FK(Utenti)
+*Abbonamenti* (IdUtente, Tipo)
+- PK(IdUtente)
+- IdUtente FK(Utenti)
+*Brani* (IdBrano, IdAlbum, Titolo, Genere, Durata)
+- PK(IdBrano)
+- IdAlbum FK(Album)
+*Album* (IdAlbum, Titolo, Autore, Info*, Anno, Live, Locazione*, PathCopertina*)
+- PK(IdAlbum)
+*Seguaci* (IdUtente, IdSeguace)
+- PK(IdUtente, IdSeguace)
+- IdUtente FK(Utenti)
+- IdSeguace FK(Utenti)
+*Collezioni* (IdCollezione, IdUtente)
+- PK(IdCollezione)
+- IdUtente FK(Utenti)
+*BraniCollezione* (IdBrano, IdCollezione)
+- PK(IdBrano, IdCollezione)
+- IdBrano FK(Brani)
+- IdCollezione FK(Collezioni)
+*Playlist* (IdPlaylist, IdUtente, Nome, Tipo)
+- PK(IdPlaylist)
+- IdUtente FK(Utenti)
+*BraniPlaylist* (IdPlaylist, IdBrano, Posizione)
+- PK(IdPlaylist, IdBrano)
+- IdPlaylist FK(Playlist)
+- IdBrano FK(Brani)
+*Condivise* (IdPlaylist, IdUtente)
+- PK(IdPlaylist, IdUtente)
+- IdPlaylist FK(Playlist)
+- IdUtente FK(IdUtente)
+*Ascoltate* (IdUtente, IdBrano, Timestamp)
+- PK(IdUtente, IdBrano)
+- IdUtente FK(Utenti)
+- IdBrano FK(Brani)
+*Code* (IdUtente, IdBrano, Posizione)
+- PK(IdUtente, IdBrano)
+- IdUtente FK(Utenti)
+- IdBrano FK(Brani)
+*** Note
+Nel passaggio dalla progettazione concettuale alla progettazione logica, in fase di ristrutturazione ho deciso di creare una tabella *Code*
+per rappresentare la relazione *Coda*, la cui implementazione fisica portera' alla creazione di una tabella molto simile alla tabella di
+giunzione che verra' a formarsi tra *Playlist* e *Brani*.\\
+Si sono presentate 2 alternative:
+- Inserire mediante un trigger una playlist "standard" nominata ~CodaRiproduzione~ ogni volta che viene inserito un nuovo utente, la quale conterra' la coda di riproduzione
+  dell'utente in questione.
+- Creare una tabella apposita per la gestione delle code di riproduzione.
+Ho infine optato per la seconda soluzione, cosi' da mantenere una separazione dei concetti ed evitare eventuali ridondanze, e maggiore chiarezza.\\
+Allo stesso modo l'associazione *Ascolto* e' diventate *Ascoltate*, una tabella propria di giunzione che contiene lo storico degli ascolti dell'utenza, e l'associzione ~Seguito~
+e' diventato la tabella *Seguaci*.
 ** Associazioni
-- *Utenti-Login:* "Possiede"
+- *Utenti-Login:* "Possesso"
   - Ogni utente possiede una login, ogni login e' posseduta da un utente.
   - Molteplicità 1 : 1
   - Totale verso *Utenti*, totale verso *Login*.
   - Chiave esterna non-nulla in *Login* verso *Utenti*.
-- *Utenti-Collezioni:* "Crea"
-  - Ogni utente può creare zero o una collezione, ogni collezione può essere creata da un solo utente.
+- *Utenti-Collezioni:* "Disposizione"
+  - Ogni utente ha a disposizione una collezione, ogni collezione e' a disposizione di un solo utente.
   - Molteplicità 1 : 1
-  - Parziale verso *Utenti*, totale verso *Collezioni*.
+  - Totale verso *Utenti*, totale verso *Collezioni*.
   - Chiave esterna non-nulla in *Collezioni* verso *Utenti*.
-- *Utenti-Brani:* "Ascolta"
+- *Utenti-Brani:* "Ascolto"
   - Ogni utente può ascoltare zero o più brani, ogni brano può essere ascoltato da zero o più utenti.
   - Molteplicità N : N
   - Parziale verso *Utenti*, parziale verso *Brani*.
@@ -277,67 +288,59 @@ Quindi circa 200 album caricati e 1600 brani.
     - IdUtente: /Int/ =<<PK>> <<FK(Utenti)>>=
     - IdBrano: /Int/ =<<PK>> <<FK(Brani)>>=
     - Timestamp: /Timestamp/ =<<PK>>=
-- *Utenti-Brani:* "Accoda"
+- *Utenti-Brani:* "Coda"
   - Ogni utente può accodare zero o più brani, ogni brano può essere accodato da zero o più utenti.
   - Molteplicità N : N
   - Parziale verso *Utenti*, parziale verso *Brani*.
   - Attributi:
-    - Timestamp: /Timestamp/
+    - Posizione: /Int/
   - Nuova tabella *Code*, attributi:
     - IdUtente: /Int/ =<<PK>> <<FK(Utenti)>>=
     - IdBrano: /Int/ =<<PK>> <<FK(Brani)>>=
-    - Timestamp: /Timestamp/ =<<PK>>=
-- *Utenti-Utenti:* "Segue"
+    - Posizione: /Int/ =<<PK>>=
+- *Utenti-Utenti:* "Seguito"
   - Ogni utente può seguire zero o più utenti, ogni utente può essere seguito da zero o più utenti.
   - Molteplicità N : N
   - Parziale verso entrambi.
   - Nuova tabella *Seguaci*, attributi:
     - IdUtente: /Int/ =<<PK>> <<FK(Utenti)>>=
     - IdSeguace: /Int/ =<<PK>> <<FK(Utenti)>>=
-- *Utenti-Playlist:* "Crea"
+- *Utenti-Playlist:* "Creazione"
   - Ogni utente può creare zero o più playlist, ogni playlist può essere creata da un solo utente.
   - Molteplicità N : 1
   - Parziale verso *Utenti*, totale verso *Playlist*.
   - Chiave esterna non-nulla in *Playlist* verso *Utenti*.
-- *Playlist-Utenti:* "Condivisa"
+- *Playlist-Utenti:* "Condivisione"
   - Ogni playlist può essere condivisa con zero o più, ogni utente può condividere zero o più playlist.
   - Molteplicità N : N
   - Parziale verso *Playlist*, parziale verso *Utenti*.
   - Nuova tabella *Condivise*, attributi:
     - IdPlaylist: /Int/ =<<PK>> <<FK(Playlist)>>=
     - IdUtente: /Int/ =<<PK>> <<FK(Utenti)>>=
-- *Utenti-Iscrizioni:* "Iscritto"
-  - Ogni utente può avere una sola iscrizione, ogni iscrizione può essere associata ad un solo utente.
+- *Utenti-Abbonamenti:* "Iscrizione"
+  - Ogni utente può iscriversi con un solo abbonamento, ogni abbonamento può essere associata ad un solo utente iscritto.
   - Molteplicità 1 : 1
-  - Totale verso *Utenti* e verso *Iscrizioni*.
-  - Chiave esterna non-nulla in *Iscrizioni* verso *Utenti*.
-- *Playlist-Brani:* "PopolataDa"
+  - Totale verso *Utenti* e verso *Abbonamenti*.
+  - Chiave esterna non-nulla in *Abbonamenti* verso *Utenti*.
+- *Playlist-Brani:* "Popolazione"
   - Ogni playlist è popolata da zero o più brani, ogni brano popola zero o più playlist.
   - Molteplicità N : N
   - Parziale verso *Playlist*, parziale verso *Brani*.
   - Nuova tabella *BraniPlaylist*, attributi:
     - IdPlaylist: /Int/ =<<PK>> <<FK(Playlist)>>=
     - IdBrano: /Int/ =<<PK>> <<FK(Brani)>>=
-- *Brani-Album:* "AppartieneA"
-  - Ogni brano appartiene a zero o un brano, ogni brano contiene uno o più brani.
+- *Brani-Album:* "Composizione"
+  - Ogni brano compone un solo album, ogni album e' composto da uno o più brani.
   - Molteplicità 1 : N
   - Parziale verso *Brani*, totale verso *Album*.
   - Chiave esterna non-nulla in *Brani* verso *Album*.
-- *Collezioni-Brani:* "PopolateDa"
-  - Ogni collezione è popolata da zero o più brani, ogni brano popola zero o più collezioni.
+- *Collezioni-Brani:* "Raccolta"
+  - Ogni collezione raccoglie zero o più brani, ogni brano e' raccolto in zero o più collezioni.
   - Molteplicità N : N
   - Parziale verso *Collezioni*, parziale verso *Brani*.
   - Nuova tabella *BraniCollezione*, attributi:
     - IdBrano: /int/ =<<PK>> <<FK(Brani)>>=
     - IdCollezione: /int/ =<<PK <<FK(Collezioni)>>=
-** Schema E/R ristrutturato
-#+ATTR_LATEX: :width 19cm :float nil
-   [[~/Basi/progetto2015/grooveclam/relazione/img/logico.png]]
-*** Note ristrutturazione
-A seguito delle analisi eseguite sullo schema concettuale, ho deciso di risolvere le gerarchie accorpandole all'entita' padre, in quanto 
-nessuna di esse ha interazioni significative con le altre entita' della base di dati. Visti i risultati dell'analisi sulle ridondanze 
-ho deciso di inserire l'attributo ridondante ~NBrani~ nella tabella ~Album~, in quanto il rapporto tra il costo computazionale e l'effettivo
-carico maggiorato favoriva di molto l'opzione valutata.
 * Implementazione Fisica
 Query di implementazione DDL SQL della base di dati. Sorgente in ~grooveclam.sql~, popolamento in ~fill.sql~.
 E' stata implementata una tabella *Errori*, riempita mediante procedura a sua volta richiamata dai trigger che ne fanno uso, 
@@ -352,7 +355,7 @@ DROP TABLE IF EXISTS `Album`;
 DROP TABLE IF EXISTS `Brani`;
 DROP TABLE IF EXISTS `Utenti`;
 DROP TABLE IF EXISTS `Seguaci`;
-DROP TABLE IF EXISTS `Iscrizioni`;
+DROP TABLE IF EXISTS `Abbonamenti`;
 DROP TABLE IF EXISTS `Collezioni`;
 DROP TABLE IF EXISTS `BraniCollezione`;
 DROP TABLE IF EXISTS `Playlist`;
@@ -372,7 +375,7 @@ CREATE TABLE IF NOT EXISTS `Album` (
 	`Titolo` VARCHAR(200) NOT NULL,
 	`Autore` VARCHAR(200) NOT NULL,
 	`Info` VARCHAR(300) DEFAULT NULL,
-    `NBrani` INT(11) NOT NULL,
+    `NBrani` TINYINT NOT NULL,
 	`Anno` YEAR DEFAULT NULL,
 	`Live` BOOLEAN DEFAULT FALSE,
 	`Locazione` VARCHAR(100) DEFAULT NULL,
@@ -416,7 +419,7 @@ CREATE TABLE IF NOT EXISTS `Seguaci` (
 	CHECK(`IdUtente` != `IdSeguace`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 -- Table Iscrizioni
-CREATE TABLE IF NOT EXISTS `Iscrizioni` (
+CREATE TABLE IF NOT EXISTS `Abbonamenti` (
 	`IdUtente` INT(10) NOT NULL,
 	`Tipo` ENUM('Free', 'Premium') NOT NULL,
 	PRIMARY KEY(`IdUtente`),
@@ -505,17 +508,6 @@ INSERT INTO Login(`Username`, `Password`, `DataCreazione`, `IdUtente`)
              ('casey', MD5('rayback'), '2015-06-21 15:43:01', 9);
 -- Insert into Seguaci                
 INSERT INTO Seguaci(`IdUtente`, `IdSeguace`) VALUES(1, 2), (1, 3), (2, 1), (3, 1), (1, 4), (4, 1), (1, 8), (8, 1), (1, 9);
--- Insert into Iscrizioni
-INSERT INTO Iscrizioni(`IdUtente`, `Tipo`)
-       VALUES(1, 'Free'),
-             (2, 'Free'),
-             (3, 'Premium'),
-             (4, 'Free'),
-             (5, 'Premium'),
-             (6, 'Free'),
-             (7, 'Free'),
-             (8, 'Premium'),
-             (9, 'Premium');
 -- Insert into Album
 INSERT INTO Album(`Titolo`, `Autore`, `Info`, `Anno`, `Live`, `Locazione`, `PathCopertina`)
        VALUES('Inception Suite', 'Hans Zimmer', 'Inception movie soundtrack, composed by the Great Compositor Hans Zimmer', '2010', 0, NULL, 'img/covers/inception.png'),
@@ -586,25 +578,19 @@ SET FOREIGN_KEY_CHECKS = 1;
 Di seguito i trigger creati. Sono trigger tipicamente di controllo.
 - ~checkDuration:~ Trigger di controllo sull'inserimento della durata obbligatoriamente positiva di un brano, simula il comportamento di una clausola ~CHECK Durata > 0~.
 - ~checkFollower:~ Trigger di controllo sull'inserimento di nuovi seguaci, dove un utente non puo inserire il proprio id come seguace, simula il comportamento di una clauso ~CHECK IdUtente <> IdSeguace~.
-- ~checkCoverImage:~ Trigger di controllo sull'inserimento di una nuova Copertina, se il valore del path e' vuoto, viene inserito il path standard '~img/covers/nocover.jpg~'.
-- ~insertAutoCollection:~ Trigger di controllo sull'inserimento di un nuovo utente, si occupa di generare una collezione vuota per il nuovo utente inserito, creando un entry nella tabella ~Collezioni~.
-- ~insertAutoAdminSubs:~ Trigger di controllo sull'inserimento di un nuovo utente con privilegi di amministrazione, crea un record nella tabella ~Iscrizioni~ associato al nuovo amministratore creato, dotandolo di privilegi ~Premium~.
-- ~updateAutpAdminSubs:~ Trigger di controllo sull'aggiornamento di un utente già presente nella base di dati, se viene aggiornato il campo ~Amministratore~ a ~TRUE~, viene creato o, aggiornato se già esistente, il campo ~Tipo~ nella tabella ~Iscrizioni~.
+- ~insertAutoCollectionSub:~ Trigger di controllo sull'inserimento di un nuovo utente, si occupa di generare una collezione vuota per il nuovo utente inserito, creando un entry nella tabella ~Collezioni~, inoltre crea un piano abbonamenti ~Free~ di default.
 - ~insertAutoSongNumber:~ Trigger di aggiornamento, dopo l'inserimento nella tabella ~Brani~ aumenta di 1 il contatore ~NBrani~ all'interno della tabella ~Album~ sul record associato al brano inserito.
 - ~updateAutoSongNumber:~ Trigger di controllo, come sopra ma cattura l'evento ~UPDATE~, e si occupa di decrementare il contatore del vecchio album a cui il brano era associato.
 - ~checkCollectionSize:~ Trigger di controllo, prima dell'inserimento nella tabella ~Brani~ controlla il tipo di iscrizione dell'utente che intende eseguire l'inserimento, e, nel caso si tratti di un utente "Free" genera un errore e impedisce l'inserimento.
 - ~checkSharedFellows:~ Trigger di controlllo sull'inserimento nella tabella ~Condivise~, prima dell'inserimento controlla che l'utente proprietario della playlist stia già seguendo l'utente con cui intende condividere la playlist. 
-- ~checkSharedFellows:~ Trigger di controllo, come sopra ma cattura l'update.
+- ~checkSharedFellowsUpdate:~ Trigger di controllo, come sopra ma cattura l'update.
 - ~errorTrigger:~ Trigger di supporto, utilizzato per simulare un sistema di segnalazione errori, esegue un ~SET NEW = NEW.errore;~ che genera un messaggio in quanto ~NEW~ non puo essere manipolato e visualizza il messaggio passato alla procedura ~RAISE_ERROR~.
 #+BEGIN_LaTeX
 \begin{lstlisting}[language=SQL]
 DROP TRIGGER IF EXISTS checkDuration;
 DROP TRIGGER IF EXISTS errorTrigger;
 DROP TRIGGER IF EXISTS checkFollower;
-DROP TRIGGER IF EXISTS checkCoverImage;
 DROP TRIGGER IF EXISTS insertAutoCollection;
-DROP TRIGGER IF EXISTS insertAutoAdminSubs;
-DROP TRIGGER IF EXISTS updateAutoAdminSubs;
 DROP TRIGGER IF EXISTS insertAutoSongNumber;
 DROP TRIGGER IF EXISTS updateAutoSongNumber;
 DROP TRIGGER IF EXISTS checkCollectionSize;
@@ -622,10 +608,6 @@ IF(NEW.Durata < 0) THEN
 END IF;
 END $$
 
-DELIMITER ;
-
-DELIMITER $$
-
 CREATE TRIGGER errorTrigger
 BEFORE INSERT ON `Errori`
 FOR EACH ROW
@@ -633,65 +615,22 @@ BEGIN
     SET NEW = NEW.errore;
 END $$
 
-DELIMITER ;
-
-DELIMITER $$
-
 CREATE TRIGGER checkFollower
 BEFORE INSERT ON `Seguaci`
 FOR EACH ROW
 BEGIN
     IF NEW.IdUtente = NEW.IdSeguace THEN
        CALL RAISE_ERROR('Un utente non può seguire se stesso (IdUtente e IdSeguace devono essere diversi fra loro)');
-    END IF;       
-END $$
-
-DELIMITER ;
-
-DELIMITER $$
-
-CREATE TRIGGER checkCoverImage
-BEFORE INSERT ON `Copertine`
-FOR EACH ROW
-BEGIN
-    IF NEW.Path = '' THEN
-       SET NEW.Path = 'img/covers/nocover.jpg';
     END IF;
 END $$
 
-DELIMITER ;
-
-DELIMITER $$
-
-CREATE TRIGGER insertAutoAdminSubs
-BEFORE INSERT ON `Login`
+CREATE TRIGGER insertAutoCollectionSub
+AFTER INSERT ON `Utenti`
 FOR EACH ROW
 BEGIN
-    IF(NEW.Amministratore = 1) THEN
-        INSERT INTO `Iscrizioni` (`IdUtente`, `Tipo`) VALUES(NEW.IdUtente, 'Premium')
-        ON DUPLICATE KEY UPDATE Tipo = 'Premium';
-    ELSE
-        INSERT INTO `Iscrizioni` (`IdUtente`, `Tipo`) VALUES(NEW.IdUtente, 'Free');
-    END IF;
+    INSERT INTO `Collezioni` (`IdUtente`) VALUES(NEW.IdUtente);
+    INSERT INTO `Abbonamenti`(`IdUtente`, `Tipo`) VALUES (NEW.IdUtente, 'Free');
 END $$
-
-DELIMITER ;
-
-DELIMITER $$
-
-CREATE TRIGGER updateAutoAdminSubs
-BEFORE UPDATE ON `Login`
-FOR EACH ROW
-BEGIN
-   IF(NEW.Amministratore = 1) THEN
-        INSERT INTO `Iscrizioni` (`IdUtente`, `Tipo`) VALUES(NEW.IdUtente, 'Premium')
-        ON DUPLICATE KEY UPDATE Tipo = 'Premium';
-   END IF;
-END $$
-
-DELIMITER ;
-
-DELIMITER $$
 
 CREATE TRIGGER insertAutoSongNumber
 AFTER INSERT ON `Brani`
@@ -705,10 +644,6 @@ BEGIN
         UPDATE `Album` SET NBrani = NBrani + 1 WHERE IdAlbum = ida;
     END IF;
 END $$
- 
-DELIMITER ;
-
-DELIMITER $$
 
 CREATE TRIGGER updateAutoSongNumber
 AFTER UPDATE ON `Brani`
@@ -723,10 +658,7 @@ BEGIN
         UPDATE `Album` SET NBrani = NBrani + 1 WHERE IdAlbum = ida;
     END IF;
 END $$
- 
-DELIMITER ;
 
-DELIMITER $$
 CREATE TRIGGER checkCollectionSize
 BEFORE INSERT ON `BraniCollezione`
 FOR EACH ROW
@@ -741,16 +673,12 @@ BEGIN
     FROM BraniCollezione
     WHERE IdCollezione = NEW.IdCollezione;
     SELECT DISTINCT i.Tipo INTO subType
-    FROM Iscrizioni i INNER JOIN Login l ON(i.IdUtente = l.IdUtente)
+    FROM Abbonamenti i INNER JOIN Login l ON(i.IdUtente = l.IdUtente)
     WHERE l.IdUtente = idUser;
     IF(numSong = 50 && subType = 'Free') THEN
         CALL RAISE_ERROR('Maximum limit for collected songs reached for a free subscription account.');
     END IF;
 END $$
-
-DELIMITER ;
-
-DELIMITER $$
 
 CREATE TRIGGER checkSharedFellows
 BEFORE INSERT ON `Condivise`
@@ -766,10 +694,6 @@ BEGIN
         CALL RAISE_ERROR('You cannot share playlist with people you dont follow.');
     END IF;
 END $$
-
-DELIMITER ;
-
-DELIMITER $$
 
 CREATE TRIGGER checkSharedFellowsUpdate
 BEFORE UPDATE ON `Condivise`
@@ -933,7 +857,7 @@ DELIMITER ;
 \end{lstlisting}
 #+END_LaTeX
 * Query
-Alcune query significative.
+Alcune query significative, molte delle quali sono state effettivamente utilizzate all'interno dell'interfaccia web.
 ** Query 1
 Titolo e album degli ultimi 10 brani ascoltati tra i follower in ordine cronologico tra ora e gli ultimi 7 giorni, con annessi username e timestamp dell'ascolto formattato 
 dd-mm-yyyy hh:mm:ss dell'utente che ha ascoltato ogni brano.
@@ -968,6 +892,7 @@ ORDER BY h.Timestamp DESC LIMIT 10;
 +-----------------------------------+--------------------------------------------------------------------+----------+---------------------+
 10 rows in set (0.00 sec)
 \end{verbatim}
+\normalsize
 #+END_LaTeX
 ** Query 2
 Username e numero di volte che è stata ascoltata la canzone Paradox dai follower dell'user id 1.
@@ -979,7 +904,7 @@ FROM Brani b INNER JOIN Ascoltate h ON(b.IdBrano = h.IdBrano)
              INNER JOIN Login l ON(f.IdSeguace = l.IdUtente) 
 WHERE b.Titolo = 'Paradox' AND f.IdUtente = 1 GROUP BY l.Username ORDER BY Conto DESC;
 \end{lstlisting}
-\begin{verbatim}
+\scriptsize\begin{verbatim}
  Output:
 +-------+----------+
 | Conto | Username |
@@ -988,6 +913,7 @@ WHERE b.Titolo = 'Paradox' AND f.IdUtente = 1 GROUP BY l.Username ORDER BY Conto
 +-------+----------+
 1 row in set (0.00 sec)
 \end{verbatim}
+\normalsize
 #+END_LaTeX
 ** Query 3
 Username, titolo e conto delle canzoni piu ascoltate dai follower dell'user id 1.
@@ -999,7 +925,7 @@ FROM Brani b INNER JOIN Ascoltate h ON(b.IdBrano = h.IdBrano)
              INNER JOIN Login l ON(f.IdSeguace = l.IdUtente) 
 WHERE f.IdUtente = 1 GROUP BY b.Titolo ORDER BY Conto DESC;
 \end{lstlisting}
-\begin{verbatim}
+\scriptsize\begin{verbatim}
  Output:
 +----------+-----------------------------------+-------+
 | Username | Titolo                            | Conto |
@@ -1021,6 +947,7 @@ WHERE f.IdUtente = 1 GROUP BY b.Titolo ORDER BY Conto DESC;
 +----------+-----------------------------------+-------+
 14 rows in set (0.00 sec)
 \end{verbatim}
+\normalsize
 #+END_LaTeX
 ** Query 4
 Username e numero brani nella collezione dell'utente con più canzoni di genere 'Orchestra'
@@ -1036,7 +963,7 @@ WHERE b.Genere = 'Orchestra' GROUP BY c.IdUtente;
 SELECT * FROM ContoBrani HAVING MAX(Conteggio);
 DROP VIEW IF EXISTS ContoBrani;
 \end{lstlisting}
-\begin{verbatim}
+\scriptsize\begin{verbatim}
  Output:
 Query OK, 0 rows affected, 1 warning (0.00 sec)
 
@@ -1052,6 +979,7 @@ Query OK, 0 rows affected (0.08 sec)
 Query OK, 0 rows affected (0.00 sec)
 
 \end{verbatim}
+\normalsize
 #+END_LaTeX
 ** Query 5
 Username e minuti di ascolto dei 3 utenti che ascoltano più musica di genere 'Orchestra'.
@@ -1066,7 +994,7 @@ WHERE b.Genere = 'Orchestra' GROUP BY a.IdUtente ORDER BY DurataTotale DESC;
 SELECT * FROM UtentiGenere LIMIT 3;
 DROP VIEW IF EXISTS UtentiGenere;
 \end{lstlisting}
-\begin{verbatim}
+\scriptsize\begin{verbatim}
  Output:
 Query OK, 0 rows affected, 1 warning (0.00 sec)
 
@@ -1084,6 +1012,7 @@ Query OK, 0 rows affected (0.05 sec)
 Query OK, 0 rows affected (0.00 sec)
 
 \end{verbatim} 
+\normalsize
 #+END_LaTeX
 ** Query 6
 Trova gli utenti che hanno ascoltato un numero di canzoni sopra alla media nell'ultimo mese.
@@ -1103,7 +1032,7 @@ WHERE ca.Conto > (SELECT AVG(ce.Conto)
 ORDER BY ca.Conto DESC;
 DROP VIEW IF EXISTS CanzoniAscoltate;
 \end{lstlisting}
-\begin{verbatim}
+\scriptsize\begin{verbatim}
  Output:
 Query OK, 0 rows affected, 1 warning (0.00 sec)
 
@@ -1120,6 +1049,7 @@ Query OK, 0 rows affected (0.04 sec)
 Query OK, 0 rows affected (0.00 sec)
 
 \end{verbatim}
+\normalsize
 #+END_LaTeX
 ** Query 7
 Trova gli utenti e il numero di brani di genere 'Country' nella propria collezione.
@@ -1138,7 +1068,7 @@ WHERE Genere = 'Country' HAVING Conteggio = (SELECT MAX(Conteggio)
                                              WHERE Genere = 'Country');
 DROP VIEW IF EXISTS Conteggi;
 \end{lstlisting}
-\begin{verbatim}
+\scriptsize\begin{verbatim}
  Output:
 Query OK, 0 rows affected (0.04 sec)
 
@@ -1152,6 +1082,7 @@ Query OK, 0 rows affected (0.04 sec)
 Query OK, 0 rows affected (0.00 sec)
 
 \end{verbatim}
+\normalsize
 #+END_LaTeX
 ** Query 8
 Trova gli utenti con più di 5 brani nella propria collezione che non hanno mai ascoltato brani country nell'ultimo mese.
@@ -1170,7 +1101,7 @@ AND l.IdUtente IN (SELECT u2.IdUtente
                    GROUP BY a2.IdUtente 
                    HAVING COUNT(a2.IdBrano) > 5);
 \end{lstlisting}
-\begin{verbatim}
+\scriptsize\begin{verbatim}
  Output:
 +----------+
 | Username |
@@ -1182,6 +1113,7 @@ AND l.IdUtente IN (SELECT u2.IdUtente
 3 rows in set (0.00 sec)
 
 \end{verbatim}
+\normalsize
 #+END_LaTeX
 ** Query 9
 Trova gli utenti con account inattivo da almeno 90 giorni e stampa la data del loro ultimo ascolto.
@@ -1196,7 +1128,7 @@ AND u.IdUtente IN (SELECT a1.IdUtente
                    WHERE a1.Timestamp < DATE_SUB(CURDATE(), INTERVAL 90 DAY))
 ORDER BY a.Timestamp DESC LIMIT 1;
 \end{lstlisting}
-\begin{verbatim}
+\scriptsize\begin{verbatim}
  Output:
 Empty set (0.00 sec)
 \end{verbatim}
@@ -1204,9 +1136,10 @@ Empty set (0.00 sec)
 #+END_LaTeX
 * Interfaccia Web
 Per l'interfaccia web è stato seguito un pattern MVC molto rudimentale, che tuttavia ha permesso di semplificarne la realizzazione modularizzando
-le operazione da effettuare sulla base di dati mediante le pagine.
+le operazione da effettuare sulla base di dati mediante le pagine. La piattaforma non e' assolutamente responsive a livello di layout, potrebbero 
+quindi comparire difetti grafici.
 ** Organizzazione e Struttura Generale
-La struttura generale dell'interfaccia consiste di 3 cartelle principali e 2 pagine di servizio contenenti rispettivamente un singleton dedicato
+La struttura generale dell'interfaccia consiste di 3 cartelle principali e 2 pagine di servizio, queste ultime contenenti rispettivamente un singleton dedicato
 esclusivamente alla connessione alla base di dati e un singleton dedicato alla creazione e manipolazione delle sessioni.
 Le cartelle /models, /views, /controllers seguono le tipiche linee guida del pattern MVC, all'interno di /models troviamo infatti i modelli, 
 oggetti atti ad interfacciarsi con la base di dati ed eseguire le query richieste dalle pagine (routes) contenute nei controllers, infine le view, 
@@ -1227,10 +1160,12 @@ mostrato un form di login mediante il quale è anche possibile registrare un acc
 aggiungere i propri brani alla propria collezione o alla coda di riproduzione; *Albums* contiene tutti gli album presenti nella
 piattaforma, ed è possibile visualizzare i dettagli di ogni album e brano contenuto in esso.\\ 
 *Collection* e *Playlist* sono rispettivamente le pagine di gestione della propria collezione brani e playlist, accedibili solo dopo l'autenticazione, 
-danno la possibilità di privatizzare o rendere pubbliche le proprie playlist. *Queue* infine ospita la coda di riproduzione, ordinate in base alla 
-posizione di accodamento, modificabile.\\
+danno la possibilità di privatizzare o rendere pubbliche le proprie playlist. Inoltre e' possibile condividere delle playlist all'atto della creazione e 
+la modifica dell'ordine di riproduzione.
+ *Queue* infine ospita la coda di riproduzione, ordinate in base alla posizione di accodamento, modificabile.\\
 E' possibile modificare i dati relativi al proprio account, incluso il piano di'iscrizione, utilizzando la pagina accessibile clickando sul 
-bottone in alto a destra *settings*, solo dopo aver loggato.
+bottone in alto a destra *settings*, solo dopo aver loggato. *Search* infine e' una pagina di servizio utilizzabile per ricercare dati all'interno della
+base di dati.
 ** Mantenimento Stato Pagine
 L'interfaccia da la possibilità di ascoltare canzoni come utente visitatore (anonimo), ma per le operazioni più specifiche, ad esempio la creazione
 e gestione di una personale collezione è necessario registrarsi e loggare utilizzando le credenziali scelte, è stato pertanto creato un sistema di

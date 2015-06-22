@@ -23,17 +23,6 @@ INSERT INTO Login(`Username`, `Password`, `DataCreazione`, `IdUtente`)
              ('casey', MD5('rayback'), '2015-06-21 15:43:01', 9);
 -- Insert into Seguaci                
 INSERT INTO Seguaci(`IdUtente`, `IdSeguace`) VALUES(1, 2), (1, 3), (2, 1), (3, 1), (1, 4), (4, 1), (1, 8), (8, 1), (1, 9);
--- Insert into Iscrizioni
-INSERT INTO Iscrizioni(`IdUtente`, `Tipo`)
-       VALUES(1, 'Free'),
-             (2, 'Free'),
-             (3, 'Premium'),
-             (4, 'Free'),
-             (5, 'Premium'),
-             (6, 'Free'),
-             (7, 'Free'),
-             (8, 'Premium'),
-             (9, 'Premium');
 -- Insert into Album
 INSERT INTO Album(`Titolo`, `Autore`, `Info`, `Anno`, `Live`, `Locazione`, `PathCopertina`)
        VALUES('Inception Suite', 'Hans Zimmer', 'Inception movie soundtrack, composed by the Great Compositor Hans Zimmer', '2010', 0, NULL, 'img/covers/inception.png'),

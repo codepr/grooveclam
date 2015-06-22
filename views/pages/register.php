@@ -11,6 +11,8 @@
 		<input type="text" id="Username" name="Username" placeholder="Username">
 		<label for="Password">Password*</label>
 		<input type="password" id="Password" name="Password" placeholder="Password">
+        <input type="checkbox" name="Subscription" id="Subscription" value="Premium"> Premium
+        <br />
 		<input type="submit" value="submit">
 	</fieldset>
 </form>

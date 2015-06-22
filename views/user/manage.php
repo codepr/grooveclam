@@ -10,7 +10,15 @@
         <label for="NewUsername">Username</label>
         <input name="NewUsername" type="text" value="<?php echo $user->username(); ?>" id="NewUsername" />
         <label for="NewPassword">Password</label>
-        <input name="NewPassword" type="Password" value="" id="NewPassword" />
+        <input name="NewPassword" type="Password" placeholder="Insert new password" id="NewPassword" />
+        <?php
+        $chk = '';
+        if($user->subscription() == 'Premium') {
+            $chk = "checked";
+        }
+        ?>
+        <input type="checkbox" name="Subscription" id="Subscription" value="Premium" <?php echo $chk; ?>> Premium
+        <br />
         <input type="submit" value="submit" />
     </fieldset>
 </form>

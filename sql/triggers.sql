@@ -1,7 +1,7 @@
 DROP TRIGGER IF EXISTS checkDuration;
 DROP TRIGGER IF EXISTS errorTrigger;
 DROP TRIGGER IF EXISTS checkFollower;
-DROP TRIGGER IF EXISTS insertAutoCollection;
+DROP TRIGGER IF EXISTS insertAutoCollectionSub;
 DROP TRIGGER IF EXISTS insertAutoSongNumber;
 DROP TRIGGER IF EXISTS updateAutoSongNumber;
 DROP TRIGGER IF EXISTS checkCollectionSize;
@@ -35,11 +35,25 @@ BEGIN
     END IF;
 END $$
 
-CREATE TRIGGER insertAutoCollection
+CREATE TRIGGER insertAutoCollectionSub
 AFTER INSERT ON `Utenti`
 FOR EACH ROW
 BEGIN
     INSERT INTO `Collezioni` (`IdUtente`) VALUES(NEW.IdUtente);
+    INSERT INTO `Abbonamenti`(`IdUtente`, `Tipo`) VALUES (NEW.IdUtente, 'Free');
+END $$
+
+CREATE TRIGGER insertAutoSongNumber
+AFTER INSERT ON `Brani`
+FOR EACH ROW
+BEGIN
+    DECLARE ida INTEGER DEFAULT -1;
+    SELECT a.IdAlbum INTO ida
+    FROM `Album` a
+    WHERE a.IdAlbum = NEW.IdAlbum;
+    IF(ida <> -1) THEN
+        UPDATE `Album` SET NBrani = NBrani + 1 WHERE IdAlbum = ida;
+    END IF;
 END $$
 
 CREATE TRIGGER updateAutoSongNumber
@@ -70,7 +84,7 @@ BEGIN
     FROM BraniCollezione
     WHERE IdCollezione = NEW.IdCollezione;
     SELECT DISTINCT i.Tipo INTO subType
-    FROM Iscrizioni i INNER JOIN Login l ON(i.IdUtente = l.IdUtente)
+    FROM Abbonamenti i INNER JOIN Login l ON(i.IdUtente = l.IdUtente)
     WHERE l.IdUtente = idUser;
     IF(numSong = 50 && subType = 'Free') THEN
         CALL RAISE_ERROR('Maximum limit for collected songs reached for a free subscription account.');
